@@ -8,7 +8,7 @@
         /// <summary>
         /// Checks if the char is a hex char (0-9, a-f, A-F)
         /// </summary>
-        /// <param name="c">The char to check</param>
+        /// <param name="c">Char to check</param>
         /// <returns>True if hex, false if not hex</returns>
         public static bool IsHex(this char c)
         {

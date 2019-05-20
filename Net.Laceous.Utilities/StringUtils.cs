@@ -13,7 +13,7 @@ namespace Net.Laceous.Utilities
         /// <summary>
         /// Escape string with backslash sequences (e.g. \r\n -> \\r\\n)
         /// </summary>
-        /// <param name="s">The string to escape</param>
+        /// <param name="s">String to escape</param>
         /// <param name="escapeSurrogatePairs">Escape surrogate pairs with \\Unnnnnnnn</param>
         /// <param name="escapeOptions">Escape options</param>
         /// <returns>String with escape sequences for string</returns>
@@ -46,7 +46,7 @@ namespace Net.Laceous.Utilities
         /// <summary>
         /// Unescape backslash sequences to string (e.g. \\r\\n -> \r\n)
         /// </summary>
-        /// <param name="s">The string to unescape</param>
+        /// <param name="s">String to unescape</param>
         /// <param name="treatUnrecognizedEscapeSequencesAsVerbatim">Treat unrecognized escape sequences as verbatim, otherwise throw an exception</param>
         /// <returns>String that's been unescaped</returns>
         public static string Unescape(string s, bool treatUnrecognizedEscapeSequencesAsVerbatim = false)

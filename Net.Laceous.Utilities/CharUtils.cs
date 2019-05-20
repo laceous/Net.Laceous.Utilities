@@ -10,7 +10,7 @@ namespace Net.Laceous.Utilities
         /// <summary>
         /// Escape char with backslash sequence (e.g. \n -> \\n)
         /// </summary>
-        /// <param name="c">The char to escape</param>
+        /// <param name="c">Char to escape</param>
         /// <param name="escapeOptions">Escape options</param>
         /// <returns>String with escape sequence for char</returns>
         public static string Escape(char c, CharEscapeOptions escapeOptions = null)
@@ -90,8 +90,8 @@ namespace Net.Laceous.Utilities
         /// <summary>
         /// Escape surrogate pair with \\Unnnnnnnn
         /// </summary>
-        /// <param name="s">The string containing the surrogate pair</param>
-        /// <param name="index">The index position of the surrogate pair</param>
+        /// <param name="s">String containing the surrogate pair</param>
+        /// <param name="index">Index position of the surrogate pair</param>
         /// <param name="useLowerCaseHexInsteadOfUpperCaseHex">Use lower case hex instead of upper case hex</param>
         /// <returns>String with escape sequence for surrogate pair</returns>
         public static string EscapeSurrogatePair(string s, int index = 0, bool useLowerCaseHexInsteadOfUpperCaseHex = false)
@@ -108,19 +108,22 @@ namespace Net.Laceous.Utilities
         /// <summary>
         /// Unescape backslash sequence to char (e.g. \\n -> \n)
         /// </summary>
-        /// <param name="s">The string to unescape</param>
+        /// <param name="s">String containing the escaped char</param>
+        /// <param name="index">Index position of the escaped char</param>
         /// <returns>Char that's been unescaped</returns>
-        public static char Unescape(string s)
+        public static char Unescape(string s, int index = 0)
         {
             if (s == null)
             {
                 throw new ArgumentNullException("s");
             }
 
+            string ss = index == 0 ? s : s.Substring(index);
+
             // longest escaped string: \Unnnnnnnn
-            if (s.Length >= 1 && s.Length <= 10)
+            if (ss.Length >= 1 && ss.Length <= 10)
             {
-                string unescaped = StringUtils.Unescape(s);
+                string unescaped = StringUtils.Unescape(ss);
                 if (unescaped.Length == 1)
                 {
                     return unescaped[0];
@@ -132,20 +135,31 @@ namespace Net.Laceous.Utilities
         /// <summary>
         /// Unescape backslash sequence to surrogate pair
         /// </summary>
-        /// <param name="s">String containing the surrogate pair</param>
+        /// <param name="s">String containing the escaped surrogate pair</param>
         /// <param name="highSurrogate">Return high surrogate</param>
         /// <param name="lowSurrogate">Return low surrogate</param>
-        public static void UnescapeSurrogatePair(string s, out char highSurrogate, out char lowSurrogate)
+        public static void UnescapeSurrogatePair(string s, out char highSurrogate, out char lowSurrogate) => UnescapeSurrogatePair(s, 0, out highSurrogate, out lowSurrogate);
+
+        /// <summary>
+        /// Unescape backslash sequence to surrogate pair
+        /// </summary>
+        /// <param name="s">String containing the escaped surrogate pair</param>
+        /// <param name="index">Index position of the escaped surrogate pair</param>
+        /// <param name="highSurrogate">Return high surrogate</param>
+        /// <param name="lowSurrogate">Return low surrogate</param>
+        public static void UnescapeSurrogatePair(string s, int index, out char highSurrogate, out char lowSurrogate)
         {
             if (s == null)
             {
                 throw new ArgumentNullException("s");
             }
 
+            string ss = index == 0 ? s : s.Substring(index);
+
             // longest escaped string: \unnnn\unnnn
-            if (s.Length >= 2 && s.Length <= 12)
+            if (ss.Length >= 2 && ss.Length <= 12)
             {
-                string unescaped = StringUtils.Unescape(s);
+                string unescaped = StringUtils.Unescape(ss);
                 if (unescaped.Length == 2 && char.IsSurrogatePair(unescaped[0], unescaped[1]))
                 {
                     highSurrogate = unescaped[0];
@@ -159,16 +173,17 @@ namespace Net.Laceous.Utilities
         /// <summary>
         /// Unescape backslash sequence to surrogate pair
         /// </summary>
-        /// <param name="s">String containing the surrogate pair</param>
+        /// <param name="s">String containing the escaped surrogate pair</param>
+        /// <param name="index">Index position of the escaped surrogate pair</param>
         /// <returns>String containing the high surrogate + low surrogate</returns>
-        public static string UnescapeSurrogatePair(string s)
+        public static string UnescapeSurrogatePair(string s, int index = 0)
         {
             if (s == null)
             {
                 return null;
             }
 
-            UnescapeSurrogatePair(s, out char highSurrogate, out char lowSurrogate);
+            UnescapeSurrogatePair(s, index, out char highSurrogate, out char lowSurrogate);
             return new string(new char[] { highSurrogate, lowSurrogate });
         }
     }
