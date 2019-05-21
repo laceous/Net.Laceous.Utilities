@@ -175,6 +175,17 @@ namespace Net.Laceous.Utilities
         }
 
         /// <summary>
+        /// Passthrough for char.IsSurrogatePair
+        /// </summary>
+        /// <param name="highSurrogate"></param>
+        /// <param name="lowSurrogate"></param>
+        /// <returns>True if surrogate pair, otherwise false</returns>
+        public static bool IsSurrogatePair(char highSurrogate, char lowSurrogate)
+        {
+            return char.IsSurrogatePair(highSurrogate, lowSurrogate);
+        }
+
+        /// <summary>
         /// Checks if the string contains exactly one surrogate pair
         /// </summary>
         /// <param name="s">String to check</param>
@@ -186,7 +197,7 @@ namespace Net.Laceous.Utilities
                 return false;
             }
             
-            return s.Length == 2 && char.IsSurrogatePair(s[0], s[1]);
+            return s.Length == 2 && IsSurrogatePair(s[0], s[1]);
         }
     }
 }

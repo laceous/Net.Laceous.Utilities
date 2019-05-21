@@ -221,8 +221,9 @@ namespace Net.Laceous.Utilities.Tests
             string s2 = "ab";
 
             Assert.True(CharUtils.IsSurrogatePair(s1));
-            Assert.True(char.IsSurrogatePair(s1[0], s1[1]));
+            Assert.True(CharUtils.IsSurrogatePair(s1[0], s1[1]));
             Assert.False(CharUtils.IsSurrogatePair(s2));
+            Assert.False(CharUtils.IsSurrogatePair(s2[0], s2[1]));
         }
     }
 }
