@@ -13,17 +13,17 @@
         /// <summary>
         /// Use \unnnn or \xnnnn instead of \", \', \", \\, \0, \a, \b, \f, \n, \r, \t, \v
         /// </summary>
-        public bool AlwaysUseUnicodeEscapeSequence { get; set; }
-
-        /// <summary>
-        /// Use lower case hex instead of upper case hex
-        /// </summary>
-        public bool UseLowerCaseHexInsteadOfUpperCaseHex { get; set; }
+        public bool AlwaysUseUnicodeEscape { get; set; }
 
         /// <summary>
         /// Use \xnnnn instead of \unnnn
         /// </summary>
-        public bool UseLowerCaseXInsteadOfLowerCaseU { get; set; }
+        public bool UseLowerCaseX { get; set; }
+
+        /// <summary>
+        /// Use upper case hex instead of lower case hex
+        /// </summary>
+        public bool UseUpperCaseHex { get; set; }
 
         /// <summary>
         /// Initialize new instance of CharEscapeOptions with default options
@@ -31,17 +31,24 @@
         public CharEscapeOptions()
         {
             EscapeType = CharEscapeType.Default;
-            AlwaysUseUnicodeEscapeSequence = false;
-            UseLowerCaseHexInsteadOfUpperCaseHex = false;
-            UseLowerCaseXInsteadOfLowerCaseU = false;
+            AlwaysUseUnicodeEscape = false;
+            UseLowerCaseX = false;
+            UseUpperCaseHex = false;
         }
 
-        public CharEscapeOptions(CharEscapeType escapeType, bool alwaysUseUnicodeEscapeSequence, bool useLowerCaseHexInsteadOfUpperCaseHex, bool useLowerCaseXInsteadOfLowerCaseU)
+        /// <summary>
+        /// Initialize new instance of CharEscapeOptions with selected options
+        /// </summary>
+        /// <param name="escapeType">Escape type</param>
+        /// <param name="alwaysUseUnicodeEscape">Always use unicode escape sequence</param>
+        /// <param name="useLowerCaseX">Use lower case x instead of lower case u</param>
+        /// <param name="useUpperCaseHex">Use upper case hex instead of lower case hex</param>
+        public CharEscapeOptions(CharEscapeType escapeType, bool alwaysUseUnicodeEscape, bool useLowerCaseX, bool useUpperCaseHex)
         {
             EscapeType = escapeType;
-            AlwaysUseUnicodeEscapeSequence = alwaysUseUnicodeEscapeSequence;
-            UseLowerCaseHexInsteadOfUpperCaseHex = useLowerCaseHexInsteadOfUpperCaseHex;
-            UseLowerCaseXInsteadOfLowerCaseU = useLowerCaseXInsteadOfLowerCaseU;
+            AlwaysUseUnicodeEscape = alwaysUseUnicodeEscape;
+            UseLowerCaseX = useLowerCaseX;
+            UseUpperCaseHex = useUpperCaseHex;
         }
     }
 }

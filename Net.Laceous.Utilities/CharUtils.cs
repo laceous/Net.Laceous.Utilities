@@ -20,33 +20,33 @@ namespace Net.Laceous.Utilities
                 escapeOptions = new CharEscapeOptions();
             }
             
-            string xu = escapeOptions.UseLowerCaseXInsteadOfLowerCaseU ? "x" : "u";
-            string hex = escapeOptions.UseLowerCaseHexInsteadOfUpperCaseHex ? "x4" : "X4";
+            string xu = escapeOptions.UseLowerCaseX ? "x" : "u";
+            string hex = escapeOptions.UseUpperCaseHex ? "X4" : "x4";
             
             switch (c)
             {
                 case '\'':
-                    return escapeOptions.AlwaysUseUnicodeEscapeSequence ? "\\" + xu + ((int)c).ToString(hex) : "\\'";
+                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\'";
                 case '\"':
-                    return escapeOptions.AlwaysUseUnicodeEscapeSequence ? "\\" + xu + ((int)c).ToString(hex) : "\\\"";
+                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\\"";
                 case '\\':
-                    return escapeOptions.AlwaysUseUnicodeEscapeSequence ? "\\" + xu + ((int)c).ToString(hex) : "\\\\";
+                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\\\";
                 case '\0':
-                    return escapeOptions.AlwaysUseUnicodeEscapeSequence ? "\\" + xu + ((int)c).ToString(hex) : "\\0";
+                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\0";
                 case '\a':
-                    return escapeOptions.AlwaysUseUnicodeEscapeSequence ? "\\" + xu + ((int)c).ToString(hex) : "\\a";
+                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\a";
                 case '\b':
-                    return escapeOptions.AlwaysUseUnicodeEscapeSequence ? "\\" + xu + ((int)c).ToString(hex) : "\\b";
+                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\b";
                 case '\f':
-                    return escapeOptions.AlwaysUseUnicodeEscapeSequence ? "\\" + xu + ((int)c).ToString(hex) : "\\f";
+                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\f";
                 case '\n':
-                    return escapeOptions.AlwaysUseUnicodeEscapeSequence ? "\\" + xu + ((int)c).ToString(hex) : "\\n";
+                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\n";
                 case '\r':
-                    return escapeOptions.AlwaysUseUnicodeEscapeSequence ? "\\" + xu + ((int)c).ToString(hex) : "\\r";
+                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\r";
                 case '\t':
-                    return escapeOptions.AlwaysUseUnicodeEscapeSequence ? "\\" + xu + ((int)c).ToString(hex) : "\\t";
+                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\t";
                 case '\v':
-                    return escapeOptions.AlwaysUseUnicodeEscapeSequence ? "\\" + xu + ((int)c).ToString(hex) : "\\v";
+                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\v";
                 default:
                     switch (escapeOptions.EscapeType)
                     {
@@ -79,11 +79,11 @@ namespace Net.Laceous.Utilities
         /// </summary>
         /// <param name="highSurrogate">High surrogate</param>
         /// <param name="lowSurrogate">Low surrogate</param>
-        /// <param name="useLowerCaseHexInsteadOfUpperCaseHex">Use lower case hex instead of upper case hex</param>
+        /// <param name="useUpperCaseHex">Use upper case hex instead of lower case hex</param>
         /// <returns>String with escape sequence for surrogate pair</returns>
-        public static string EscapeSurrogatePair(char highSurrogate, char lowSurrogate, bool useLowerCaseHexInsteadOfUpperCaseHex = false)
+        public static string EscapeSurrogatePair(char highSurrogate, char lowSurrogate, bool useUpperCaseHex = false)
         {
-            string hex = useLowerCaseHexInsteadOfUpperCaseHex ? "x8" : "X8";
+            string hex = useUpperCaseHex ? "X8" : "x8";
             return "\\U" + char.ConvertToUtf32(highSurrogate, lowSurrogate).ToString(hex);
         }
 
@@ -92,16 +92,16 @@ namespace Net.Laceous.Utilities
         /// </summary>
         /// <param name="s">String containing the surrogate pair</param>
         /// <param name="index">Index position of the surrogate pair</param>
-        /// <param name="useLowerCaseHexInsteadOfUpperCaseHex">Use lower case hex instead of upper case hex</param>
+        /// <param name="useUpperCaseHex">Use upper case hex instead of lower case hex</param>
         /// <returns>String with escape sequence for surrogate pair</returns>
-        public static string EscapeSurrogatePair(string s, int index = 0, bool useLowerCaseHexInsteadOfUpperCaseHex = false)
+        public static string EscapeSurrogatePair(string s, int index = 0, bool useUpperCaseHex = false)
         {
             if (s == null)
             {
                 return null;
             }
 
-            string hex = useLowerCaseHexInsteadOfUpperCaseHex ? "x8" : "X8";
+            string hex = useUpperCaseHex ? "X8" : "x8";
             return "\\U" + char.ConvertToUtf32(s, index).ToString(hex);
         }
 
@@ -160,7 +160,7 @@ namespace Net.Laceous.Utilities
             if (ss.Length >= 2 && ss.Length <= 12)
             {
                 string unescaped = StringUtils.Unescape(ss);
-                if (unescaped.Length == 2 && char.IsSurrogatePair(unescaped[0], unescaped[1]))
+                if (IsSurrogatePair(unescaped))
                 {
                     highSurrogate = unescaped[0];
                     lowSurrogate = unescaped[1];
@@ -185,6 +185,21 @@ namespace Net.Laceous.Utilities
 
             UnescapeSurrogatePair(s, index, out char highSurrogate, out char lowSurrogate);
             return new string(new char[] { highSurrogate, lowSurrogate });
+        }
+
+        /// <summary>
+        /// Checks if the string contains exactly one surrogate pair
+        /// </summary>
+        /// <param name="s">String to check</param>
+        /// <returns>True if surrogate pair, otherwise false</returns>
+        public static bool IsSurrogatePair(string s)
+        {
+            if (s == null)
+            {
+                throw new ArgumentNullException("s");
+            }
+
+            return s.Length == 2 && char.IsSurrogatePair(s[0], s[1]);
         }
     }
 }

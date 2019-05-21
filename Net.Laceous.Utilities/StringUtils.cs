@@ -1,5 +1,6 @@
 ﻿using Net.Laceous.Utilities.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
@@ -33,7 +34,7 @@ namespace Net.Laceous.Utilities
             {
                 if (escapeSurrogatePairs && char.IsHighSurrogate(s[i]) && s.Length > i + 1 && char.IsSurrogatePair(s[i], s[i + 1]))
                 {
-                    sb.Append(CharUtils.EscapeSurrogatePair(s[i], s[++i], escapeOptions.UseLowerCaseXInsteadOfLowerCaseU));
+                    sb.Append(CharUtils.EscapeSurrogatePair(s[i], s[++i], escapeOptions.UseUpperCaseHex));
                 }
                 else
                 {
@@ -47,9 +48,9 @@ namespace Net.Laceous.Utilities
         /// Unescape backslash sequences to string (e.g. \\r\\n -> \r\n)
         /// </summary>
         /// <param name="s">String to unescape</param>
-        /// <param name="treatUnrecognizedEscapeSequencesAsVerbatim">Treat unrecognized escape sequences as verbatim, otherwise throw an exception</param>
+        /// <param name="unrecognizedEscapeIsVerbatim">Treat unrecognized escape sequences as verbatim, otherwise throw an exception</param>
         /// <returns>String that's been unescaped</returns>
-        public static string Unescape(string s, bool treatUnrecognizedEscapeSequencesAsVerbatim = false)
+        public static string Unescape(string s, bool unrecognizedEscapeIsVerbatim = false)
         {
             if (s == null)
             {
@@ -114,7 +115,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (treatUnrecognizedEscapeSequencesAsVerbatim)
+                                        if (unrecognizedEscapeIsVerbatim)
                                         {
                                             sb.Append("\\" + s[i]);
                                         }
@@ -143,7 +144,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (treatUnrecognizedEscapeSequencesAsVerbatim)
+                                        if (unrecognizedEscapeIsVerbatim)
                                         {
                                             sb.Append("\\" + s[i]);
                                         }
@@ -164,7 +165,7 @@ namespace Net.Laceous.Utilities
                                         }
                                         catch (ArgumentOutOfRangeException)
                                         {
-                                            if (!treatUnrecognizedEscapeSequencesAsVerbatim)
+                                            if (!unrecognizedEscapeIsVerbatim)
                                             {
                                                 throw;
                                             }
@@ -182,7 +183,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (treatUnrecognizedEscapeSequencesAsVerbatim)
+                                        if (unrecognizedEscapeIsVerbatim)
                                         {
                                             sb.Append("\\" + s[i]);
                                         }
@@ -193,7 +194,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     break;
                                 default:
-                                    if (treatUnrecognizedEscapeSequencesAsVerbatim)
+                                    if (unrecognizedEscapeIsVerbatim)
                                     {
                                         sb.Append("\\" + s[i]);
                                     }
@@ -206,7 +207,7 @@ namespace Net.Laceous.Utilities
                         }
                         else
                         {
-                            if (treatUnrecognizedEscapeSequencesAsVerbatim)
+                            if (unrecognizedEscapeIsVerbatim)
                             {
                                 sb.Append("\\" + s[i]);
                             }
@@ -224,6 +225,157 @@ namespace Net.Laceous.Utilities
                 }
                 return sb.ToString();
             }
+        }
+
+        /// <summary>
+        /// Checks if the string contains at least one surrogate pair
+        /// </summary>
+        /// <param name="s">String to check</param>
+        /// <returns>True if at least one surrogate pair, otherwise false</returns>
+        public static bool HasSurrogatePair(string s)
+        {
+            if (s == null)
+            {
+                throw new ArgumentNullException("s");
+            }
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (char.IsHighSurrogate(s[i]) && s.Length > i + 1 && char.IsSurrogatePair(s[i], s[i + 1]))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Counts the number of chars in the string (each surrogate pair only increments the count by 1)
+        /// </summary>
+        /// <param name="s">String to count</param>
+        /// <returns>Count</returns>
+        public static int CountCompleteChars(string s)
+        {
+            if (s == null)
+            {
+                throw new ArgumentNullException("s");
+            }
+
+            int count = 0;
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (char.IsHighSurrogate(s[i]) && s.Length > i + 1 && char.IsSurrogatePair(s[i], s[i + 1]))
+                {
+                    i++;
+                }
+                count++;
+            }
+            return count;
+        }
+
+        /// <summary>
+        /// Gets the index for the first surrogate pair in the string
+        /// </summary>
+        /// <param name="s">String to search</param>
+        /// <returns>Index or -1 if not found</returns>
+        public static int IndexOfSurrogatePair(string s) => IndexOfSurrogatePair(s, 0);
+
+        /// <summary>
+        /// Gets the index for the first surrogate pair in the string
+        /// </summary>
+        /// <param name="s">String to search</param>
+        /// <param name="startIndex">Where to start search from</param>
+        /// <returns>Index or -1 if not found</returns>
+        public static int IndexOfSurrogatePair(string s, int startIndex) => IndexOfSurrogatePair(s, startIndex, s.Length);
+
+        /// <summary>
+        /// Gets the index for the first surrogate pair in the string
+        /// </summary>
+        /// <param name="s">String to search</param>
+        /// <param name="startIndex">Where to start search from</param>
+        /// <param name="count">Num of chars to look at</param>
+        /// <returns>Index or -1 if not found</returns>
+        public static int IndexOfSurrogatePair(string s, int startIndex, int count)
+        {
+            if (s == null)
+            {
+                throw new ArgumentNullException("s");
+            }
+            
+            int c = 0;
+            int i = startIndex;
+            for (; i < s.Length && c < count; c++, i++)
+            {
+                if (char.IsHighSurrogate(s[i]) && s.Length > i + 1 && char.IsSurrogatePair(s[i], s[i + 1]))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Gets the index for the last surrogate pair in the string
+        /// </summary>
+        /// <param name="s">String to search</param>
+        /// <returns>Index or -1 if not found</returns>
+        public static int LastIndexOfSurrogatePair(string s) => LastIndexOfSurrogatePair(s, s.Length - 1);
+
+        /// <summary>
+        /// Gets the index for the last surrogate pair in the string
+        /// </summary>
+        /// <param name="s">String to search</param>
+        /// <param name="startIndex">Where to start search from</param>
+        /// <returns>Index or -1 if not found</returns>
+        public static int LastIndexOfSurrogatePair(string s, int startIndex) => LastIndexOfSurrogatePair(s, startIndex, s.Length);
+
+        /// <summary>
+        /// Gets the index for the last surrogate pair in the string
+        /// </summary>
+        /// <param name="s">String to search</param>
+        /// <param name="startIndex">Where to start search from</param>
+        /// <param name="count">Num of chars to look at</param>
+        /// <returns>Index or -1 if not found</returns>
+        public static int LastIndexOfSurrogatePair(string s, int startIndex, int count)
+        {
+            if (s == null)
+            {
+                throw new ArgumentNullException("s");
+            }
+
+            int c = 0;
+            int i = startIndex;
+            for (; i >= 0 && c < count; c++, i--)
+            {
+                if (char.IsLowSurrogate(s[i]) && i - 1 >= 0 && char.IsSurrogatePair(s[i - 1], s[i]))
+                {
+                    return --i;
+                }
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Gets the indexes for all the surrogate pairs in the string
+        /// </summary>
+        /// <param name="s">String to search</param>
+        /// <returns>Indexes or empty array if none found</returns>
+        public static int[] AllIndexesOfSurrogatePairs(string s)
+        {
+            if (s == null)
+            {
+                throw new ArgumentNullException("s");
+            }
+
+            List<int> list = new List<int>();
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (char.IsHighSurrogate(s[i]) && s.Length > i + 1 && char.IsSurrogatePair(s[i], s[i + 1]))
+                {
+                    list.Add(i++);
+                }
+            }
+            return list.ToArray();
         }
     }
 }
