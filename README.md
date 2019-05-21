@@ -37,9 +37,9 @@ Console.WriteLine(sUnescaped);             // abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁�
 ```
 
 Supported escape sequences:
-* \' (Single quote)
-* \" (Double quote)
-* \\ (Backslash)
+* \\' (Single quote)
+* \\" (Double quote)
+* \\\\ (Backslash)
 * \0 (Null)
 * \a (Alert)
 * \b (Backspace)
