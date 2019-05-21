@@ -277,29 +277,23 @@ namespace Net.Laceous.Utilities
         /// Gets the index for the first surrogate pair in the string
         /// </summary>
         /// <param name="s">String to search</param>
-        /// <returns>Index or -1 if not found</returns>
-        public static int IndexOfSurrogatePair(string s) => IndexOfSurrogatePair(s, 0);
-
-        /// <summary>
-        /// Gets the index for the first surrogate pair in the string
-        /// </summary>
-        /// <param name="s">String to search</param>
-        /// <param name="startIndex">Where to start search from</param>
-        /// <returns>Index or -1 if not found</returns>
-        public static int IndexOfSurrogatePair(string s, int startIndex) => IndexOfSurrogatePair(s, startIndex, s.Length);
-
-        /// <summary>
-        /// Gets the index for the first surrogate pair in the string
-        /// </summary>
-        /// <param name="s">String to search</param>
         /// <param name="startIndex">Where to start search from</param>
         /// <param name="count">Num of chars to look at</param>
         /// <returns>Index or -1 if not found</returns>
-        public static int IndexOfSurrogatePair(string s, int startIndex, int count)
+        public static int IndexOfSurrogatePair(string s, int startIndex = -1, int count = -1)
         {
             if (s == null)
             {
                 throw new ArgumentNullException("s");
+            }
+
+            if (startIndex < 0)
+            {
+                startIndex = 0;
+            }
+            if (count < 0)
+            {
+                count = s.Length;
             }
             
             int c = 0;
@@ -318,29 +312,23 @@ namespace Net.Laceous.Utilities
         /// Gets the index for the last surrogate pair in the string
         /// </summary>
         /// <param name="s">String to search</param>
-        /// <returns>Index or -1 if not found</returns>
-        public static int LastIndexOfSurrogatePair(string s) => LastIndexOfSurrogatePair(s, s.Length - 1);
-
-        /// <summary>
-        /// Gets the index for the last surrogate pair in the string
-        /// </summary>
-        /// <param name="s">String to search</param>
-        /// <param name="startIndex">Where to start search from</param>
-        /// <returns>Index or -1 if not found</returns>
-        public static int LastIndexOfSurrogatePair(string s, int startIndex) => LastIndexOfSurrogatePair(s, startIndex, s.Length);
-
-        /// <summary>
-        /// Gets the index for the last surrogate pair in the string
-        /// </summary>
-        /// <param name="s">String to search</param>
         /// <param name="startIndex">Where to start search from</param>
         /// <param name="count">Num of chars to look at</param>
         /// <returns>Index or -1 if not found</returns>
-        public static int LastIndexOfSurrogatePair(string s, int startIndex, int count)
+        public static int LastIndexOfSurrogatePair(string s, int startIndex = -1, int count = -1)
         {
             if (s == null)
             {
                 throw new ArgumentNullException("s");
+            }
+            
+            if (startIndex < 0)
+            {
+                startIndex = s.Length - 1;
+            }
+            if (count < 0)
+            {
+                count = s.Length;
             }
 
             int c = 0;
