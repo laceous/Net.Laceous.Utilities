@@ -16,14 +16,14 @@
         public bool AlwaysUseUnicodeEscape { get; set; }
 
         /// <summary>
+        /// Use lower case hex instead of upper case hex
+        /// </summary>
+        public bool UseLowerCaseHex { get; set; }
+
+        /// <summary>
         /// Use \xnnnn instead of \unnnn
         /// </summary>
         public bool UseLowerCaseX { get; set; }
-
-        /// <summary>
-        /// Use upper case hex instead of lower case hex
-        /// </summary>
-        public bool UseUpperCaseHex { get; set; }
 
         /// <summary>
         /// Initialize new instance of CharEscapeOptions with default options
@@ -33,7 +33,7 @@
             EscapeType = CharEscapeType.Default;
             AlwaysUseUnicodeEscape = false;
             UseLowerCaseX = false;
-            UseUpperCaseHex = false;
+            UseLowerCaseHex = false;
         }
 
         /// <summary>
@@ -42,13 +42,13 @@
         /// <param name="escapeType">Escape type</param>
         /// <param name="alwaysUseUnicodeEscape">Always use unicode escape sequence</param>
         /// <param name="useLowerCaseX">Use lower case x instead of lower case u</param>
-        /// <param name="useUpperCaseHex">Use upper case hex instead of lower case hex</param>
-        public CharEscapeOptions(CharEscapeType escapeType, bool alwaysUseUnicodeEscape, bool useLowerCaseX, bool useUpperCaseHex)
+        /// <param name="useLowerCaseX">Use lower case hex instead of upper case hex</param>
+        public CharEscapeOptions(CharEscapeType escapeType, bool alwaysUseUnicodeEscape, bool useLowerCaseHex, bool useLowerCaseX)
         {
             EscapeType = escapeType;
             AlwaysUseUnicodeEscape = alwaysUseUnicodeEscape;
+            UseLowerCaseHex = useLowerCaseHex;
             UseLowerCaseX = useLowerCaseX;
-            UseUpperCaseHex = useUpperCaseHex;
         }
     }
 }

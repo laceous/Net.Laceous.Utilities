@@ -21,7 +21,7 @@ namespace Net.Laceous.Utilities
             }
             
             string xu = escapeOptions.UseLowerCaseX ? "x" : "u";
-            string hex = escapeOptions.UseUpperCaseHex ? "X4" : "x4";
+            string hex = escapeOptions.UseLowerCaseHex ? "x4" : "X4";
             
             switch (c)
             {
@@ -79,11 +79,11 @@ namespace Net.Laceous.Utilities
         /// </summary>
         /// <param name="highSurrogate">High surrogate</param>
         /// <param name="lowSurrogate">Low surrogate</param>
-        /// <param name="useUpperCaseHex">Use upper case hex instead of lower case hex</param>
+        /// <param name="useLowerCaseHex">Use lower case hex instead of upper case hex</param>
         /// <returns>String with escape sequence for surrogate pair</returns>
-        public static string EscapeSurrogatePair(char highSurrogate, char lowSurrogate, bool useUpperCaseHex = false)
+        public static string EscapeSurrogatePair(char highSurrogate, char lowSurrogate, bool useLowerCaseHex = false)
         {
-            string hex = useUpperCaseHex ? "X8" : "x8";
+            string hex = useLowerCaseHex ? "x8" : "X8";
             return "\\U" + char.ConvertToUtf32(highSurrogate, lowSurrogate).ToString(hex);
         }
 
@@ -91,39 +91,38 @@ namespace Net.Laceous.Utilities
         /// Escape surrogate pair with \\Unnnnnnnn
         /// </summary>
         /// <param name="s">String containing the surrogate pair</param>
-        /// <param name="index">Index position of the surrogate pair</param>
-        /// <param name="useUpperCaseHex">Use upper case hex instead of lower case hex</param>
+        /// <param name="useLowerCaseHex">Use lower case hex instead of upper case hex</param>
         /// <returns>String with escape sequence for surrogate pair</returns>
-        public static string EscapeSurrogatePair(string s, int index = 0, bool useUpperCaseHex = false)
+        public static string EscapeSurrogatePair(string s, bool useLowerCaseHex = false)
         {
             if (s == null)
             {
                 return null;
             }
 
-            string hex = useUpperCaseHex ? "X8" : "x8";
-            return "\\U" + char.ConvertToUtf32(s, index).ToString(hex);
+            if (IsSurrogatePair(s))
+            {
+                return EscapeSurrogatePair(s[0], s[1], useLowerCaseHex);
+            }
+            throw new ArgumentException("String did not contain exactly one surrogate pair.", "s");
         }
 
         /// <summary>
         /// Unescape backslash sequence to char (e.g. \\n -> \n)
         /// </summary>
         /// <param name="s">String containing the escaped char</param>
-        /// <param name="index">Index position of the escaped char</param>
         /// <returns>Char that's been unescaped</returns>
-        public static char Unescape(string s, int index = 0)
+        public static char Unescape(string s)
         {
             if (s == null)
             {
                 throw new ArgumentNullException("s");
             }
 
-            string ss = index == 0 ? s : s.Substring(index);
-
             // longest escaped string: \Unnnnnnnn
-            if (ss.Length >= 1 && ss.Length <= 10)
+            if (s.Length >= 1 && s.Length <= 10)
             {
-                string unescaped = StringUtils.Unescape(ss);
+                string unescaped = StringUtils.Unescape(s);
                 if (unescaped.Length == 1)
                 {
                     return unescaped[0];
@@ -138,28 +137,17 @@ namespace Net.Laceous.Utilities
         /// <param name="s">String containing the escaped surrogate pair</param>
         /// <param name="highSurrogate">Return high surrogate</param>
         /// <param name="lowSurrogate">Return low surrogate</param>
-        public static void UnescapeSurrogatePair(string s, out char highSurrogate, out char lowSurrogate) => UnescapeSurrogatePair(s, 0, out highSurrogate, out lowSurrogate);
-
-        /// <summary>
-        /// Unescape backslash sequence to surrogate pair
-        /// </summary>
-        /// <param name="s">String containing the escaped surrogate pair</param>
-        /// <param name="index">Index position of the escaped surrogate pair</param>
-        /// <param name="highSurrogate">Return high surrogate</param>
-        /// <param name="lowSurrogate">Return low surrogate</param>
-        public static void UnescapeSurrogatePair(string s, int index, out char highSurrogate, out char lowSurrogate)
+        public static void UnescapeSurrogatePair(string s, out char highSurrogate, out char lowSurrogate)
         {
             if (s == null)
             {
                 throw new ArgumentNullException("s");
             }
 
-            string ss = index == 0 ? s : s.Substring(index);
-
             // longest escaped string: \unnnn\unnnn
-            if (ss.Length >= 2 && ss.Length <= 12)
+            if (s.Length >= 2 && s.Length <= 12)
             {
-                string unescaped = StringUtils.Unescape(ss);
+                string unescaped = StringUtils.Unescape(s);
                 if (IsSurrogatePair(unescaped))
                 {
                     highSurrogate = unescaped[0];
@@ -174,16 +162,15 @@ namespace Net.Laceous.Utilities
         /// Unescape backslash sequence to surrogate pair
         /// </summary>
         /// <param name="s">String containing the escaped surrogate pair</param>
-        /// <param name="index">Index position of the escaped surrogate pair</param>
         /// <returns>String containing the high surrogate + low surrogate</returns>
-        public static string UnescapeSurrogatePair(string s, int index = 0)
+        public static string UnescapeSurrogatePair(string s)
         {
             if (s == null)
             {
                 return null;
             }
 
-            UnescapeSurrogatePair(s, index, out char highSurrogate, out char lowSurrogate);
+            UnescapeSurrogatePair(s, out char highSurrogate, out char lowSurrogate);
             return new string(new char[] { highSurrogate, lowSurrogate });
         }
 
@@ -196,9 +183,9 @@ namespace Net.Laceous.Utilities
         {
             if (s == null)
             {
-                throw new ArgumentNullException("s");
+                return false;
             }
-
+            
             return s.Length == 2 && char.IsSurrogatePair(s[0], s[1]);
         }
     }

@@ -34,7 +34,7 @@ namespace Net.Laceous.Utilities
             {
                 if (escapeSurrogatePairs && char.IsHighSurrogate(s[i]) && s.Length > i + 1 && char.IsSurrogatePair(s[i], s[i + 1]))
                 {
-                    sb.Append(CharUtils.EscapeSurrogatePair(s[i], s[++i], escapeOptions.UseUpperCaseHex));
+                    sb.Append(CharUtils.EscapeSurrogatePair(s[i], s[++i], escapeOptions.UseLowerCaseHex));
                 }
                 else
                 {
@@ -236,7 +236,7 @@ namespace Net.Laceous.Utilities
         {
             if (s == null)
             {
-                throw new ArgumentNullException("s");
+                return false;
             }
 
             for (int i = 0; i < s.Length; i++)
