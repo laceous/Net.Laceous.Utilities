@@ -261,16 +261,16 @@ namespace Net.Laceous.Utilities
                 throw new ArgumentNullException("s");
             }
 
-            int count = 0;
-            for (int i = 0; i < s.Length; i++)
+            int c = 0;
+            int i = 0;
+            for (; i < s.Length; c++, i++)
             {
                 if (char.IsHighSurrogate(s[i]) && s.Length > i + 1 && char.IsSurrogatePair(s[i], s[i + 1]))
                 {
                     i++;
                 }
-                count++;
             }
-            return count;
+            return c;
         }
 
         /// <summary>
