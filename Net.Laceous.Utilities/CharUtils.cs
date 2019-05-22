@@ -119,20 +119,16 @@ namespace Net.Laceous.Utilities
                 throw new ArgumentNullException("s");
             }
 
-            // longest escaped string: \Unnnnnnnn
-            if (s.Length >= 1 && s.Length <= 10)
+            if (s.Length == 1)
             {
-                if (s.Length == 1)
+                return s[0];
+            }
+            else if (s.Length > 1 && s.Length <= 10) // longest escaped string: \Unnnnnnnn
+            {
+                string unescaped = StringUtils.Unescape(s, unrecognizedEscapeIsVerbatim: true);
+                if (unescaped.Length == 1)
                 {
-                    return s[0];
-                }
-                else
-                {
-                    string unescaped = StringUtils.Unescape(s, unrecognizedEscapeIsVerbatim: true);
-                    if (unescaped.Length == 1)
-                    {
-                        return unescaped[0];
-                    }
+                    return unescaped[0];
                 }
             }
             throw new ArgumentException("String did not contain exactly one escaped char.", "s");
@@ -154,7 +150,16 @@ namespace Net.Laceous.Utilities
             // longest escaped string: \unnnn\unnnn
             if (s.Length >= 2 && s.Length <= 12)
             {
-                string unescaped = StringUtils.Unescape(s, unrecognizedEscapeIsVerbatim: true);
+                string unescaped;
+                if (s.Length == 2)
+                {
+                    unescaped = s;
+                }
+                else
+                {
+                    unescaped = StringUtils.Unescape(s, unrecognizedEscapeIsVerbatim: true);
+                }
+
                 if (IsSurrogatePair(unescaped))
                 {
                     highSurrogate = unescaped[0];
