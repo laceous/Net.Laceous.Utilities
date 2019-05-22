@@ -56,17 +56,11 @@ Surrogate pairs:
 
 ```c#
 string emoji = "😁"; // 2 char emoji
-bool eIsSurrogatePair = CharUtils.IsSurrogatePair(emoji);
-Console.WriteLine(eIsSurrogatePair); // True
+Console.WriteLine(CharUtils.IsSurrogatePair(emoji)); // True
 
 string s = "abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓";
-bool sHasSurrogatePair = StringUtils.HasSurrogatePair(s);
-int sCountSurrogatePairs = StringUtils.CountSurrogatePairs(s);
-int sIndexOfSurrogatePair = StringUtils.IndexOfSurrogatePair(s);
-int sLastIndexOfSurrogatePair = StringUtils.LastIndexOfSurrogatePair(s);
-Console.WriteLine(sHasSurrogatePair); // True
-Console.WriteLine(sCountSurrogatePairs); // 3
-Console.WriteLine("Visible chars: " + (s.Length - sCountSurrogatePairs)); // Visible chars: 23
-Console.WriteLine(sIndexOfSurrogatePair); // 20
-Console.WriteLine(sLastIndexOfSurrogatePair); // 24
+Console.WriteLine(StringUtils.HasSurrogatePair(s)); // True
+Console.WriteLine("Visible chars: " + (s.Length - StringUtils.CountSurrogatePairs(s))); // Visible chars: 23
+Console.WriteLine(StringUtils.IndexOfSurrogatePair(s)); // 20
+Console.WriteLine(StringUtils.LastIndexOfSurrogatePair(s)); // 24
 ```
