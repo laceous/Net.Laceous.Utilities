@@ -342,28 +342,5 @@ namespace Net.Laceous.Utilities
             }
             return -1;
         }
-
-        /// <summary>
-        /// Gets the indexes for all the surrogate pairs in the string
-        /// </summary>
-        /// <param name="s">String to search</param>
-        /// <returns>Indexes or empty array if none found</returns>
-        public static int[] AllIndexesOfSurrogatePairs(string s)
-        {
-            if (s == null)
-            {
-                throw new ArgumentNullException("s");
-            }
-
-            List<int> list = new List<int>();
-            for (int i = 0; i < s.Length; i++)
-            {
-                if (char.IsHighSurrogate(s[i]) && s.Length > i + 1 && char.IsSurrogatePair(s[i], s[i + 1]))
-                {
-                    list.Add(i++);
-                }
-            }
-            return list.ToArray();
-        }
     }
 }

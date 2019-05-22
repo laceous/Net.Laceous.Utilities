@@ -166,16 +166,5 @@ namespace Net.Laceous.Utilities.Tests
             int i = StringUtils.LastIndexOfSurrogatePair(s, 12, 1);
             Assert.Equal(-1, i);
         }
-
-        [Fact]
-        public void AllIndexesOfSurrogatePairsTest()
-        {
-            string s = "abc😁def😃ghi😓jklm";
-            int[] iArr = StringUtils.AllIndexesOfSurrogatePairs(s);
-            Assert.Equal(3, iArr.Length);
-            Assert.Equal(3, iArr[0]);
-            Assert.Equal(8, iArr[1]);
-            Assert.Equal(13, iArr[2]);
-        }
     }
 }
