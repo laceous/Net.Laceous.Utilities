@@ -110,13 +110,10 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Fact]
-        public void CountCompleteCharsTest()
+        public void CountSurrogatePairsTest()
         {
             string s = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
-            int length = s.Length;
-            int count = StringUtils.CountCompleteChars(s);
-            Assert.Equal(22, length);
-            Assert.Equal(19, count);
+            Assert.Equal(3, StringUtils.CountSurrogatePairs(s));
         }
 
         [Fact]
@@ -131,40 +128,35 @@ namespace Net.Laceous.Utilities.Tests
         public void IndexOfSurrogatePairTest_Index()
         {
             string s = "abc😁def😃ghi😓jklm";
-            int i = StringUtils.IndexOfSurrogatePair(s, 4);
-            Assert.Equal(8, i);
+            Assert.Equal(8, StringUtils.IndexOfSurrogatePair(s, 4));
         }
 
         [Fact]
         public void IndexOfSurrogatePairTest_Index_Count()
         {
             string s = "abc😁def😃ghi😓jklm";
-            int i = StringUtils.IndexOfSurrogatePair(s, 4, 1);
-            Assert.Equal(-1, i);
+            Assert.Equal(-1, StringUtils.IndexOfSurrogatePair(s, 4, 1));
         }
 
         [Fact]
         public void LastIndexOfSurrogatePairTest()
         {
             string s = "abc😁def😃ghi😓jklm";
-            int i = StringUtils.LastIndexOfSurrogatePair(s);
-            Assert.Equal(13, i);
+            Assert.Equal(13, StringUtils.LastIndexOfSurrogatePair(s));
         }
 
         [Fact]
         public void LastIndexOfSurrogatePairTest_Index()
         {
             string s = "abc😁def😃ghi😓jklm";
-            int i = StringUtils.LastIndexOfSurrogatePair(s, 12);
-            Assert.Equal(8, i);
+            Assert.Equal(8, StringUtils.LastIndexOfSurrogatePair(s, 12));
         }
 
         [Fact]
         public void LastIndexOfSurrogatePairTest_Index_Count()
         {
             string s = "abc😁def😃ghi😓jklm";
-            int i = StringUtils.LastIndexOfSurrogatePair(s, 12, 1);
-            Assert.Equal(-1, i);
+            Assert.Equal(-1, StringUtils.LastIndexOfSurrogatePair(s, 12, 1));
         }
     }
 }

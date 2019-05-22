@@ -57,7 +57,7 @@ namespace Net.Laceous.Utilities
                 return null;
             }
 
-            // checking for the next \\ instead of iterating over each char can be faster if there's relatively few \\ in the string
+            // using indexOf('\\') and and substring() instead of iterating over each char can be faster if there's relatively few \\ in the string
             // however, if there's relatively more \\ in the string then iterating over each char can be faster
             // since this is an unescape function, let's assume there will be more \\ than less
             if (s.IndexOf('\\') == -1)
@@ -250,11 +250,11 @@ namespace Net.Laceous.Utilities
         }
 
         /// <summary>
-        /// Counts the number of chars in the string (each surrogate pair only increments the count by 1)
+        /// Counts the number of surrogate pairs in the string
         /// </summary>
         /// <param name="s">String to count</param>
         /// <returns>Count</returns>
-        public static int CountCompleteChars(string s)
+        public static int CountSurrogatePairs(string s)
         {
             if (s == null)
             {
@@ -262,12 +262,12 @@ namespace Net.Laceous.Utilities
             }
 
             int c = 0;
-            int i = 0;
-            for (; i < s.Length; c++, i++)
+            for (int i = 0; i < s.Length; i++)
             {
                 if (char.IsHighSurrogate(s[i]) && s.Length > i + 1 && char.IsSurrogatePair(s[i], s[i + 1]))
                 {
                     i++;
+                    c++;
                 }
             }
             return c;
