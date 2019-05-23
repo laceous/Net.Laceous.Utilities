@@ -116,7 +116,8 @@ namespace Net.Laceous.Utilities
                                     {
                                         if (unrecognizedEscapeIsVerbatim)
                                         {
-                                            sb.Append("\\" + s[i]);
+                                            sb.Append('\\');
+                                            sb.Append(s[i]);
                                         }
                                         else
                                         {
@@ -145,7 +146,8 @@ namespace Net.Laceous.Utilities
                                     {
                                         if (unrecognizedEscapeIsVerbatim)
                                         {
-                                            sb.Append("\\" + s[i]);
+                                            sb.Append('\\');
+                                            sb.Append(s[i]);
                                         }
                                         else
                                         {
@@ -177,14 +179,16 @@ namespace Net.Laceous.Utilities
                                         }
                                         else
                                         {
-                                            sb.Append("\\" + s[i]);
+                                            sb.Append('\\');
+                                            sb.Append(s[i]);
                                         }
                                     }
                                     else
                                     {
                                         if (unrecognizedEscapeIsVerbatim)
                                         {
-                                            sb.Append("\\" + s[i]);
+                                            sb.Append('\\');
+                                            sb.Append(s[i]);
                                         }
                                         else
                                         {
@@ -195,7 +199,8 @@ namespace Net.Laceous.Utilities
                                 default:
                                     if (unrecognizedEscapeIsVerbatim)
                                     {
-                                        sb.Append("\\" + s[i]);
+                                        sb.Append('\\');
+                                        sb.Append(s[i]);
                                     }
                                     else
                                     {
@@ -208,7 +213,8 @@ namespace Net.Laceous.Utilities
                         {
                             if (unrecognizedEscapeIsVerbatim)
                             {
-                                sb.Append("\\" + s[i]);
+                                sb.Append('\\');
+                                sb.Append(s[i]);
                             }
                             else
                             {
