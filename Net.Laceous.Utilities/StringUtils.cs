@@ -1,6 +1,5 @@
 ﻿using Net.Laceous.Utilities.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
@@ -32,7 +31,7 @@ namespace Net.Laceous.Utilities
             StringBuilder sb = new StringBuilder(s.Length);
             for (int i = 0; i < s.Length; i++)
             {
-                if (escapeSurrogatePairs && char.IsHighSurrogate(s[i]) && s.Length > i + 1 && char.IsSurrogatePair(s[i], s[i + 1]))
+                if (escapeSurrogatePairs && char.IsHighSurrogate(s[i]) && s.Length > i + 1 && char.IsLowSurrogate(s[i + 1]))
                 {
                     sb.Append(CharUtils.EscapeSurrogatePair(s[i], s[++i], escapeOptions.UseLowerCaseHex));
                 }
@@ -239,38 +238,7 @@ namespace Net.Laceous.Utilities
                 return false;
             }
 
-            for (int i = 0; i < s.Length; i++)
-            {
-                if (char.IsHighSurrogate(s[i]) && s.Length > i + 1 && char.IsSurrogatePair(s[i], s[i + 1]))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Counts the number of surrogate pairs in the string
-        /// </summary>
-        /// <param name="s">String to count</param>
-        /// <returns>Count</returns>
-        public static int CountSurrogatePairs(string s)
-        {
-            if (s == null)
-            {
-                throw new ArgumentNullException("s");
-            }
-
-            int c = 0;
-            for (int i = 0; i < s.Length; i++)
-            {
-                if (char.IsHighSurrogate(s[i]) && s.Length > i + 1 && char.IsSurrogatePair(s[i], s[i + 1]))
-                {
-                    i++;
-                    c++;
-                }
-            }
-            return c;
+            return IndexOfSurrogatePair(s) != -1;
         }
 
         /// <summary>
@@ -300,7 +268,7 @@ namespace Net.Laceous.Utilities
             int i = startIndex;
             for (; i < s.Length && c < count; c++, i++)
             {
-                if (char.IsHighSurrogate(s[i]) && s.Length > i + 1 && char.IsSurrogatePair(s[i], s[i + 1]))
+                if (char.IsHighSurrogate(s[i]) && s.Length > i + 1 && char.IsLowSurrogate(s[i + 1]))
                 {
                     return i;
                 }
@@ -335,7 +303,7 @@ namespace Net.Laceous.Utilities
             int i = startIndex;
             for (; i >= 0 && c < count; c++, i--)
             {
-                if (char.IsLowSurrogate(s[i]) && i - 1 >= 0 && char.IsSurrogatePair(s[i - 1], s[i]))
+                if (char.IsLowSurrogate(s[i]) && i - 1 >= 0 && char.IsHighSurrogate(s[i - 1]))
                 {
                     return --i;
                 }

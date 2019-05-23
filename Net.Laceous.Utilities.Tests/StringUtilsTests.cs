@@ -110,13 +110,6 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Fact]
-        public void CountSurrogatePairsTest()
-        {
-            string s = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
-            Assert.Equal(3, StringUtils.CountSurrogatePairs(s));
-        }
-
-        [Fact]
         public void IndexOfSurrogatePairTest()
         {
             string s = "abc😁def😃ghi😓jklm";

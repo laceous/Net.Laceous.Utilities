@@ -131,7 +131,7 @@ namespace Net.Laceous.Utilities
                     return unescaped[0];
                 }
             }
-            throw new ArgumentException("String did not contain exactly one escaped char.", "s");
+            throw new ArgumentException("String did not contain exactly one char (escaped or not).", "s");
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace Net.Laceous.Utilities
                     return;
                 }
             }
-            throw new ArgumentException("String did not contain exactly one escaped surrogate pair.", "s");
+            throw new ArgumentException("String did not contain exactly one surrogate pair (escaped or not).", "s");
         }
 
         /// <summary>
@@ -189,8 +189,8 @@ namespace Net.Laceous.Utilities
         /// <summary>
         /// Passthrough for char.IsSurrogatePair
         /// </summary>
-        /// <param name="highSurrogate"></param>
-        /// <param name="lowSurrogate"></param>
+        /// <param name="highSurrogate">High surrogate</param>
+        /// <param name="lowSurrogate">Low surrogate</param>
         /// <returns>True if surrogate pair, otherwise false</returns>
         public static bool IsSurrogatePair(char highSurrogate, char lowSurrogate)
         {
