@@ -19,10 +19,10 @@ namespace Net.Laceous.Utilities
             {
                 escapeOptions = new CharEscapeOptions();
             }
-            
+
             string xu = escapeOptions.UseLowerCaseX ? "x" : "u";
             string hex = escapeOptions.UseLowerCaseHex ? "x4" : "X4";
-            
+
             switch (c)
             {
                 case '\'':
@@ -208,7 +208,7 @@ namespace Net.Laceous.Utilities
             {
                 return false;
             }
-            
+
             return s.Length == 2 && IsSurrogatePair(s[0], s[1]);
         }
     }

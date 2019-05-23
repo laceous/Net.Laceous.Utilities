@@ -263,7 +263,7 @@ namespace Net.Laceous.Utilities
             {
                 count = s.Length;
             }
-            
+
             int c = 0;
             int i = startIndex;
             for (; i < s.Length && c < count; c++, i++)
@@ -290,7 +290,7 @@ namespace Net.Laceous.Utilities
             {
                 throw new ArgumentNullException("s");
             }
-            
+
             if (startIndex < 0)
             {
                 startIndex = s.Length - 1;
@@ -299,7 +299,7 @@ namespace Net.Laceous.Utilities
             {
                 count = s.Length;
             }
-            
+
             int c = 0;
             int i = startIndex;
             for (; i >= 0 && c < count; c++, i--)
