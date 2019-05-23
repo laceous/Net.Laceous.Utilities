@@ -18,11 +18,11 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Fact]
-        public void EscapeTest_EscapeType_EscapeAllCharsExceptAscii()
+        public void EscapeTest_EscapeType_EscapeNonAscii()
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
-                EscapeType = CharEscapeType.EscapeAllCharsExceptAscii
+                EscapeType = CharEscapeType.EscapeNonAscii
             };
 
             string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
@@ -31,11 +31,11 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Fact]
-        public void EscapeTest_EscapeType_EscapeAllChars()
+        public void EscapeTest_EscapeType_EscapeEverything()
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
-                EscapeType = CharEscapeType.EscapeAllChars
+                EscapeType = CharEscapeType.EscapeEverything
             };
 
             string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";

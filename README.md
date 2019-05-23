@@ -7,7 +7,7 @@ Char and string escaping:
 ```c#
 CharEscapeOptions options = new CharEscapeOptions()
 {
-    EscapeType = CharEscapeType.EscapeAllCharsExceptAscii,
+    EscapeType = CharEscapeType.EscapeNonAscii,
     AlwaysUseUnicodeEscape = false,
     UseLowerCaseHex = false,
     UseLowerCaseX = false

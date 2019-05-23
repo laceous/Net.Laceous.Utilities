@@ -50,9 +50,9 @@ namespace Net.Laceous.Utilities
                 default:
                     switch (escapeOptions.EscapeType)
                     {
-                        case CharEscapeType.EscapeAllChars:
+                        case CharEscapeType.EscapeEverything:
                             return "\\" + xu + ((int)c).ToString(hex);
-                        case CharEscapeType.EscapeAllCharsExceptAscii:
+                        case CharEscapeType.EscapeNonAscii:
                             if (c >= 32 && c <= 126) // ascii print chars + space
                             {
                                 return c.ToString();

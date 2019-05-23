@@ -13,11 +13,11 @@
         /// <summary>
         /// Escape all chars
         /// </summary>
-        EscapeAllChars,
+        EscapeEverything,
 
         /// <summary>
         /// Escape all chars except for ascii print chars and space
         /// </summary>
-        EscapeAllCharsExceptAscii
+        EscapeNonAscii
     }
 }
