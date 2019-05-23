@@ -268,6 +268,7 @@ namespace Net.Laceous.Utilities
             int i = startIndex;
             for (; i < s.Length && c < count; c++, i++)
             {
+                // if we get into half of the character then we'll check the other half even if we're past the count
                 if (char.IsHighSurrogate(s[i]) && s.Length > i + 1 && char.IsLowSurrogate(s[i + 1]))
                 {
                     return i;
@@ -298,11 +299,12 @@ namespace Net.Laceous.Utilities
             {
                 count = s.Length;
             }
-
+            
             int c = 0;
             int i = startIndex;
             for (; i >= 0 && c < count; c++, i--)
             {
+                // if we get into half of the character then we'll check the other half even if we're past the count
                 if (char.IsLowSurrogate(s[i]) && i - 1 >= 0 && char.IsHighSurrogate(s[i - 1]))
                 {
                     return --i;
