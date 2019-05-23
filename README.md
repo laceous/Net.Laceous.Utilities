@@ -60,7 +60,7 @@ Console.WriteLine(CharUtils.IsSurrogatePair(emoji)); // True
 
 string s = "abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓";
 Console.WriteLine(StringUtils.HasSurrogatePair(s)); // True
-Console.WriteLine("Visible chars: " + (s.Length - StringUtils.CountSurrogatePairs(s))); // Visible chars: 23
+Console.WriteLine("Complete chars: " + (s.Length - StringUtils.CountSurrogatePairs(s))); // Complete chars: 23
 Console.WriteLine(StringUtils.IndexOfSurrogatePair(s)); // 20
 Console.WriteLine(StringUtils.LastIndexOfSurrogatePair(s)); // 24
 ```
