@@ -22,7 +22,7 @@ Console.WriteLine(cUnescaped);             // Ä
 string eOriginal = "😁"; // 2 char emoji
 string eEscaped1 = CharUtils.Escape(eOriginal[0], escapeOptions: options) + CharUtils.Escape(eOriginal[1], escapeOptions: options);
 string eEscaped2 = CharUtils.EscapeSurrogatePair(eOriginal, useLowerCaseHex: options.UseLowerCaseHex);
-string eUnescaped1 = CharUtils.UnescapeSurrogatePair(eEscaped1);
+string eUnescaped1 = CharUtils.UnescapeSurrogatePair(eEscaped1); // CharUtils.Unescape(eEscaped1.substring(0, 6)) + CharUtils.Unescape(eEscaped1.substring(6))
 string eUnescaped2 = CharUtils.UnescapeSurrogatePair(eEscaped2);
 Console.WriteLine("\"" + eEscaped1 + "\""); // "\uD83D\uDE01"
 Console.WriteLine("\"" + eEscaped2 + "\""); // "\U0001F601"
