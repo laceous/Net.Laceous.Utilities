@@ -10,8 +10,7 @@ CharEscapeOptions options = new CharEscapeOptions()
     EscapeType = CharEscapeType.EscapeNonAscii,
     EscapeLetter = CharEscapeLetter.LowerCaseU,
     AlwaysUseUnicodeEscape = false,
-    UseLowerCaseHex = false,
-    UseLowerCaseX = false
+    UseLowerCaseHex = false
 };
 
 char cOriginal = 'Ä';
