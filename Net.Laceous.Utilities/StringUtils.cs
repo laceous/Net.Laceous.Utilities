@@ -68,6 +68,8 @@ namespace Net.Laceous.Utilities
         /// <param name="s">String to unescape</param>
         /// <param name="unrecognizedEscapeIsVerbatim">Treat unrecognized escape sequences as verbatim, otherwise throw an exception</param>
         /// <returns>String that's been unescaped</returns>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static string Unescape(string s, bool unrecognizedEscapeIsVerbatim = false)
         {
             if (s == null)
@@ -140,7 +142,7 @@ namespace Net.Laceous.Utilities
                                         }
                                         else
                                         {
-                                            throw new ArgumentException("Unrecognized escape sequence.", "s");
+                                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
                                         }
                                     }
                                     break;
@@ -170,7 +172,7 @@ namespace Net.Laceous.Utilities
                                         }
                                         else
                                         {
-                                            throw new ArgumentException("Unrecognized escape sequence.", "s");
+                                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
                                         }
                                     }
                                     break;
@@ -211,7 +213,7 @@ namespace Net.Laceous.Utilities
                                         }
                                         else
                                         {
-                                            throw new ArgumentException("Unrecognized escape sequence.", "s");
+                                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
                                         }
                                     }
                                     break;
@@ -223,7 +225,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        throw new ArgumentException("Unrecognized escape sequence.", "s");
+                                        throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
                                     }
                                     break;
                             }
@@ -237,7 +239,7 @@ namespace Net.Laceous.Utilities
                             }
                             else
                             {
-                                throw new ArgumentException("Unrecognized escape sequence.", "s");
+                                throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
                             }
                             break;
                         }
@@ -256,11 +258,12 @@ namespace Net.Laceous.Utilities
         /// </summary>
         /// <param name="s">String to check</param>
         /// <returns>True if at least one surrogate pair, otherwise false</returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static bool HasSurrogatePair(string s)
         {
             if (s == null)
             {
-                return false;
+                throw new ArgumentNullException(nameof(s));
             }
 
             return IndexOfSurrogatePair(s) != -1;
@@ -273,11 +276,12 @@ namespace Net.Laceous.Utilities
         /// <param name="startIndex">Where to start search from</param>
         /// <param name="count">Num of chars to look at</param>
         /// <returns>Index or -1 if not found</returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static int IndexOfSurrogatePair(string s, int startIndex = -1, int count = -1)
         {
             if (s == null)
             {
-                throw new ArgumentNullException("s");
+                throw new ArgumentNullException(nameof(s));
             }
 
             if (startIndex < 0)
@@ -309,11 +313,12 @@ namespace Net.Laceous.Utilities
         /// <param name="startIndex">Where to start search from</param>
         /// <param name="count">Num of chars to look at</param>
         /// <returns>Index or -1 if not found</returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static int LastIndexOfSurrogatePair(string s, int startIndex = -1, int count = -1)
         {
             if (s == null)
             {
-                throw new ArgumentNullException("s");
+                throw new ArgumentNullException(nameof(s));
             }
 
             if (startIndex < 0)

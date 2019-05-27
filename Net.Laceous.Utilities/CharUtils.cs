@@ -100,6 +100,7 @@ namespace Net.Laceous.Utilities
         /// <param name="lowSurrogate">Low surrogate</param>
         /// <param name="useLowerCaseHex">Use lower case hex instead of upper case hex</param>
         /// <returns>String with escape sequence for surrogate pair</returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static string EscapeSurrogatePair(char highSurrogate, char lowSurrogate, bool useLowerCaseHex = false)
         {
             string hex = useLowerCaseHex ? "x8" : "X8";
@@ -112,6 +113,8 @@ namespace Net.Laceous.Utilities
         /// <param name="s">String containing the surrogate pair</param>
         /// <param name="useLowerCaseHex">Use lower case hex instead of upper case hex</param>
         /// <returns>String with escape sequence for surrogate pair</returns>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static string EscapeSurrogatePair(string s, bool useLowerCaseHex = false)
         {
             if (s == null)
@@ -123,7 +126,7 @@ namespace Net.Laceous.Utilities
             {
                 return EscapeSurrogatePair(s[0], s[1], useLowerCaseHex);
             }
-            throw new ArgumentException("String did not contain exactly one surrogate pair.", "s");
+            throw new ArgumentException("String did not contain exactly one surrogate pair.", nameof(s));
         }
 
         /// <summary>
@@ -131,11 +134,13 @@ namespace Net.Laceous.Utilities
         /// </summary>
         /// <param name="s">String containing the escaped char</param>
         /// <returns>Char that's been unescaped</returns>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
         public static char Unescape(string s)
         {
             if (s == null)
             {
-                throw new ArgumentNullException("s");
+                throw new ArgumentNullException(nameof(s));
             }
 
             if (s.Length == 1)
@@ -150,7 +155,7 @@ namespace Net.Laceous.Utilities
                     return unescaped[0];
                 }
             }
-            throw new ArgumentException("String did not contain exactly one char (escaped or not).", "s");
+            throw new ArgumentException("String did not contain exactly one char (escaped or not).", nameof(s));
         }
 
         /// <summary>
@@ -159,11 +164,13 @@ namespace Net.Laceous.Utilities
         /// <param name="s">String containing the escaped surrogate pair</param>
         /// <param name="highSurrogate">Return high surrogate</param>
         /// <param name="lowSurrogate">Return low surrogate</param>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
         public static void UnescapeSurrogatePair(string s, out char highSurrogate, out char lowSurrogate)
         {
             if (s == null)
             {
-                throw new ArgumentNullException("s");
+                throw new ArgumentNullException(nameof(s));
             }
 
             // longest escaped string: \unnnn\unnnn
@@ -186,7 +193,7 @@ namespace Net.Laceous.Utilities
                     return;
                 }
             }
-            throw new ArgumentException("String did not contain exactly one surrogate pair (escaped or not).", "s");
+            throw new ArgumentException("String did not contain exactly one surrogate pair (escaped or not).", nameof(s));
         }
 
         /// <summary>
@@ -194,6 +201,7 @@ namespace Net.Laceous.Utilities
         /// </summary>
         /// <param name="s">String containing the escaped surrogate pair</param>
         /// <returns>String containing the high surrogate + low surrogate</returns>
+        /// <exception cref="ArgumentException"></exception>
         public static string UnescapeSurrogatePair(string s)
         {
             if (s == null)
@@ -221,11 +229,12 @@ namespace Net.Laceous.Utilities
         /// </summary>
         /// <param name="s">String to check</param>
         /// <returns>True if surrogate pair, otherwise false</returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static bool IsSurrogatePair(string s)
         {
             if (s == null)
             {
-                return false;
+                throw new ArgumentNullException(nameof(s));
             }
 
             return s.Length == 2 && IsSurrogatePair(s[0], s[1]);
