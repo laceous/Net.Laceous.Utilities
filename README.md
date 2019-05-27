@@ -30,7 +30,7 @@ Console.WriteLine(eUnescaped1);             // 😁
 Console.WriteLine(eUnescaped2);             // 😁
 
 string sOriginal = "abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓";
-string sEscaped = StringUtils.Escape(sOriginal, escapeSurrogatePairs: true, escapeOptions: options);
+string sEscaped = StringUtils.Escape(sOriginal, escapeOptions: options, escapeSurrogatePairs: true);
 string sUnescaped = StringUtils.Unescape(sEscaped, unrecognizedEscapeIsVerbatim: false);
 Console.WriteLine("\"" + sEscaped + "\""); // "abc ABC 123 \u00C4\u00D6\u00DC \u3131\u3134\u3137 \U0001F601\U0001F603\U0001F613"
 Console.WriteLine(sUnescaped);             // abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓

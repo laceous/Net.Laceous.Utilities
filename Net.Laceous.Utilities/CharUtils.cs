@@ -20,8 +20,27 @@ namespace Net.Laceous.Utilities
                 escapeOptions = new CharEscapeOptions();
             }
 
-            string xu = escapeOptions.UseLowerCaseX ? "x" : "u";
-            string hex = escapeOptions.UseLowerCaseHex ? "x4" : "X4";
+            string xu;
+            string hex;
+            switch (escapeOptions.EscapeLetter)
+            {
+                case CharEscapeLetter.LowerCaseXFixedLength:
+                    xu = "x";
+                    hex = escapeOptions.UseLowerCaseHex ? "x4" : "X4";
+                    break;
+                case CharEscapeLetter.LowerCaseXVariableLength:
+                    xu = "x";
+                    hex = escapeOptions.UseLowerCaseHex ? "x" : "X";
+                    break;
+                case CharEscapeLetter.UpperCaseU:
+                    xu = "U";
+                    hex = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
+                    break;
+                default: // CharEscapeLetter.LowerCaseU
+                    xu = "u";
+                    hex = escapeOptions.UseLowerCaseHex ? "x4" : "X4";
+                    break;
+            }
 
             switch (c)
             {
@@ -61,7 +80,7 @@ namespace Net.Laceous.Utilities
                             {
                                 return "\\" + xu + ((int)c).ToString(hex);
                             }
-                        default:
+                        default: // CharEscapeType.Default
                             if (c == ' ' || (!char.IsControl(c) && !char.IsWhiteSpace(c)))
                             {
                                 return c.ToString();

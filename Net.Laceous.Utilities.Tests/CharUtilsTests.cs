@@ -95,6 +95,58 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Fact]
+        public void EscapeTest_EscapeLetter_LowerCaseU()
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLetter = CharEscapeLetter.LowerCaseU
+            };
+
+            char original = '\u00A0'; // non-breaking space
+            string escaped = CharUtils.Escape(original, options);
+            Assert.Equal("\\u00A0", escaped);
+        }
+
+        [Fact]
+        public void EscapeTest_EscapeLetter_UpperCaseU()
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLetter = CharEscapeLetter.UpperCaseU
+            };
+
+            char original = '\u00A0'; // non-breaking space
+            string escaped = CharUtils.Escape(original, options);
+            Assert.Equal("\\U000000A0", escaped);
+        }
+
+        [Fact]
+        public void EscapeTest_EscapeLetter_LowerCaseXFixedLength()
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLetter = CharEscapeLetter.LowerCaseXFixedLength
+            };
+
+            char original = '\u00A0'; // non-breaking space
+            string escaped = CharUtils.Escape(original, options);
+            Assert.Equal("\\x00A0", escaped);
+        }
+
+        [Fact]
+        public void EscapeTest_EscapeLetter_LowerCaseXVariableLength()
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLetter = CharEscapeLetter.LowerCaseXVariableLength
+            };
+
+            char original = '\u00A0'; // non-breaking space
+            string escaped = CharUtils.Escape(original, options);
+            Assert.Equal("\\xA0", escaped);
+        }
+
+        [Fact]
         public void EscapeTest_AlwaysUseUnicodeEscape()
         {
             CharEscapeOptions options = new CharEscapeOptions()
@@ -150,19 +202,6 @@ namespace Net.Laceous.Utilities.Tests
             char original = '\u00A0'; // non-breaking space
             string escaped = CharUtils.Escape(original, options);
             Assert.Equal("\\u00a0", escaped);
-        }
-
-        [Fact]
-        public void EscapeTest_UseLowerCaseX()
-        {
-            CharEscapeOptions options = new CharEscapeOptions()
-            {
-                UseLowerCaseX = true
-            };
-
-            char original = '\u00A0'; // non-breaking space
-            string escaped = CharUtils.Escape(original, options);
-            Assert.Equal("\\x00A0", escaped);
         }
 
         [Fact]

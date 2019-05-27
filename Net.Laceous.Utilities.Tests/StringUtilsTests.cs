@@ -44,6 +44,62 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Fact]
+        public void EscapeTest_EscapeLetter_LowerCaseU()
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLetter = CharEscapeLetter.LowerCaseU,
+                AlwaysUseUnicodeEscape = true
+            };
+
+            string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\tA";
+            string escaped = StringUtils.Escape(original, escapeOptions: options);
+            Assert.Equal("ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \\u000D\\u000A\\u0009A", escaped);
+        }
+
+        [Fact]
+        public void EscapeTest_EscapeLetter_UpperCaseU()
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLetter = CharEscapeLetter.UpperCaseU,
+                AlwaysUseUnicodeEscape = true
+            };
+
+            string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\tA";
+            string escaped = StringUtils.Escape(original, escapeOptions: options);
+            Assert.Equal("ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \\U0000000D\\U0000000A\\U00000009A", escaped);
+        }
+
+        [Fact]
+        public void EscapeTest_EscapeLetter_LowerCaseXFixedLength()
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLetter = CharEscapeLetter.LowerCaseXFixedLength,
+                AlwaysUseUnicodeEscape = true
+            };
+
+            string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\tA";
+            string escaped = StringUtils.Escape(original, escapeOptions: options);
+            Assert.Equal("ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \\x000D\\x000A\\x0009A", escaped);
+        }
+
+        [Fact]
+        public void EscapeTest_EscapeLetter_LowerCaseXVariableLength()
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLetter = CharEscapeLetter.LowerCaseXVariableLength,
+                AlwaysUseUnicodeEscape = true
+            };
+
+            string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\tA";
+            string escaped = StringUtils.Escape(original, escapeOptions: options);
+            Assert.Equal("ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \\xD\\xA\\x0009A", escaped);
+        }
+
+        [Fact]
         public void EscapeTest_AlwaysUseUnicodeEscape()
         {
             CharEscapeOptions options = new CharEscapeOptions()
@@ -71,17 +127,11 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Fact]
-        public void EscapeTest_UseLowerCaseX()
+        public void EscapeTest_EscapeSurrogatePairs()
         {
-            CharEscapeOptions options = new CharEscapeOptions()
-            {
-                AlwaysUseUnicodeEscape = true,
-                UseLowerCaseX = true
-            };
-
             string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
-            string escaped = StringUtils.Escape(original, escapeOptions: options);
-            Assert.Equal("ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \\x000D\\x000A\\x0009", escaped);
+            string escaped = StringUtils.Escape(original, escapeSurrogatePairs: true);
+            Assert.Equal("ABC ÄÖÜ ㄱㄴㄷ \\U0001F601\\U0001F603\\U0001F613 \\r\\n\\t", escaped);
         }
 
         [Fact]
