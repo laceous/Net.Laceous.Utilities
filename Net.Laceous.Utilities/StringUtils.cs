@@ -234,7 +234,6 @@ namespace Net.Laceous.Utilities
                         {
                             if (unrecognizedEscapeIsVerbatim)
                             {
-                                sb.Append('\\');
                                 sb.Append(s[i]);
                             }
                             else
