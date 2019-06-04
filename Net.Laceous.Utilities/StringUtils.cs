@@ -179,29 +179,38 @@ namespace Net.Laceous.Utilities
                                 case 'U':
                                     if (s.Length > i + 8 && s[i + 1].IsHex() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex() && s[i + 5].IsHex() && s[i + 6].IsHex() && s[i + 7].IsHex() && s[i + 8].IsHex())
                                     {
-                                        // System.ArgumentOutOfRangeException: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
-                                        string temp;
-                                        try
+                                        if (s[i + 1].IsZero() && s[i + 2].IsZero() && s[i + 3].IsZero() && s[i + 4].IsZero())
                                         {
-                                            temp = char.ConvertFromUtf32(int.Parse(new string(new char[] { s[i + 1], s[i + 2], s[i + 3], s[i + 4], s[i + 5], s[i + 6], s[i + 7], s[i + 8] }), NumberStyles.HexNumber));
-                                        }
-                                        catch (ArgumentOutOfRangeException)
-                                        {
-                                            if (!unrecognizedEscapeIsVerbatim)
-                                            {
-                                                throw;
-                                            }
-                                            temp = null;
-                                        }
-                                        if (temp != null)
-                                        {
-                                            i += 8;
-                                            sb.Append(temp);
+                                            // this lets us parse the surrogate codepoint values (0x00d800 ~ 0x00dfff) which we're already supporting for \u and \x
+                                            i += 4;
+                                            sb.Append((char)int.Parse(new string(new char[] { s[++i], s[++i], s[++i], s[++i] }), NumberStyles.HexNumber));
                                         }
                                         else
                                         {
-                                            sb.Append('\\');
-                                            sb.Append(s[i]);
+                                            string temp;
+                                            try
+                                            {
+                                                // System.ArgumentOutOfRangeException: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+                                                temp = char.ConvertFromUtf32(int.Parse(new string(new char[] { s[i + 1], s[i + 2], s[i + 3], s[i + 4], s[i + 5], s[i + 6], s[i + 7], s[i + 8] }), NumberStyles.HexNumber));
+                                            }
+                                            catch (ArgumentOutOfRangeException)
+                                            {
+                                                if (!unrecognizedEscapeIsVerbatim)
+                                                {
+                                                    throw;
+                                                }
+                                                temp = null;
+                                            }
+                                            if (temp != null)
+                                            {
+                                                i += 8;
+                                                sb.Append(temp);
+                                            }
+                                            else
+                                            {
+                                                sb.Append('\\');
+                                                sb.Append(s[i]);
+                                            }
                                         }
                                     }
                                     else

@@ -14,5 +14,15 @@
         {
             return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') || (c >= 'a' && c <= 'f');
         }
+
+        /// <summary>
+        /// Checks if the char is zero
+        /// </summary>
+        /// <param name="c">Char to check</param>
+        /// <returns>True if zero, false if not zero</returns>
+        internal static bool IsZero(this char c)
+        {
+            return c == '0';
+        }
     }
 }
