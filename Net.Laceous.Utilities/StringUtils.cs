@@ -38,7 +38,7 @@ namespace Net.Laceous.Utilities
             StringBuilder sb = new StringBuilder(s.Length);
             for (int i = 0; i < s.Length; i++)
             {
-                if (escapeSurrogatePairs && char.IsHighSurrogate(s[i]) && s.Length > i + 1 && char.IsLowSurrogate(s[i + 1]))
+                if (escapeSurrogatePairs && char.IsHighSurrogate(s[i]) && i + 1 < s.Length && char.IsLowSurrogate(s[i + 1]))
                 {
                     sb.Append(CharUtils.EscapeSurrogatePair(s[i], s[++i], escapeOptions.UseLowerCaseHex));
                 }
@@ -129,7 +129,7 @@ namespace Net.Laceous.Utilities
                                     sb.Append('\v');
                                     break;
                                 case 'u':
-                                    if (s.Length > i + 4 && s[i + 1].IsHex() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex())
+                                    if (i + 4 < s.Length && s[i + 1].IsHex() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex())
                                     {
                                         sb.Append((char)int.Parse(new string(new char[] { s[++i], s[++i], s[++i], s[++i] }), NumberStyles.HexNumber));
                                     }
@@ -147,19 +147,19 @@ namespace Net.Laceous.Utilities
                                     }
                                     break;
                                 case 'x':
-                                    if (s.Length > i + 4 && s[i + 1].IsHex() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex())
+                                    if (i + 4 < s.Length && s[i + 1].IsHex() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex())
                                     {
                                         sb.Append((char)int.Parse(new string(new char[] { s[++i], s[++i], s[++i], s[++i] }), NumberStyles.HexNumber));
                                     }
-                                    else if (s.Length > i + 3 && s[i + 1].IsHex() && s[i + 2].IsHex() && s[i + 3].IsHex())
+                                    else if (i + 3 < s.Length && s[i + 1].IsHex() && s[i + 2].IsHex() && s[i + 3].IsHex())
                                     {
                                         sb.Append((char)int.Parse(new string(new char[] { s[++i], s[++i], s[++i] }), NumberStyles.HexNumber));
                                     }
-                                    else if (s.Length > i + 2 && s[i + 1].IsHex() && s[i + 2].IsHex())
+                                    else if (i + 2 < s.Length && s[i + 1].IsHex() && s[i + 2].IsHex())
                                     {
                                         sb.Append((char)int.Parse(new string(new char[] { s[++i], s[++i] }), NumberStyles.HexNumber));
                                     }
-                                    else if (s.Length > i + 1 && s[i + 1].IsHex())
+                                    else if (i + 1 < s.Length && s[i + 1].IsHex())
                                     {
                                         sb.Append((char)int.Parse(new string(new char[] { s[++i] }), NumberStyles.HexNumber));
                                     }
@@ -177,7 +177,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     break;
                                 case 'U':
-                                    if (s.Length > i + 8 && s[i + 1].IsHex() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex() && s[i + 5].IsHex() && s[i + 6].IsHex() && s[i + 7].IsHex() && s[i + 8].IsHex())
+                                    if (i + 8 < s.Length && s[i + 1].IsHex() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex() && s[i + 5].IsHex() && s[i + 6].IsHex() && s[i + 7].IsHex() && s[i + 8].IsHex())
                                     {
                                         if (s[i + 1].IsZero() && s[i + 2].IsZero() && s[i + 3].IsZero() && s[i + 4].IsZero())
                                         {
@@ -285,28 +285,38 @@ namespace Net.Laceous.Utilities
         /// <param name="count">Num of chars to look at</param>
         /// <returns>Index or -1 if not found</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="IndexOutOfRangeException"></exception>
-        public static int IndexOfSurrogatePair(string s, int startIndex = -1, int count = -1)
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public static int IndexOfSurrogatePair(string s, int? startIndex = null, int? count = null)
         {
             if (s == null)
             {
                 throw new ArgumentNullException(nameof(s));
             }
 
-            if (startIndex < 0)
+            if (startIndex == null)
             {
                 startIndex = 0;
             }
-            if (count < 0)
+            if (count == null)
             {
-                count = s.Length;
+                count = s.Length - startIndex;
+            }
+
+            // > (rather than >=) allows for empty strings
+            if (startIndex < 0 || startIndex > s.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(startIndex), "Start index must be positive and less than the length of the string.");
+            }
+            if (count < 0 || startIndex + count > s.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count), "Count must be positive and must refer to a location within the string.");
             }
 
             int c = 0;
-            int i = startIndex;
-            for (; i < s.Length && c < count; c++, i++)
+            int i = startIndex.Value;
+            for (; c < count && i < s.Length; c++, i++)
             {
-                if (char.IsHighSurrogate(s[i]) && s.Length > i + 1 && count > c + 1 && char.IsLowSurrogate(s[i + 1]))
+                if (c + 1 < count && char.IsHighSurrogate(s[i]) && i + 1 < s.Length && char.IsLowSurrogate(s[i + 1]))
                 {
                     return i;
                 }
@@ -322,28 +332,37 @@ namespace Net.Laceous.Utilities
         /// <param name="count">Num of chars to look at</param>
         /// <returns>Index or -1 if not found</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="IndexOutOfRangeException"></exception>
-        public static int LastIndexOfSurrogatePair(string s, int startIndex = -1, int count = -1)
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public static int LastIndexOfSurrogatePair(string s, int? startIndex = null, int? count = null)
         {
             if (s == null)
             {
                 throw new ArgumentNullException(nameof(s));
             }
 
-            if (startIndex < 0)
+            if (startIndex == null)
             {
-                startIndex = s.Length - 1;
+                startIndex = s.Length == 0 ? 0 : s.Length - 1;
             }
-            if (count < 0)
+            if (count == null)
             {
-                count = s.Length;
+                count = s.Length == 0 ? 0 : startIndex + 1;
+            }
+
+            if (startIndex < 0 || startIndex > s.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(startIndex), "Start index must be positive and less than the length of the string.");
+            }
+            if (count < 0 || (s.Length == 0 && count > 0) || startIndex - count < -1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count), "Count must be positive and must refer to a location within the string.");
             }
 
             int c = 0;
-            int i = startIndex;
-            for (; i >= 0 && c < count; c++, i--)
+            int i = startIndex.Value;
+            for (; c < count && i >= 0; c++, i--)
             {
-                if (char.IsLowSurrogate(s[i]) && i - 1 >= 0 && count > c + 1 && char.IsHighSurrogate(s[i - 1]))
+                if (c + 1 < count && char.IsLowSurrogate(s[i]) && i - 1 >= 0 && char.IsHighSurrogate(s[i - 1]))
                 {
                     return --i;
                 }
