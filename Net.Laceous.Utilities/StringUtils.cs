@@ -91,7 +91,7 @@ namespace Net.Laceous.Utilities
                 {
                     if (s[i] == '\\')
                     {
-                        if (s.Length > i + 1)
+                        if (i + 1 < s.Length)
                         {
                             switch (s[++i])
                             {
