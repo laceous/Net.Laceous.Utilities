@@ -34,8 +34,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
-                EscapeLetter = CharEscapeLetter.LowerCaseU,
-                AlwaysUseUnicodeEscape = true
+                EscapeLetter = CharEscapeLetter.LowerCaseU
             };
 
             string original = "\r\n\t";
@@ -48,8 +47,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
-                EscapeLetter = CharEscapeLetter.UpperCaseU,
-                AlwaysUseUnicodeEscape = true
+                EscapeLetter = CharEscapeLetter.UpperCaseU
             };
 
             string original = "\r\n\t";
@@ -62,8 +60,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
-                EscapeLetter = CharEscapeLetter.LowerCaseXFixedLength,
-                AlwaysUseUnicodeEscape = true
+                EscapeLetter = CharEscapeLetter.LowerCaseXFixedLength
             };
 
             string original = "\r\n\t";
@@ -87,7 +84,7 @@ namespace Net.Laceous.Utilities.Tests
             string original = "\r\n\tA";
             string escaped = StringUtils.Escape(original, stringEscapeOptions: stringOptions, charEscapeOptions: charOptions);
             Assert.Equal("\\xD\\xA\\x0009A", escaped);
-            Assert.NotEqual("\\xD\\xA\\x9A", escaped); // this is not equal because \x9A is not the same as \x9 + A
+            Assert.NotEqual("\\xD\\xA\\x9A", escaped); // this is not equal because \x9A is not the same as '\x9' + 'A'
         }
 
         [Fact]
@@ -95,7 +92,6 @@ namespace Net.Laceous.Utilities.Tests
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
-                AlwaysUseUnicodeEscape = true,
                 UseLowerCaseHex = true
             };
 
@@ -130,7 +126,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             string escaped = "ABC \\u00C4\\u00D6\\u00DC \\u3131\\u3134\\u3137 \\uD83D\\uDE01\\uD83D\\uDE03\\uD83D\\uDE13 \\r\\n\\t \\x41 \\u41";
             string unescaped = StringUtils.Unescape(escaped, unrecognizedEscapeIsVerbatim: true);
-            Assert.Equal("ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t A \\u41", unescaped);
+            Assert.Equal("ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t A \\u41", unescaped); // \\u41 is not a valid sequence but we're treating it as verbatim
         }
 
         [Fact]

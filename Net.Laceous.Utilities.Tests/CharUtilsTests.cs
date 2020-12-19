@@ -7,6 +7,8 @@ namespace Net.Laceous.Utilities.Tests
         [Fact]
         public void EscapeTest_Defaults()
         {
+            CharEscapeOptions options = new CharEscapeOptions();
+
             char original1 = 'A';
             char original2 = '\t';
             char original3 = 'Ä';
@@ -14,12 +16,12 @@ namespace Net.Laceous.Utilities.Tests
             char original5 = ' ';
             char original6 = '\u00A0'; // non-breaking space
 
-            string escaped1 = CharUtils.Escape(original1);
-            string escaped2 = CharUtils.Escape(original2);
-            string escaped3 = CharUtils.Escape(original3);
-            string escaped4 = CharUtils.Escape(original4);
-            string escaped5 = CharUtils.Escape(original5);
-            string escaped6 = CharUtils.Escape(original6);
+            string escaped1 = CharUtils.Escape(original1, options);
+            string escaped2 = CharUtils.Escape(original2, options);
+            string escaped3 = CharUtils.Escape(original3, options);
+            string escaped4 = CharUtils.Escape(original4, options);
+            string escaped5 = CharUtils.Escape(original5, options);
+            string escaped6 = CharUtils.Escape(original6, options);
 
             Assert.Equal("\\u0041", escaped1);
             Assert.Equal("\\u0009", escaped2);
@@ -82,7 +84,7 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Fact]
-        public void EscapeTest_AlwaysUseUnicodeEscape()
+        public void EscapeTest_AlwaysUseUnicodeEscape_True()
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
@@ -124,6 +126,51 @@ namespace Net.Laceous.Utilities.Tests
             Assert.Equal("\\u000D", escaped9);
             Assert.Equal("\\u0009", escaped10);
             Assert.Equal("\\u000B", escaped11);
+        }
+
+        [Fact]
+        public void EscapeTest_AlwaysUseUnicodeEscape_False()
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                AlwaysUseUnicodeEscape = false
+            };
+
+            char original1 = '\'';
+            char original2 = '\"';
+            char original3 = '\\';
+            char original4 = '\0';
+            char original5 = '\a';
+            char original6 = '\b';
+            char original7 = '\f';
+            char original8 = '\n';
+            char original9 = '\r';
+            char original10 = '\t';
+            char original11 = '\v';
+
+            string escaped1 = CharUtils.Escape(original1, options);
+            string escaped2 = CharUtils.Escape(original2, options);
+            string escaped3 = CharUtils.Escape(original3, options);
+            string escaped4 = CharUtils.Escape(original4, options);
+            string escaped5 = CharUtils.Escape(original5, options);
+            string escaped6 = CharUtils.Escape(original6, options);
+            string escaped7 = CharUtils.Escape(original7, options);
+            string escaped8 = CharUtils.Escape(original8, options);
+            string escaped9 = CharUtils.Escape(original9, options);
+            string escaped10 = CharUtils.Escape(original10, options);
+            string escaped11 = CharUtils.Escape(original11, options);
+
+            Assert.Equal("\\'", escaped1);
+            Assert.Equal("\\\"", escaped2);
+            Assert.Equal("\\\\", escaped3);
+            Assert.Equal("\\0", escaped4);
+            Assert.Equal("\\a", escaped5);
+            Assert.Equal("\\b", escaped6);
+            Assert.Equal("\\f", escaped7);
+            Assert.Equal("\\n", escaped8);
+            Assert.Equal("\\r", escaped9);
+            Assert.Equal("\\t", escaped10);
+            Assert.Equal("\\v", escaped11);
         }
 
         [Fact]

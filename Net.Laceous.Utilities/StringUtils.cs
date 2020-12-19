@@ -69,7 +69,7 @@ namespace Net.Laceous.Utilities
                                 }
                             }
                             break;
-                        default: // StringEscapeChars.EscapeEverything
+                        default: // StringEscapeType.EscapeAll
                             sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
                             break;
                     }
