@@ -5,13 +5,8 @@ namespace Net.Laceous.Utilities.Tests
     public class CharUtilsTests
     {
         [Fact]
-        public void EscapeTest_EscapeType_Default()
+        public void EscapeTest_Defaults()
         {
-            CharEscapeOptions options = new CharEscapeOptions()
-            {
-                EscapeType = CharEscapeType.Default
-            };
-
             char original1 = 'A';
             char original2 = '\t';
             char original3 = 'Ä';
@@ -19,75 +14,15 @@ namespace Net.Laceous.Utilities.Tests
             char original5 = ' ';
             char original6 = '\u00A0'; // non-breaking space
 
-            string escaped1 = CharUtils.Escape(original1, options);
-            string escaped2 = CharUtils.Escape(original2, options);
-            string escaped3 = CharUtils.Escape(original3, options);
-            string escaped4 = CharUtils.Escape(original4, options);
-            string escaped5 = CharUtils.Escape(original5, options);
-            string escaped6 = CharUtils.Escape(original6, options);
-
-            Assert.Equal("A", escaped1);
-            Assert.Equal("\\t", escaped2);
-            Assert.Equal("Ä", escaped3);
-            Assert.Equal("ㄱ", escaped4);
-            Assert.Equal(" ", escaped5);
-            Assert.Equal("\\u00A0", escaped6);
-        }
-
-        [Fact]
-        public void EscapeTest_EscapeType_EscapeNonAscii()
-        {
-            CharEscapeOptions options = new CharEscapeOptions()
-            {
-                EscapeType = CharEscapeType.EscapeNonAscii
-            };
-
-            char original1 = 'A';
-            char original2 = '\t';
-            char original3 = 'Ä';
-            char original4 = 'ㄱ';
-            char original5 = ' ';
-            char original6 = '\u00A0'; // non-breaking space
-
-            string escaped1 = CharUtils.Escape(original1, options);
-            string escaped2 = CharUtils.Escape(original2, options);
-            string escaped3 = CharUtils.Escape(original3, options);
-            string escaped4 = CharUtils.Escape(original4, options);
-            string escaped5 = CharUtils.Escape(original5, options);
-            string escaped6 = CharUtils.Escape(original6, options);
-
-            Assert.Equal("A", escaped1);
-            Assert.Equal("\\t", escaped2);
-            Assert.Equal("\\u00C4", escaped3);
-            Assert.Equal("\\u3131", escaped4);
-            Assert.Equal(" ", escaped5);
-            Assert.Equal("\\u00A0", escaped6);
-        }
-
-        [Fact]
-        public void EscapeTest_EscapeType_EscapeEverything()
-        {
-            CharEscapeOptions options = new CharEscapeOptions()
-            {
-                EscapeType = CharEscapeType.EscapeEverything
-            };
-
-            char original1 = 'A';
-            char original2 = '\t';
-            char original3 = 'Ä';
-            char original4 = 'ㄱ';
-            char original5 = ' ';
-            char original6 = '\u00A0'; // non-breaking space
-
-            string escaped1 = CharUtils.Escape(original1, options);
-            string escaped2 = CharUtils.Escape(original2, options);
-            string escaped3 = CharUtils.Escape(original3, options);
-            string escaped4 = CharUtils.Escape(original4, options);
-            string escaped5 = CharUtils.Escape(original5, options);
-            string escaped6 = CharUtils.Escape(original6, options);
+            string escaped1 = CharUtils.Escape(original1);
+            string escaped2 = CharUtils.Escape(original2);
+            string escaped3 = CharUtils.Escape(original3);
+            string escaped4 = CharUtils.Escape(original4);
+            string escaped5 = CharUtils.Escape(original5);
+            string escaped6 = CharUtils.Escape(original6);
 
             Assert.Equal("\\u0041", escaped1);
-            Assert.Equal("\\t", escaped2);
+            Assert.Equal("\\u0009", escaped2);
             Assert.Equal("\\u00C4", escaped3);
             Assert.Equal("\\u3131", escaped4);
             Assert.Equal("\\u0020", escaped5);

@@ -14,49 +14,65 @@ namespace Net.Laceous.Utilities
         /// Escape string with backslash sequences (e.g. \r\n -> \\r\\n)
         /// </summary>
         /// <param name="s">String to escape</param>
-        /// <param name="escapeOptions">Escape options</param>
-        /// <param name="escapeSurrogatePairs">Escape surrogate pairs with \\Unnnnnnnn</param>
+        /// <param name="stringEscapeOptions"></param>
+        /// <param name="charEscapeOptions"></param>
         /// <returns>String with escape sequences for string</returns>
-        public static string Escape(string s, CharEscapeOptions escapeOptions = null, bool escapeSurrogatePairs = false)
+        public static string Escape(string s, StringEscapeOptions stringEscapeOptions = null, CharEscapeOptions charEscapeOptions = null)
         {
             if (s == null)
             {
                 return null;
             }
-            if (escapeOptions == null)
+            if (stringEscapeOptions == null)
             {
-                escapeOptions = new CharEscapeOptions();
+                stringEscapeOptions = new StringEscapeOptions();
+            }
+            if (charEscapeOptions == null)
+            {
+                charEscapeOptions = new CharEscapeOptions();
             }
 
-            CharEscapeOptions eoFixedLength = new CharEscapeOptions(
-                escapeType: escapeOptions.EscapeType,
+            CharEscapeOptions ceoFixedLength = new CharEscapeOptions(
                 escapeLetter: CharEscapeLetter.LowerCaseXFixedLength,
-                alwaysUseUnicodeEscape: escapeOptions.AlwaysUseUnicodeEscape,
-                useLowerCaseHex: escapeOptions.UseLowerCaseHex
+                alwaysUseUnicodeEscape: charEscapeOptions.AlwaysUseUnicodeEscape,
+                useLowerCaseHex: charEscapeOptions.UseLowerCaseHex
             );
 
             StringBuilder sb = new StringBuilder(s.Length);
             for (int i = 0; i < s.Length; i++)
             {
-                if (escapeSurrogatePairs && char.IsHighSurrogate(s[i]) && i + 1 < s.Length && char.IsLowSurrogate(s[i + 1]))
+                if (stringEscapeOptions.EscapeSurrogatePairs && char.IsHighSurrogate(s[i]) && i + 1 < s.Length && char.IsLowSurrogate(s[i + 1]))
                 {
-                    sb.Append(CharUtils.EscapeSurrogatePair(s[i], s[++i], escapeOptions.UseLowerCaseHex));
-                }
-                else if (escapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseXVariableLength)
-                {
-                    //if (s.Length > i + 1 && CharUtils.Escape(s[i + 1], escapeOptions)[0].IsHex())
-                    if (s.Length > i + 1 && escapeOptions.EscapeType != CharEscapeType.EscapeEverything && s[i + 1].IsHex())
-                    {
-                        sb.Append(CharUtils.Escape(s[i], eoFixedLength));
-                    }
-                    else
-                    {
-                        sb.Append(CharUtils.Escape(s[i], escapeOptions));
-                    }
+                    sb.Append(CharUtils.EscapeSurrogatePair(s[i], s[++i], charEscapeOptions.UseLowerCaseHex));
                 }
                 else
                 {
-                    sb.Append(CharUtils.Escape(s[i], escapeOptions));
+                    switch (stringEscapeOptions.EscapeType)
+                    {
+                        case StringEscapeType.EscapeNonAscii:
+                            if (s[i].IsAsciiPrintChar())
+                            {
+                                sb.Append(s[i]);
+                            }
+                            else
+                            {
+                                // pay special attention here because \x is variable length: n, nn, nnn, nnnn
+                                // if the next char is hex then we don't want to insert it in any of the 'n' spaces
+                                // instead we have to output the full fixed length \xnnnn so the next char doesn't become part of this \x sequence
+                                if (charEscapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseXVariableLength && i + 1 < s.Length && s[i + 1].IsHex())
+                                {
+                                    sb.Append(CharUtils.Escape(s[i], ceoFixedLength));
+                                }
+                                else
+                                {
+                                    sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
+                                }
+                            }
+                            break;
+                        default: // StringEscapeChars.EscapeEverything
+                            sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
+                            break;
+                    }
                 }
             }
             return sb.ToString();

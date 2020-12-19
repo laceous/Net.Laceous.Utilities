@@ -24,5 +24,15 @@
         {
             return c == '0';
         }
+
+        /// <summary>
+        /// Checks if the char is an ascii print char (including space)
+        /// </summary>
+        /// <param name="c">Char to check</param>
+        /// <returns>True if in the range of 32 to 126, otherwise false</returns>
+        internal static bool IsAsciiPrintChar(this char c)
+        {
+            return c >= 32 && c <= 126;
+        }
     }
 }

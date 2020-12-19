@@ -7,7 +7,6 @@ Char and string escaping:
 ```c#
 CharEscapeOptions options = new CharEscapeOptions()
 {
-    EscapeType = CharEscapeType.EscapeNonAscii,
     EscapeLetter = CharEscapeLetter.LowerCaseU,
     AlwaysUseUnicodeEscape = false,
     UseLowerCaseHex = false
@@ -29,8 +28,14 @@ Console.WriteLine("\"" + eEscaped2 + "\""); // "\U0001F601"
 Console.WriteLine(eUnescaped1);             // 😁
 Console.WriteLine(eUnescaped2);             // 😁
 
+StringEscapeOptions sOptions = new StringEscapeOptions()
+{
+    EscapeType = StringEscapeType.EscapeNonAscii,
+    EscapeSurrogatePairs = true
+};
+
 string sOriginal = "abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓";
-string sEscaped = StringUtils.Escape(sOriginal, escapeOptions: options, escapeSurrogatePairs: true);
+string sEscaped = StringUtils.Escape(sOriginal, charEscapeOptions: options, stringEscapeOptions: sOptions);
 string sUnescaped = StringUtils.Unescape(sEscaped, unrecognizedEscapeIsVerbatim: false);
 Console.WriteLine("\"" + sEscaped + "\""); // "abc ABC 123 \u00C4\u00D6\u00DC \u3131\u3134\u3137 \U0001F601\U0001F603\U0001F613"
 Console.WriteLine(sUnescaped);             // abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓

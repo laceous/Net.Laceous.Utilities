@@ -67,29 +67,7 @@ namespace Net.Laceous.Utilities
                 case '\v':
                     return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\v";
                 default:
-                    switch (escapeOptions.EscapeType)
-                    {
-                        case CharEscapeType.EscapeEverything:
-                            return "\\" + xu + ((int)c).ToString(hex);
-                        case CharEscapeType.EscapeNonAscii:
-                            if (c >= 32 && c <= 126) // ascii print chars + space
-                            {
-                                return c.ToString();
-                            }
-                            else
-                            {
-                                return "\\" + xu + ((int)c).ToString(hex);
-                            }
-                        default: // CharEscapeType.Default
-                            if (c == ' ' || (!char.IsControl(c) && !char.IsWhiteSpace(c)))
-                            {
-                                return c.ToString();
-                            }
-                            else
-                            {
-                                return "\\" + xu + ((int)c).ToString(hex);
-                            }
-                    }
+                    return "\\" + xu + ((int)c).ToString(hex);
             }
         }
 
