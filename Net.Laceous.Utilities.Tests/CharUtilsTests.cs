@@ -84,7 +84,7 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Fact]
-        public void EscapeTest_AlwaysUseUnicodeEscape_True()
+        public void EscapeTest_UseShortEscape_False()
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
@@ -129,7 +129,7 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Fact]
-        public void EscapeTest_AlwaysUseUnicodeEscape_False()
+        public void EscapeTest_UseShortEscape_True()
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
