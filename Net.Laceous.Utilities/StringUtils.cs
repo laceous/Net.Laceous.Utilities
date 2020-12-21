@@ -17,11 +17,12 @@ namespace Net.Laceous.Utilities
         /// <param name="stringEscapeOptions"></param>
         /// <param name="charEscapeOptions"></param>
         /// <returns>String with escape sequences for string</returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static string Escape(string s, StringEscapeOptions stringEscapeOptions = null, CharEscapeOptions charEscapeOptions = null)
         {
             if (s == null)
             {
-                return null;
+                throw new ArgumentNullException(nameof(s));
             }
             if (stringEscapeOptions == null)
             {
@@ -85,12 +86,13 @@ namespace Net.Laceous.Utilities
         /// <param name="unrecognizedEscapeIsVerbatim">Treat unrecognized escape sequences as verbatim, otherwise throw an exception</param>
         /// <returns>String that's been unescaped</returns>
         /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static string Unescape(string s, bool unrecognizedEscapeIsVerbatim = false)
         {
             if (s == null)
             {
-                return null;
+                throw new ArgumentNullException(nameof(s));
             }
 
             // using indexOf('\\') and and substring() instead of iterating over each char can be faster if there's relatively few \\ in the string

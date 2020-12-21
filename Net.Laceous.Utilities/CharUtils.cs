@@ -92,12 +92,13 @@ namespace Net.Laceous.Utilities
         /// <param name="useLowerCaseHex">Use lower case hex instead of upper case hex</param>
         /// <returns>String with escape sequence for surrogate pair</returns>
         /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static string EscapeSurrogatePair(string s, bool useLowerCaseHex = false)
         {
             if (s == null)
             {
-                return null;
+                throw new ArgumentNullException(nameof(s));
             }
 
             if (IsSurrogatePair(s))
@@ -180,11 +181,12 @@ namespace Net.Laceous.Utilities
         /// <param name="s">String containing the escaped surrogate pair</param>
         /// <returns>String containing the high surrogate + low surrogate</returns>
         /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
         public static string UnescapeSurrogatePair(string s)
         {
             if (s == null)
             {
-                return null;
+                throw new ArgumentNullException(nameof(s));
             }
 
             UnescapeSurrogatePair(s, out char highSurrogate, out char lowSurrogate);
