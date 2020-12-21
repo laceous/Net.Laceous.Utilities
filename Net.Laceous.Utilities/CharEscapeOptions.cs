@@ -24,13 +24,13 @@
         /// Initialize new instance of CharEscapeOptions with selected options
         /// </summary>
         /// <param name="escapeLetter">Choose which unicode escape letter to use</param>
-        /// <param name="alwaysUseUnicodeEscape">Always use unicode escape sequence</param>
         /// <param name="useLowerCaseHex">Use lower case hex instead of upper case hex</param>
+        /// <param name="useShortEscape">Use \", \', \", \\, \0, \a, \b, \f, \n, \r, \t, \v instead of \unnnn</param>
         public CharEscapeOptions(CharEscapeLetter escapeLetter = CharEscapeLetter.LowerCaseU, bool useLowerCaseHex = false, bool useShortEscape = false)
         {
             EscapeLetter = escapeLetter;
             UseLowerCaseHex = useLowerCaseHex;
-            UseShortEscape = UseShortEscape;
+            UseShortEscape = useShortEscape;
         }
     }
 }
