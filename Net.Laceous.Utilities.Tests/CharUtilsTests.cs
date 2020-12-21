@@ -88,7 +88,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
-                AlwaysUseUnicodeEscape = true
+                UseShortEscape = false
             };
 
             char original1 = '\'';
@@ -133,7 +133,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
-                AlwaysUseUnicodeEscape = false
+                UseShortEscape = true
             };
 
             char original1 = '\'';

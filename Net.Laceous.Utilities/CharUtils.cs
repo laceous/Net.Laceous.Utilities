@@ -45,27 +45,27 @@ namespace Net.Laceous.Utilities
             switch (c)
             {
                 case '\'':
-                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\'";
+                    return !escapeOptions.UseShortEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\'";
                 case '\"':
-                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\\"";
+                    return !escapeOptions.UseShortEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\\"";
                 case '\\':
-                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\\\";
+                    return !escapeOptions.UseShortEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\\\";
                 case '\0':
-                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\0";
+                    return !escapeOptions.UseShortEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\0";
                 case '\a':
-                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\a";
+                    return !escapeOptions.UseShortEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\a";
                 case '\b':
-                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\b";
+                    return !escapeOptions.UseShortEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\b";
                 case '\f':
-                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\f";
+                    return !escapeOptions.UseShortEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\f";
                 case '\n':
-                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\n";
+                    return !escapeOptions.UseShortEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\n";
                 case '\r':
-                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\r";
+                    return !escapeOptions.UseShortEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\r";
                 case '\t':
-                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\t";
+                    return !escapeOptions.UseShortEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\t";
                 case '\v':
-                    return escapeOptions.AlwaysUseUnicodeEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\v";
+                    return !escapeOptions.UseShortEscape ? "\\" + xu + ((int)c).ToString(hex) : "\\v";
                 default:
                     return "\\" + xu + ((int)c).ToString(hex);
             }

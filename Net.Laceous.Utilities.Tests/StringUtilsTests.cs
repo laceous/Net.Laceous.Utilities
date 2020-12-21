@@ -78,7 +78,7 @@ namespace Net.Laceous.Utilities.Tests
             CharEscapeOptions charOptions = new CharEscapeOptions()
             {
                 EscapeLetter = CharEscapeLetter.LowerCaseXVariableLength,
-                AlwaysUseUnicodeEscape = true
+                UseShortEscape = false
             };
 
             string original = "\r\n\tA";

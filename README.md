@@ -8,7 +8,6 @@ Char and string escaping:
 CharEscapeOptions options = new CharEscapeOptions()
 {
     EscapeLetter = CharEscapeLetter.LowerCaseU,
-    AlwaysUseUnicodeEscape = false,
     UseLowerCaseHex = false
 };
 

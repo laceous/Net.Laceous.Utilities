@@ -35,8 +35,8 @@ namespace Net.Laceous.Utilities
 
             CharEscapeOptions ceoFixedLength = new CharEscapeOptions(
                 escapeLetter: CharEscapeLetter.LowerCaseXFixedLength,
-                alwaysUseUnicodeEscape: charEscapeOptions.AlwaysUseUnicodeEscape,
-                useLowerCaseHex: charEscapeOptions.UseLowerCaseHex
+                useLowerCaseHex: charEscapeOptions.UseLowerCaseHex,
+                useShortEscape: charEscapeOptions.UseShortEscape
             );
 
             StringBuilder sb = new StringBuilder(s.Length);
