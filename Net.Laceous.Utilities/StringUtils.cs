@@ -83,12 +83,12 @@ namespace Net.Laceous.Utilities
         /// Unescape backslash sequences to string (e.g. \\r\\n -> \r\n)
         /// </summary>
         /// <param name="s">String to unescape</param>
-        /// <param name="unrecognizedEscapeIsVerbatim">Treat unrecognized escape sequences as verbatim, otherwise throw an exception</param>
+        /// <param name="isUnrecognizedEscapeVerbatim">Treat unrecognized escape sequences as verbatim, otherwise throw an exception</param>
         /// <returns>String that's been unescaped</returns>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public static string Unescape(string s, bool unrecognizedEscapeIsVerbatim = false)
+        public static string Unescape(string s, bool isUnrecognizedEscapeVerbatim = false)
         {
             if (s == null)
             {
@@ -153,7 +153,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (unrecognizedEscapeIsVerbatim)
+                                        if (isUnrecognizedEscapeVerbatim)
                                         {
                                             sb.Append('\\');
                                             sb.Append(s[i]);
@@ -183,7 +183,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (unrecognizedEscapeIsVerbatim)
+                                        if (isUnrecognizedEscapeVerbatim)
                                         {
                                             sb.Append('\\');
                                             sb.Append(s[i]);
@@ -213,7 +213,7 @@ namespace Net.Laceous.Utilities
                                             }
                                             catch (ArgumentOutOfRangeException)
                                             {
-                                                if (!unrecognizedEscapeIsVerbatim)
+                                                if (!isUnrecognizedEscapeVerbatim)
                                                 {
                                                     throw;
                                                 }
@@ -233,7 +233,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (unrecognizedEscapeIsVerbatim)
+                                        if (isUnrecognizedEscapeVerbatim)
                                         {
                                             sb.Append('\\');
                                             sb.Append(s[i]);
@@ -245,7 +245,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     break;
                                 default:
-                                    if (unrecognizedEscapeIsVerbatim)
+                                    if (isUnrecognizedEscapeVerbatim)
                                     {
                                         sb.Append('\\');
                                         sb.Append(s[i]);
@@ -259,7 +259,7 @@ namespace Net.Laceous.Utilities
                         }
                         else
                         {
-                            if (unrecognizedEscapeIsVerbatim)
+                            if (isUnrecognizedEscapeVerbatim)
                             {
                                 sb.Append(s[i]);
                             }

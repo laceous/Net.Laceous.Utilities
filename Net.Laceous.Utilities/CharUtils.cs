@@ -128,7 +128,7 @@ namespace Net.Laceous.Utilities
             }
             else if (s.Length > 1 && s.Length <= 10) // longest escaped string: \Unnnnnnnn
             {
-                string unescaped = StringUtils.Unescape(s, unrecognizedEscapeIsVerbatim: true);
+                string unescaped = StringUtils.Unescape(s, isUnrecognizedEscapeVerbatim: true);
                 if (unescaped.Length == 1)
                 {
                     return unescaped[0];
@@ -162,7 +162,7 @@ namespace Net.Laceous.Utilities
                 }
                 else
                 {
-                    unescaped = StringUtils.Unescape(s, unrecognizedEscapeIsVerbatim: true);
+                    unescaped = StringUtils.Unescape(s, isUnrecognizedEscapeVerbatim: true);
                 }
 
                 if (IsSurrogatePair(unescaped))

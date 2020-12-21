@@ -125,7 +125,7 @@ namespace Net.Laceous.Utilities.Tests
         public void UnescapeTest_UnrecognizedEscapeIsVerbatim()
         {
             string escaped = "ABC \\u00C4\\u00D6\\u00DC \\u3131\\u3134\\u3137 \\uD83D\\uDE01\\uD83D\\uDE03\\uD83D\\uDE13 \\r\\n\\t \\x41 \\u41";
-            string unescaped = StringUtils.Unescape(escaped, unrecognizedEscapeIsVerbatim: true);
+            string unescaped = StringUtils.Unescape(escaped, isUnrecognizedEscapeVerbatim: true);
             Assert.Equal("ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t A \\u41", unescaped); // \\u41 is not a valid sequence but we're treating it as verbatim
         }
 

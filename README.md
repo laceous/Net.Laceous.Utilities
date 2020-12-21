@@ -8,7 +8,8 @@ Char and string escaping:
 CharEscapeOptions options = new CharEscapeOptions()
 {
     EscapeLetter = CharEscapeLetter.LowerCaseU,
-    UseLowerCaseHex = false
+    UseLowerCaseHex = false,
+    UseShortEscape = false
 };
 
 char cOriginal = 'Ä';
@@ -34,8 +35,8 @@ StringEscapeOptions sOptions = new StringEscapeOptions()
 };
 
 string sOriginal = "abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓";
-string sEscaped = StringUtils.Escape(sOriginal, charEscapeOptions: options, stringEscapeOptions: sOptions);
-string sUnescaped = StringUtils.Unescape(sEscaped, unrecognizedEscapeIsVerbatim: false);
+string sEscaped = StringUtils.Escape(sOriginal, stringEscapeOptions: sOptions, charEscapeOptions: options);
+string sUnescaped = StringUtils.Unescape(sEscaped, isUnrecognizedEscapeVerbatim: false);
 Console.WriteLine("\"" + sEscaped + "\""); // "abc ABC 123 \u00C4\u00D6\u00DC \u3131\u3134\u3137 \U0001F601\U0001F603\U0001F613"
 Console.WriteLine(sUnescaped);             // abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓
 ```
