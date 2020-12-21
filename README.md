@@ -1,6 +1,6 @@
 # Net.Laceous.Utilities
 
-This currently contains char and string utilities targeting [.NET Standard 1.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard)
+This currently contains char and string utilities targeting [.NET Standard 2.0](https://docs.microsoft.com/en-us/dotnet/standard/net-standard)
 
 Char and string escaping:
 
