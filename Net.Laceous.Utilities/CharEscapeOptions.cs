@@ -16,7 +16,7 @@
         public bool UseLowerCaseHex { get; set; }
 
         /// <summary>
-        /// Use \", \', \", \\, \0, \a, \b, \f, \n, \r, \t, \v instead of \unnnn
+        /// Use \', \", \\, \0, \a, \b, \f, \n, \r, \t, \v instead of \unnnn
         /// </summary>
         public bool UseShortEscape { get; set; }
 
@@ -25,7 +25,7 @@
         /// </summary>
         /// <param name="escapeLetter">Choose which unicode escape letter to use</param>
         /// <param name="useLowerCaseHex">Use lower case hex instead of upper case hex</param>
-        /// <param name="useShortEscape">Use \", \', \", \\, \0, \a, \b, \f, \n, \r, \t, \v instead of \unnnn</param>
+        /// <param name="useShortEscape">Use \', \", \\, \0, \a, \b, \f, \n, \r, \t, \v instead of \unnnn</param>
         public CharEscapeOptions(CharEscapeLetter escapeLetter = CharEscapeLetter.LowerCaseU, bool useLowerCaseHex = false, bool useShortEscape = false)
         {
             EscapeLetter = escapeLetter;
