@@ -41,7 +41,7 @@ Console.WriteLine("\"" + sEscaped + "\""); // "abc ABC 123 \u00C4\u00D6\u00DC \u
 Console.WriteLine(sUnescaped);             // abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓
 ```
 
-Supported escape sequences:
+Supported [escape sequences](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/strings/#string-escape-sequences):
 * `\'` (Single quote)
 * `\"` (Double quote)
 * `\\` (Backslash)
