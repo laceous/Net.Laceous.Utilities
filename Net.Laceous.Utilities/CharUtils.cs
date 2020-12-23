@@ -223,7 +223,7 @@ namespace Net.Laceous.Utilities
         /// Unescape backslash sequence to char (e.g. \\n -> \n)
         /// </summary>
         /// <param name="s">String containing the escaped char</param>
-        /// <param name="escapeLanguage">C# or F#</param>
+        /// <param name="unescapeOptions">Unescape options</param>
         /// <returns>Char that's been unescaped</returns>
         public static char Unescape(string s, CharUnescapeOptions unescapeOptions = null)
         {
