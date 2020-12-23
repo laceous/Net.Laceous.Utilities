@@ -549,6 +549,11 @@ namespace Net.Laceous.Utilities.Tests
         [Fact]
         public void UnescapeTest_CSharp()
         {
+            CharUnescapeOptions options = new CharUnescapeOptions()
+            {
+                EscapeLanguage = EscapeLanguage.CSharp
+            };
+
             string escaped1 = "\\u0041";
             string escaped2 = "\\t";
             string escaped3 = "\\xC4";
@@ -556,12 +561,12 @@ namespace Net.Laceous.Utilities.Tests
             string escaped5 = "\\x020";
             string escaped6 = "\\U000000A0";
 
-            char unescaped1 = CharUtils.Unescape(escaped1, EscapeLanguage.CSharp);
-            char unescaped2 = CharUtils.Unescape(escaped2, EscapeLanguage.CSharp);
-            char unescaped3 = CharUtils.Unescape(escaped3, EscapeLanguage.CSharp);
-            char unescaped4 = CharUtils.Unescape(escaped4, EscapeLanguage.CSharp);
-            char unescaped5 = CharUtils.Unescape(escaped5, EscapeLanguage.CSharp);
-            char unescaped6 = CharUtils.Unescape(escaped6, EscapeLanguage.CSharp);
+            char unescaped1 = CharUtils.Unescape(escaped1, options);
+            char unescaped2 = CharUtils.Unescape(escaped2, options);
+            char unescaped3 = CharUtils.Unescape(escaped3, options);
+            char unescaped4 = CharUtils.Unescape(escaped4, options);
+            char unescaped5 = CharUtils.Unescape(escaped5, options);
+            char unescaped6 = CharUtils.Unescape(escaped6, options);
 
             Assert.Equal('A', unescaped1);
             Assert.Equal('\t', unescaped2);
@@ -574,16 +579,26 @@ namespace Net.Laceous.Utilities.Tests
         [Fact]
         public void UnescapeTest_CSharp_BadInput()
         {
+            CharUnescapeOptions options = new CharUnescapeOptions()
+            {
+                EscapeLanguage = EscapeLanguage.CSharp
+            };
+
             string escaped1 = "a";      // not an escaped char
             string escaped2 = "\\uBAD"; // not a valid escape
 
-            Assert.Throws<ArgumentException>(() => CharUtils.Unescape(escaped1, EscapeLanguage.CSharp));
-            Assert.Throws<ArgumentException>(() => CharUtils.Unescape(escaped2, EscapeLanguage.CSharp));
+            Assert.Throws<ArgumentException>(() => CharUtils.Unescape(escaped1, options));
+            Assert.Throws<ArgumentException>(() => CharUtils.Unescape(escaped2, options));
         }
 
         [Fact]
         public void UnescapeTest_FSharp()
         {
+            CharUnescapeOptions options = new CharUnescapeOptions()
+            {
+                EscapeLanguage = EscapeLanguage.FSharp
+            };
+
             string escaped1 = "\\u0041";
             string escaped2 = "\\t";
             string escaped3 = "\\xC4";
@@ -591,12 +606,12 @@ namespace Net.Laceous.Utilities.Tests
             string escaped5 = "\\032";
             string escaped6 = "\\U000000A0";
 
-            char unescaped1 = CharUtils.Unescape(escaped1, EscapeLanguage.FSharp);
-            char unescaped2 = CharUtils.Unescape(escaped2, EscapeLanguage.FSharp);
-            char unescaped3 = CharUtils.Unescape(escaped3, EscapeLanguage.FSharp);
-            char unescaped4 = CharUtils.Unescape(escaped4, EscapeLanguage.FSharp);
-            char unescaped5 = CharUtils.Unescape(escaped5, EscapeLanguage.FSharp);
-            char unescaped6 = CharUtils.Unescape(escaped6, EscapeLanguage.FSharp);
+            char unescaped1 = CharUtils.Unescape(escaped1, options);
+            char unescaped2 = CharUtils.Unescape(escaped2, options);
+            char unescaped3 = CharUtils.Unescape(escaped3, options);
+            char unescaped4 = CharUtils.Unescape(escaped4, options);
+            char unescaped5 = CharUtils.Unescape(escaped5, options);
+            char unescaped6 = CharUtils.Unescape(escaped6, options);
 
             Assert.Equal('A', unescaped1);
             Assert.Equal('\t', unescaped2);
@@ -609,15 +624,20 @@ namespace Net.Laceous.Utilities.Tests
         [Fact]
         public void UnescapeTest_FSharp_GreaterThan255()
         {
+            CharUnescapeOptions options = new CharUnescapeOptions()
+            {
+                EscapeLanguage = EscapeLanguage.FSharp
+            };
+
             string escaped1 = "\\065"; // valid value (between 000-255)
             string escaped2 = "\\321"; // the rest of these work because the parser allows up to 999 when it parses out DDD
             string escaped3 = "\\577"; // the numbers roll over after 255
             string escaped4 = "\\833";
 
-            char unescaped1 = CharUtils.Unescape(escaped1, EscapeLanguage.FSharp);
-            char unescaped2 = CharUtils.Unescape(escaped2, EscapeLanguage.FSharp);
-            char unescaped3 = CharUtils.Unescape(escaped3, EscapeLanguage.FSharp);
-            char unescaped4 = CharUtils.Unescape(escaped4, EscapeLanguage.FSharp);
+            char unescaped1 = CharUtils.Unescape(escaped1, options);
+            char unescaped2 = CharUtils.Unescape(escaped2, options);
+            char unescaped3 = CharUtils.Unescape(escaped3, options);
+            char unescaped4 = CharUtils.Unescape(escaped4, options);
 
             Assert.Equal('A', unescaped1);
             Assert.Equal('A', unescaped2);
@@ -628,11 +648,16 @@ namespace Net.Laceous.Utilities.Tests
         [Fact]
         public void UnescapeTest_FSharp_BadInput()
         {
+            CharUnescapeOptions options = new CharUnescapeOptions()
+            {
+                EscapeLanguage = EscapeLanguage.FSharp
+            };
+
             string escaped1 = "a";      // not an escaped char
             string escaped2 = "\\uBAD"; // not a valid escape
 
-            Assert.Throws<ArgumentException>(() => CharUtils.Unescape(escaped1, EscapeLanguage.FSharp));
-            Assert.Throws<ArgumentException>(() => CharUtils.Unescape(escaped2, EscapeLanguage.FSharp));
+            Assert.Throws<ArgumentException>(() => CharUtils.Unescape(escaped1, options));
+            Assert.Throws<ArgumentException>(() => CharUtils.Unescape(escaped2, options));
         }
 
         [Fact]

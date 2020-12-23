@@ -90,25 +90,30 @@ namespace Net.Laceous.Utilities
         /// Unescape backslash sequences to string (e.g. \\r\\n -> \r\n)
         /// </summary>
         /// <param name="s">String to unescape</param>
-        /// <param name="unescapeOptions">Unescape options</param>
+        /// <param name="stringUnescapeOptions">String unescape options</param>
+        /// <param name="charUnescapeOptions">Char unescape options</param>
         /// <returns>String that's been unescaped</returns>
-        public static string Unescape(string s, StringUnescapeOptions unescapeOptions = null)
+        public static string Unescape(string s, StringUnescapeOptions stringUnescapeOptions = null, CharUnescapeOptions charUnescapeOptions = null)
         {
             if (s == null)
             {
                 throw new ArgumentNullException(nameof(s));
             }
-            if (unescapeOptions == null)
+            if (stringUnescapeOptions == null)
             {
-                unescapeOptions = new StringUnescapeOptions();
+                stringUnescapeOptions = new StringUnescapeOptions();
+            }
+            if (charUnescapeOptions == null)
+            {
+                charUnescapeOptions = new CharUnescapeOptions();
             }
 
-            switch (unescapeOptions.EscapeLanguage)
+            switch (charUnescapeOptions.EscapeLanguage)
             {
                 case EscapeLanguage.FSharp:
-                    return UnescapeFSharp(s, unescapeOptions);
+                    return UnescapeFSharp(s, stringUnescapeOptions, charUnescapeOptions);
                 default: // EscapeLanguage.CSharp
-                    return UnescapeCSharp(s, unescapeOptions);
+                    return UnescapeCSharp(s, stringUnescapeOptions, charUnescapeOptions);
             }
         }
 
@@ -116,9 +121,10 @@ namespace Net.Laceous.Utilities
         /// Unescape backslash sequences to string (e.g. \\r\\n -> \r\n)
         /// </summary>
         /// <param name="s">String to unescape</param>
-        /// <param name="unescapeOptions">Unescape options</param>
+        /// <param name="stringUnescapeOptions">String unescape options</param>
+        /// <param name="charUnescapeOptions">Char unescape options</param>
         /// <returns>String that's been unescaped</returns>
-        private static string UnescapeCSharp(string s, StringUnescapeOptions unescapeOptions)
+        private static string UnescapeCSharp(string s, StringUnescapeOptions stringUnescapeOptions, CharUnescapeOptions charUnescapeOptions)
         {
             // using indexOf('\\') and and substring() instead of iterating over each char can be faster if there's relatively few \\ in the string
             // however, if there's relatively more \\ in the string then iterating over each char can be faster
@@ -129,6 +135,16 @@ namespace Net.Laceous.Utilities
             }
             else
             {
+                bool isUnrecognizedEscapeVerbatim;
+                if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim.HasValue)
+                {
+                    isUnrecognizedEscapeVerbatim = stringUnescapeOptions.IsUnrecognizedEscapeVerbatim.Value;
+                }
+                else
+                {
+                    isUnrecognizedEscapeVerbatim = false;
+                }
+
                 StringBuilder sb = new StringBuilder(s.Length);
                 for (int i = 0; i < s.Length; i++)
                 {
@@ -178,7 +194,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (unescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                        if (isUnrecognizedEscapeVerbatim)
                                         {
                                             sb.Append('\\');
                                             sb.Append(s[i]);
@@ -208,7 +224,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (unescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                        if (isUnrecognizedEscapeVerbatim)
                                         {
                                             sb.Append('\\');
                                             sb.Append(s[i]);
@@ -238,7 +254,7 @@ namespace Net.Laceous.Utilities
                                             }
                                             catch (ArgumentOutOfRangeException)
                                             {
-                                                if (!unescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                                if (!isUnrecognizedEscapeVerbatim)
                                                 {
                                                     throw;
                                                 }
@@ -258,7 +274,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (unescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                        if (isUnrecognizedEscapeVerbatim)
                                         {
                                             sb.Append('\\');
                                             sb.Append(s[i]);
@@ -270,7 +286,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     break;
                                 default:
-                                    if (unescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                    if (isUnrecognizedEscapeVerbatim)
                                     {
                                         sb.Append('\\');
                                         sb.Append(s[i]);
@@ -284,7 +300,7 @@ namespace Net.Laceous.Utilities
                         }
                         else
                         {
-                            if (unescapeOptions.IsUnrecognizedEscapeVerbatim)
+                            if (isUnrecognizedEscapeVerbatim)
                             {
                                 sb.Append(s[i]);
                             }
@@ -308,9 +324,10 @@ namespace Net.Laceous.Utilities
         /// Unescape backslash sequences to string (e.g. \\r\\n -> \r\n)
         /// </summary>
         /// <param name="s">String to unescape</param>
-        /// <param name="unescapeOptions">Unescape options</param>
+        /// <param name="stringUnescapeOptions">String unescape options</param>
+        /// <param name="charUnescapeOptions">Char unescape options</param>
         /// <returns>String that's been unescaped</returns>
-        private static string UnescapeFSharp(string s, StringUnescapeOptions unescapeOptions)
+        private static string UnescapeFSharp(string s, StringUnescapeOptions stringUnescapeOptions, CharUnescapeOptions charUnescapeOptions)
         {
             if (s.IndexOf('\\') == -1)
             {
@@ -318,6 +335,16 @@ namespace Net.Laceous.Utilities
             }
             else
             {
+                bool isUnrecognizedEscapeVerbatim;
+                if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim.HasValue)
+                {
+                    isUnrecognizedEscapeVerbatim = stringUnescapeOptions.IsUnrecognizedEscapeVerbatim.Value;
+                }
+                else
+                {
+                    isUnrecognizedEscapeVerbatim = true;
+                }
+
                 StringBuilder sb = new StringBuilder(s.Length);
                 for (int i = 0; i < s.Length; i++)
                 {
@@ -364,7 +391,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (unescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                        if (isUnrecognizedEscapeVerbatim)
                                         {
                                             sb.Append('\\');
                                             sb.Append(s[i]);
@@ -382,7 +409,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (unescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                        if (isUnrecognizedEscapeVerbatim)
                                         {
                                             sb.Append('\\');
                                             sb.Append(s[i]);
@@ -412,7 +439,7 @@ namespace Net.Laceous.Utilities
                                             }
                                             catch (ArgumentOutOfRangeException)
                                             {
-                                                if (!unescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                                if (!isUnrecognizedEscapeVerbatim)
                                                 {
                                                     throw;
                                                 }
@@ -432,7 +459,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (unescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                        if (isUnrecognizedEscapeVerbatim)
                                         {
                                             sb.Append('\\');
                                             sb.Append(s[i]);
@@ -458,7 +485,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (unescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                        if (isUnrecognizedEscapeVerbatim)
                                         {
                                             sb.Append('\\');
                                             sb.Append(s[i]);
@@ -473,7 +500,7 @@ namespace Net.Laceous.Utilities
                         }
                         else
                         {
-                            if (unescapeOptions.IsUnrecognizedEscapeVerbatim)
+                            if (isUnrecognizedEscapeVerbatim)
                             {
                                 sb.Append(s[i]);
                             }

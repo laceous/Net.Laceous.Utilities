@@ -6,40 +6,17 @@
     public class StringUnescapeOptions
     {
         /// <summary>
-        /// C# or F#
+        /// Treat unrecognized escape sequences as verbatim, otherwise throw an exception (C# defaults to false; F# defaults to true)
         /// </summary>
-        public EscapeLanguage EscapeLanguage { get; set; }
-
-        /// <summary>
-        /// Treat unrecognized escape sequences as verbatim, otherwise throw an exception
-        /// </summary>
-        public bool IsUnrecognizedEscapeVerbatim { get; set; }
+        public bool? IsUnrecognizedEscapeVerbatim { get; set; }
 
         /// <summary>
         /// Initialize new instance of StringUnescapeOptions with selected options
         /// </summary>
-        /// <param name="escapeLanguage">C# or F#</param>
         /// <param name="isUnrecognizedEscapeVerbatim">Treat unrecognized escape sequences as verbatim, otherwise throw an exception</param>
-        public StringUnescapeOptions(EscapeLanguage escapeLanguage = EscapeLanguage.CSharp, bool? isUnrecognizedEscapeVerbatim = null)
+        public StringUnescapeOptions(bool? isUnrecognizedEscapeVerbatim = null)
         {
-            EscapeLanguage = escapeLanguage;
-            if (isUnrecognizedEscapeVerbatim.HasValue)
-            {
-                IsUnrecognizedEscapeVerbatim = isUnrecognizedEscapeVerbatim.Value;
-            }
-            else
-            {
-                // C# generally complains about unrecognized escape sequences while F# is generally pretty lenient
-                switch (escapeLanguage)
-                {
-                    case EscapeLanguage.FSharp:
-                        IsUnrecognizedEscapeVerbatim = true;
-                        break;
-                    default: // EscapeLanguage.CSharp
-                        IsUnrecognizedEscapeVerbatim = false;
-                        break;
-                }
-            }
+            IsUnrecognizedEscapeVerbatim = isUnrecognizedEscapeVerbatim;
         }
     }
 }

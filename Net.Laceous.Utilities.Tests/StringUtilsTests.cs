@@ -164,13 +164,13 @@ namespace Net.Laceous.Utilities.Tests
         [Fact]
         public void UnescapeTest_CSharp()
         {
-            StringUnescapeOptions options = new StringUnescapeOptions()
+            CharUnescapeOptions options = new CharUnescapeOptions()
             {
                 EscapeLanguage = EscapeLanguage.CSharp
             };
 
             string escaped = "\\u0041\\u0042\\u0043\\u0020\\u00C4\\u00D6\\u00DC\\u0020\\u3131\\u3134\\u3137\\u0020\\uD83D\\uDE01\\uD83D\\uDE03\\uD83D\\uDE13\\u0020\\u000D\\u000A\\u0009";
-            string unescaped = StringUtils.Unescape(escaped, unescapeOptions: options);
+            string unescaped = StringUtils.Unescape(escaped, charUnescapeOptions: options);
 
             Assert.Equal("ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t", unescaped);
         }
@@ -178,13 +178,13 @@ namespace Net.Laceous.Utilities.Tests
         [Fact]
         public void UnescapeTest_FSharp()
         {
-            StringUnescapeOptions options = new StringUnescapeOptions()
+            CharUnescapeOptions options = new CharUnescapeOptions()
             {
                 EscapeLanguage = EscapeLanguage.FSharp
             };
 
             string escaped = "\\u0041\\u0042\\u0043\\u0020\\u00C4\\u00D6\\u00DC\\u0020\\u3131\\u3134\\u3137\\u0020\\uD83D\\uDE01\\uD83D\\uDE03\\uD83D\\uDE13\\u0020\\u000D\\u000A\\u0009";
-            string unescaped = StringUtils.Unescape(escaped, unescapeOptions: options);
+            string unescaped = StringUtils.Unescape(escaped, charUnescapeOptions: options);
 
             Assert.Equal("ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t", unescaped);
         }
@@ -192,18 +192,21 @@ namespace Net.Laceous.Utilities.Tests
         [Fact]
         public void UnescapeTest_CSharp_BadInput()
         {
-            StringUnescapeOptions options = new StringUnescapeOptions()
+            StringUnescapeOptions sOptions = new StringUnescapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.CSharp,
                 IsUnrecognizedEscapeVerbatim = false
+            };
+            CharUnescapeOptions cOptions = new CharUnescapeOptions()
+            {
+                EscapeLanguage = EscapeLanguage.CSharp
             };
 
             string escaped = "\\uBAD";
 
-            Assert.Throws<ArgumentException>(() => StringUtils.Unescape(escaped, unescapeOptions: options));
+            Assert.Throws<ArgumentException>(() => StringUtils.Unescape(escaped, stringUnescapeOptions: sOptions, charUnescapeOptions: cOptions));
 
-            options.IsUnrecognizedEscapeVerbatim = true;
-            string unescaped = StringUtils.Unescape(escaped, unescapeOptions: options);
+            sOptions.IsUnrecognizedEscapeVerbatim = true;
+            string unescaped = StringUtils.Unescape(escaped, stringUnescapeOptions: sOptions, charUnescapeOptions: cOptions);
 
             Assert.Equal("\\uBAD", unescaped);
         }
@@ -211,18 +214,21 @@ namespace Net.Laceous.Utilities.Tests
         [Fact]
         public void UnescapeTest_FSharp_BadInput()
         {
-            StringUnescapeOptions options = new StringUnescapeOptions()
+            StringUnescapeOptions sOptions = new StringUnescapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.FSharp,
                 IsUnrecognizedEscapeVerbatim = false
+            };
+            CharUnescapeOptions cOptions = new CharUnescapeOptions()
+            {
+                EscapeLanguage = EscapeLanguage.FSharp
             };
 
             string escaped = "\\uBAD";
 
-            Assert.Throws<ArgumentException>(() => StringUtils.Unescape(escaped, unescapeOptions: options));
+            Assert.Throws<ArgumentException>(() => StringUtils.Unescape(escaped, stringUnescapeOptions: sOptions, charUnescapeOptions: cOptions));
 
-            options.IsUnrecognizedEscapeVerbatim = true;
-            string unescaped = StringUtils.Unescape(escaped, unescapeOptions: options);
+            sOptions.IsUnrecognizedEscapeVerbatim = true;
+            string unescaped = StringUtils.Unescape(escaped, stringUnescapeOptions: sOptions, charUnescapeOptions: cOptions);
 
             Assert.Equal("\\uBAD", unescaped);
         }

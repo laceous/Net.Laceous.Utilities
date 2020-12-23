@@ -17,15 +17,18 @@ StringEscapeOptions sOptions = new StringEscapeOptions()
     EscapeType = EscapeType.EscapeNonAscii,
     EscapeSurrogatePairs = true
 };
-StringUnescapeOptions uOptions = new StringUnescapeOptions()
+CharUnescapeOptions cuOptions = new CharUnescapeOptions()
 {
-    EscapeLanguage = cOptions.EscapeLanguage,
+    EscapeLanguage = cOptions.EscapeLanguage
+};
+StringUnescapeOptions suOptions = new StringUnescapeOptions()
+{
     IsUnrecognizedEscapeVerbatim = true
 };
 
 char cOriginal = 'Ä';
 string cEscaped = CharUtils.Escape(cOriginal, escapeOptions: cOptions);
-char cUnescaped = CharUtils.Unescape(cEscaped, escapeLanguage: cOptions.EscapeLanguage);
+char cUnescaped = CharUtils.Unescape(cEscaped, unescapeOptions: cuOptions);
 Debug.WriteLine("\'" + cEscaped + "\'"); // '\u00C4'
 Debug.WriteLine(cUnescaped);             // Ä
 
@@ -37,7 +40,7 @@ Debug.WriteLine(eUnescaped);             // 😁
 
 string sOriginal = "abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓";
 string sEscaped = StringUtils.Escape(sOriginal, stringEscapeOptions: sOptions, charEscapeOptions: cOptions);
-string sUnescaped = StringUtils.Unescape(sEscaped, unescapeOptions: uOptions);
+string sUnescaped = StringUtils.Unescape(sEscaped, stringUnescapeOptions: suOptions, charUnescapeOptions: cuOptions);
 Debug.WriteLine("\"" + sEscaped + "\""); // "abc ABC 123 \u00C4\u00D6\u00DC \u3131\u3134\u3137 \U0001F601\U0001F603\U0001F613"
 Debug.WriteLine(sUnescaped);             // abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓
 ```

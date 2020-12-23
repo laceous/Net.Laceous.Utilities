@@ -225,18 +225,22 @@ namespace Net.Laceous.Utilities
         /// <param name="s">String containing the escaped char</param>
         /// <param name="escapeLanguage">C# or F#</param>
         /// <returns>Char that's been unescaped</returns>
-        public static char Unescape(string s, EscapeLanguage escapeLanguage = EscapeLanguage.CSharp)
+        public static char Unescape(string s, CharUnescapeOptions unescapeOptions = null)
         {
             if (s == null)
             {
                 throw new ArgumentNullException(nameof(s));
+            }
+            if (unescapeOptions == null)
+            {
+                unescapeOptions = new CharUnescapeOptions();
             }
 
             // escaped char will have more than 1 char
             // longest escaped string: \UHHHHHHHH
             if (s.Length > 1 && s.Length <= 10 && s.StartsWith("\\", StringComparison.Ordinal))
             {
-                string unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(escapeLanguage: escapeLanguage, isUnrecognizedEscapeVerbatim: true));
+                string unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
                 if (unescaped.Length == 1)
                 {
                     return unescaped[0];
