@@ -78,10 +78,10 @@ Surrogate pairs:
 
 ```c#
 string emoji = "😁"; // 2 char emoji
-Console.WriteLine(CharUtils.IsSurrogatePair(emoji)); // True
+Debug.WriteLine(CharUtils.IsSurrogatePair(emoji)); // True
 
 string s = "abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓";
-Console.WriteLine(StringUtils.HasSurrogatePair(s)); // True
-Console.WriteLine(StringUtils.IndexOfSurrogatePair(s)); // 20
-Console.WriteLine(StringUtils.LastIndexOfSurrogatePair(s)); // 24
+Debug.WriteLine(StringUtils.HasSurrogatePair(s));         // True
+Debug.WriteLine(StringUtils.IndexOfSurrogatePair(s));     // 20
+Debug.WriteLine(StringUtils.LastIndexOfSurrogatePair(s)); // 24
 ```
