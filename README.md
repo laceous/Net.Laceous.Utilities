@@ -78,7 +78,7 @@ Surrogate pairs:
 
 ```c#
 string emoji = "😁"; // 2 char emoji
-Debug.WriteLine(CharUtils.IsSurrogatePair(emoji)); // True
+Debug.WriteLine(CharUtils.IsSurrogatePair(emoji));        // True
 
 string s = "abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓";
 Debug.WriteLine(StringUtils.HasSurrogatePair(s));         // True
