@@ -56,7 +56,7 @@ Supported [C# escape sequences](https://docs.microsoft.com/en-us/dotnet/csharp/p
 * `\v` (Vertical tab)
 * `\uHHHH` (Unicode escape sequence)
 * `\xH` or `\xHH` or `\xHHH` or `\xHHHH` (Variable length unicode escape sequence)
-* `\Unnnnnnnn` (Unicode escape sequence for surrogate pairs)
+* `\UHHHHHHHH` (Unicode escape sequence for surrogate pairs)
 
 Supported [F# escape sequences](https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/strings#remarks):
 * `\a` (Alert)
