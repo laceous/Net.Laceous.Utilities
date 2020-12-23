@@ -5,43 +5,44 @@ This currently contains char and string utilities targeting [.NET Standard 2.0](
 Char and string escaping:
 
 ```c#
-CharEscapeOptions options = new CharEscapeOptions()
+CharEscapeOptions cOptions = new CharEscapeOptions()
 {
-    EscapeLetter = CharEscapeLetter.LowerCaseU,
+    EscapeLanguage = EscapeLanguage.CSharp,
+    EscapeLetter = EscapeLetter.LowerCaseU4,
     UseLowerCaseHex = false,
-    UseShortEscape = false
+    UseShortEscape = false,
+};
+StringEscapeOptions sOptions = new StringEscapeOptions()
+{
+    EscapeType = EscapeType.EscapeNonAscii,
+    EscapeSurrogatePairs = true
+};
+StringUnescapeOptions uOptions = new StringUnescapeOptions()
+{
+    EscapeLanguage = cOptions.EscapeLanguage,
+    IsUnrecognizedEscapeVerbatim = true
 };
 
 char cOriginal = 'Ä';
-string cEscaped = CharUtils.Escape(cOriginal, escapeOptions: options);
-char cUnescaped = CharUtils.Unescape(cEscaped);
-Console.WriteLine("\'" + cEscaped + "\'"); // '\u00C4'
-Console.WriteLine(cUnescaped);             // Ä
+string cEscaped = CharUtils.Escape(cOriginal, escapeOptions: cOptions);
+char cUnescaped = CharUtils.Unescape(cEscaped, escapeLanguage: cOptions.EscapeLanguage);
+Debug.WriteLine("\'" + cEscaped + "\'"); // '\u00C4'
+Debug.WriteLine(cUnescaped);             // Ä
 
 string eOriginal = "😁"; // 2 char emoji
-string eEscaped1 = CharUtils.Escape(eOriginal[0], escapeOptions: options) + CharUtils.Escape(eOriginal[1], escapeOptions: options);
-string eEscaped2 = CharUtils.EscapeSurrogatePair(eOriginal, useLowerCaseHex: options.UseLowerCaseHex);
-string eUnescaped1 = CharUtils.UnescapeSurrogatePair(eEscaped1); // CharUtils.Unescape(eEscaped1.substring(0, 6)) + CharUtils.Unescape(eEscaped1.substring(6))
-string eUnescaped2 = CharUtils.UnescapeSurrogatePair(eEscaped2);
-Console.WriteLine("\"" + eEscaped1 + "\""); // "\uD83D\uDE01"
-Console.WriteLine("\"" + eEscaped2 + "\""); // "\U0001F601"
-Console.WriteLine(eUnescaped1);             // 😁
-Console.WriteLine(eUnescaped2);             // 😁
-
-StringEscapeOptions sOptions = new StringEscapeOptions()
-{
-    EscapeType = StringEscapeType.EscapeNonAscii,
-    EscapeSurrogatePairs = true
-};
+string eEscaped = CharUtils.EscapeSurrogatePair(eOriginal, useLowerCaseHex: cOptions.UseLowerCaseHex);
+string eUnescaped = CharUtils.UnescapeSurrogatePair(eEscaped);
+Debug.WriteLine("\"" + eEscaped + "\""); // "\U0001F601"
+Debug.WriteLine(eUnescaped);             // 😁
 
 string sOriginal = "abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓";
-string sEscaped = StringUtils.Escape(sOriginal, stringEscapeOptions: sOptions, charEscapeOptions: options);
-string sUnescaped = StringUtils.Unescape(sEscaped, isUnrecognizedEscapeVerbatim: false);
-Console.WriteLine("\"" + sEscaped + "\""); // "abc ABC 123 \u00C4\u00D6\u00DC \u3131\u3134\u3137 \U0001F601\U0001F603\U0001F613"
-Console.WriteLine(sUnescaped);             // abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓
+string sEscaped = StringUtils.Escape(sOriginal, stringEscapeOptions: sOptions, charEscapeOptions: cOptions);
+string sUnescaped = StringUtils.Unescape(sEscaped, unescapeOptions: uOptions);
+Debug.WriteLine("\"" + sEscaped + "\""); // "abc ABC 123 \u00C4\u00D6\u00DC \u3131\u3134\u3137 \U0001F601\U0001F603\U0001F613"
+Debug.WriteLine(sUnescaped);             // abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓
 ```
 
-Supported [escape sequences](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/strings/#string-escape-sequences):
+Supported [C# escape sequences](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/strings/#string-escape-sequences):
 * `\'` (Single quote)
 * `\"` (Double quote)
 * `\\` (Backslash)
@@ -53,9 +54,25 @@ Supported [escape sequences](https://docs.microsoft.com/en-us/dotnet/csharp/prog
 * `\r` (Carriage return)
 * `\t` (Horizontal tab)
 * `\v` (Vertical tab)
-* `\unnnn` (Unicode escape sequence)
-* `\xn` or `\xnn` or `\xnnn` or `\xnnnn` (Variable length unicode escape sequence)
+* `\uHHHH` (Unicode escape sequence)
+* `\xH` or `\xHH` or `\xHHH` or `\xHHHH` (Variable length unicode escape sequence)
 * `\Unnnnnnnn` (Unicode escape sequence for surrogate pairs)
+
+Supported [F# escape sequences](https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/strings#remarks):
+* `\a` (Alert)
+* `\b` (Backspace)
+* `\f` (Form feed)
+* `\n` (Newline)
+* `\r` (Carriage return)
+* `\t` (Tab)
+* `\v` (Vertical tab)
+* `\\` (Backslash)
+* `\"` (Quotation mark)
+* `\'` (Apostrophe)
+* `\DDD` (Decimal escape sequence; 000-255)
+* `\xHH` (Hexadecimal escape sequence; 00-FF)
+* `\uHHHH` (Unicode escape sequence)
+* `\UHHHHHHHH` (Unicode escape sequence for surrogate pairs)
 
 Surrogate pairs:
 
