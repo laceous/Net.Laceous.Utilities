@@ -1,132 +1,236 @@
-﻿using Xunit;
+﻿using System;
+using Xunit;
 
 namespace Net.Laceous.Utilities.Tests
 {
     public class StringUtilsTests
-    {   
+    {
         [Fact]
-        public void EscapeTest_EscapeType_EscapeAll()
+        public void EscapeTest_CSharp_LowerCaseU4_EscapeAll()
         {
-            StringEscapeOptions options = new StringEscapeOptions()
+            StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = StringEscapeType.EscapeAll
+                EscapeType = EscapeType.EscapeAll
+            };
+            CharEscapeOptions cOptions = new CharEscapeOptions()
+            {
+                EscapeLanguage = EscapeLanguage.CSharp,
+                EscapeLetter = EscapeLetter.LowerCaseU4
             };
 
             string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
-            string escaped = StringUtils.Escape(original, stringEscapeOptions: options);
+            string escaped = StringUtils.Escape(original, stringEscapeOptions: sOptions, charEscapeOptions: cOptions);
+
             Assert.Equal("\\u0041\\u0042\\u0043\\u0020\\u00C4\\u00D6\\u00DC\\u0020\\u3131\\u3134\\u3137\\u0020\\uD83D\\uDE01\\uD83D\\uDE03\\uD83D\\uDE13\\u0020\\u000D\\u000A\\u0009", escaped);
         }
 
         [Fact]
-        public void EscapeTest_EscapeType_EscapeNonAscii()
+        public void EscapeTest_FSharp_LowerCaseU4_EscapeAll()
         {
-            StringEscapeOptions options = new StringEscapeOptions()
+            StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = StringEscapeType.EscapeNonAscii
+                EscapeType = EscapeType.EscapeAll
             };
+            CharEscapeOptions cOptions = new CharEscapeOptions()
+            {
+                EscapeLanguage = EscapeLanguage.FSharp,
+                EscapeLetter = EscapeLetter.LowerCaseU4
+            };
+
             string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
-            string escaped = StringUtils.Escape(original, stringEscapeOptions: options);
+            string escaped = StringUtils.Escape(original, stringEscapeOptions: sOptions, charEscapeOptions: cOptions);
+
+            Assert.Equal("\\u0041\\u0042\\u0043\\u0020\\u00C4\\u00D6\\u00DC\\u0020\\u3131\\u3134\\u3137\\u0020\\uD83D\\uDE01\\uD83D\\uDE03\\uD83D\\uDE13\\u0020\\u000D\\u000A\\u0009", escaped);
+        }
+
+        [Fact]
+        public void EscapeTest_CSharp_LowerCaseU4_EscapeNonAscii()
+        {
+            StringEscapeOptions sOptions = new StringEscapeOptions()
+            {
+                EscapeType = EscapeType.EscapeNonAscii
+            };
+            CharEscapeOptions cOptions = new CharEscapeOptions()
+            {
+                EscapeLanguage = EscapeLanguage.CSharp,
+                EscapeLetter = EscapeLetter.LowerCaseU4
+            };
+
+            string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
+            string escaped = StringUtils.Escape(original, stringEscapeOptions: sOptions, charEscapeOptions: cOptions);
+
             Assert.Equal("ABC \\u00C4\\u00D6\\u00DC \\u3131\\u3134\\u3137 \\uD83D\\uDE01\\uD83D\\uDE03\\uD83D\\uDE13 \\u000D\\u000A\\u0009", escaped);
         }
 
         [Fact]
-        public void EscapeTest_EscapeLetter_LowerCaseU()
+        public void EscapeTest_FSharp_LowerCaseU4_EscapeNonAscii()
         {
-            CharEscapeOptions options = new CharEscapeOptions()
+            StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeLetter = CharEscapeLetter.LowerCaseU
+                EscapeType = EscapeType.EscapeNonAscii
+            };
+            CharEscapeOptions cOptions = new CharEscapeOptions()
+            {
+                EscapeLanguage = EscapeLanguage.FSharp,
+                EscapeLetter = EscapeLetter.LowerCaseU4
             };
 
-            string original = "\r\n\t";
-            string escaped = StringUtils.Escape(original, charEscapeOptions: options);
-            Assert.Equal("\\u000D\\u000A\\u0009", escaped);
-        }
-        
-        [Fact]
-        public void EscapeTest_EscapeLetter_UpperCaseU()
-        {
-            CharEscapeOptions options = new CharEscapeOptions()
-            {
-                EscapeLetter = CharEscapeLetter.UpperCaseU
-            };
+            string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
+            string escaped = StringUtils.Escape(original, stringEscapeOptions: sOptions, charEscapeOptions: cOptions);
 
-            string original = "\r\n\t";
-            string escaped = StringUtils.Escape(original, charEscapeOptions: options);
-            Assert.Equal("\\U0000000D\\U0000000A\\U00000009", escaped);
+            Assert.Equal("ABC \\u00C4\\u00D6\\u00DC \\u3131\\u3134\\u3137 \\uD83D\\uDE01\\uD83D\\uDE03\\uD83D\\uDE13 \\u000D\\u000A\\u0009", escaped);
         }
 
         [Fact]
-        public void EscapeTest_EscapeLetter_LowerCaseXFixedLength()
+        public void EscapeTest_CSharp_LowerCaseU4_EscapeAll_EscapeSurrogatePairs()
         {
-            CharEscapeOptions options = new CharEscapeOptions()
+            StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeLetter = CharEscapeLetter.LowerCaseXFixedLength
-            };
-
-            string original = "\r\n\t";
-            string escaped = StringUtils.Escape(original, charEscapeOptions: options);
-            Assert.Equal("\\x000D\\x000A\\x0009", escaped);
-        }
-        
-        [Fact]
-        public void EscapeTest_EscapeLetter_LowerCaseXVariableLength()
-        {
-            StringEscapeOptions stringOptions = new StringEscapeOptions()
-            {
-                EscapeType = StringEscapeType.EscapeNonAscii
-            };
-            CharEscapeOptions charOptions = new CharEscapeOptions()
-            {
-                EscapeLetter = CharEscapeLetter.LowerCaseXVariableLength,
-                UseShortEscape = false
-            };
-
-            string original = "\r\n\tA";
-            string escaped = StringUtils.Escape(original, stringEscapeOptions: stringOptions, charEscapeOptions: charOptions);
-            Assert.Equal("\\xD\\xA\\x0009A", escaped);
-            Assert.NotEqual("\\xD\\xA\\x9A", escaped); // this is not equal because \x9A is not the same as '\x9' + 'A'
-        }
-
-        [Fact]
-        public void EscapeTest_UseLowerCaseHex()
-        {
-            CharEscapeOptions options = new CharEscapeOptions()
-            {
-                UseLowerCaseHex = true
-            };
-
-            string original = "\r\n\t";
-            string escaped = StringUtils.Escape(original, charEscapeOptions: options);
-            Assert.Equal("\\u000d\\u000a\\u0009", escaped);
-        }
-        
-        [Fact]
-        public void EscapeTest_EscapeSurrogatePairs()
-        {
-            StringEscapeOptions options = new StringEscapeOptions()
-            {
+                EscapeType = EscapeType.EscapeAll,
                 EscapeSurrogatePairs = true
             };
+            CharEscapeOptions cOptions = new CharEscapeOptions()
+            {
+                EscapeLanguage = EscapeLanguage.CSharp,
+                EscapeLetter = EscapeLetter.LowerCaseU4
+            };
 
-            string original = "😁😃😓";
-            string escaped = StringUtils.Escape(original, stringEscapeOptions: options);
-            Assert.Equal("\\U0001F601\\U0001F603\\U0001F613", escaped);
+            string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
+            string escaped = StringUtils.Escape(original, stringEscapeOptions: sOptions, charEscapeOptions: cOptions);
+
+            Assert.Equal("\\u0041\\u0042\\u0043\\u0020\\u00C4\\u00D6\\u00DC\\u0020\\u3131\\u3134\\u3137\\u0020\\U0001F601\\U0001F603\\U0001F613\\u0020\\u000D\\u000A\\u0009", escaped);
         }
-        
+
         [Fact]
-        public void UnescapeTest()
+        public void EscapeTest_FSharp_LowerCaseU4_EscapeAll_EscapeSurrogatePairs()
         {
-            string escaped = "ABC \\u00C4\\u00D6\\u00DC \\u3131\\u3134\\u3137 \\uD83D\\uDE01\\uD83D\\uDE03\\uD83D\\uDE13 \\r\\n\\t";
-            string unescaped = StringUtils.Unescape(escaped);
+            StringEscapeOptions sOptions = new StringEscapeOptions()
+            {
+                EscapeType = EscapeType.EscapeAll,
+                EscapeSurrogatePairs = true
+            };
+            CharEscapeOptions cOptions = new CharEscapeOptions()
+            {
+                EscapeLanguage = EscapeLanguage.FSharp,
+                EscapeLetter = EscapeLetter.LowerCaseU4
+            };
+
+            string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
+            string escaped = StringUtils.Escape(original, stringEscapeOptions: sOptions, charEscapeOptions: cOptions);
+
+            Assert.Equal("\\u0041\\u0042\\u0043\\u0020\\u00C4\\u00D6\\u00DC\\u0020\\u3131\\u3134\\u3137\\u0020\\U0001F601\\U0001F603\\U0001F613\\u0020\\u000D\\u000A\\u0009", escaped);
+        }
+
+        [Fact]
+        public void EscapeTest_CSharp_EscapeNonAscii_LowerCaseX2()
+        {
+            StringEscapeOptions sOptions = new StringEscapeOptions()
+            {
+                EscapeType = EscapeType.EscapeNonAscii
+            };
+            CharEscapeOptions cOptions = new CharEscapeOptions()
+            {
+                EscapeLanguage = EscapeLanguage.CSharp,
+                EscapeLetter = EscapeLetter.LowerCaseX2 // or LowerCaseX1/LowerCaseX3
+            };
+
+            string original = "ÄA";
+            string escaped = StringUtils.Escape(original, stringEscapeOptions: sOptions, charEscapeOptions: cOptions);
+
+            Assert.NotEqual("\\xC4A", escaped); // '\xC4' + 'A' is not the same as '\xC4A'
+            Assert.Equal("\\x00C4A", escaped);  // so we have to use the full '\x00C4' + 'A' sequence here
+        }
+
+        [Fact]
+        public void EscapeTest_FSharp_EscapeNonAscii_LowerCaseX2()
+        {
+            StringEscapeOptions sOptions = new StringEscapeOptions()
+            {
+                EscapeType = EscapeType.EscapeNonAscii
+            };
+            CharEscapeOptions cOptions = new CharEscapeOptions()
+            {
+                EscapeLanguage = EscapeLanguage.FSharp,
+                EscapeLetter = EscapeLetter.LowerCaseX2 // or LowerCaseX1/LowerCaseX3
+            };
+
+            string original = "ㄱg";
+            string escaped = StringUtils.Escape(original, stringEscapeOptions: sOptions, charEscapeOptions: cOptions);
+
+            Assert.NotEqual("\\x3131g", escaped); // the escape here is 4 chars (3131) so it can't be used with \xHH
+            Assert.Equal("\\u3131g", escaped);    // instead we automatically switch to \uHHHH
+        }
+
+        [Fact]
+        public void UnescapeTest_CSharp()
+        {
+            CharUnescapeOptions options = new CharUnescapeOptions()
+            {
+                EscapeLanguage = EscapeLanguage.CSharp
+            };
+
+            string escaped = "\\u0041\\u0042\\u0043\\u0020\\u00C4\\u00D6\\u00DC\\u0020\\u3131\\u3134\\u3137\\u0020\\uD83D\\uDE01\\uD83D\\uDE03\\uD83D\\uDE13\\u0020\\u000D\\u000A\\u0009";
+            string unescaped = StringUtils.Unescape(escaped, charUnescapeOptions: options);
+
             Assert.Equal("ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t", unescaped);
         }
 
         [Fact]
-        public void UnescapeTest_UnrecognizedEscapeIsVerbatim()
+        public void UnescapeTest_FSharp()
         {
-            string escaped = "ABC \\u00C4\\u00D6\\u00DC \\u3131\\u3134\\u3137 \\uD83D\\uDE01\\uD83D\\uDE03\\uD83D\\uDE13 \\r\\n\\t \\x41 \\u41";
-            string unescaped = StringUtils.Unescape(escaped, isUnrecognizedEscapeVerbatim: true);
-            Assert.Equal("ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t A \\u41", unescaped); // \\u41 is not a valid sequence but we're treating it as verbatim
+            CharUnescapeOptions options = new CharUnescapeOptions()
+            {
+                EscapeLanguage = EscapeLanguage.FSharp
+            };
+
+            string escaped = "\\u0041\\u0042\\u0043\\u0020\\u00C4\\u00D6\\u00DC\\u0020\\u3131\\u3134\\u3137\\u0020\\uD83D\\uDE01\\uD83D\\uDE03\\uD83D\\uDE13\\u0020\\u000D\\u000A\\u0009";
+            string unescaped = StringUtils.Unescape(escaped, charUnescapeOptions: options);
+
+            Assert.Equal("ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t", unescaped);
+        }
+
+        [Fact]
+        public void UnescapeTest_CSharp_BadInput()
+        {
+            StringUnescapeOptions sOptions = new StringUnescapeOptions()
+            {
+                IsUnrecognizedEscapeVerbatim = false
+            };
+            CharUnescapeOptions cOptions = new CharUnescapeOptions()
+            {
+                EscapeLanguage = EscapeLanguage.CSharp
+            };
+
+            string escaped = "\\uBAD";
+
+            Assert.Throws<ArgumentException>(() => StringUtils.Unescape(escaped, stringUnescapeOptions: sOptions, charUnescapeOptions: cOptions));
+
+            sOptions.IsUnrecognizedEscapeVerbatim = true;
+            string unescaped = StringUtils.Unescape(escaped, stringUnescapeOptions: sOptions, charUnescapeOptions: cOptions);
+
+            Assert.Equal("\\uBAD", unescaped);
+        }
+
+        [Fact]
+        public void UnescapeTest_FSharp_BadInput()
+        {
+            StringUnescapeOptions sOptions = new StringUnescapeOptions()
+            {
+                IsUnrecognizedEscapeVerbatim = false
+            };
+            CharUnescapeOptions cOptions = new CharUnescapeOptions()
+            {
+                EscapeLanguage = EscapeLanguage.FSharp
+            };
+
+            string escaped = "\\uBAD";
+
+            Assert.Throws<ArgumentException>(() => StringUtils.Unescape(escaped, stringUnescapeOptions: sOptions, charUnescapeOptions: cOptions));
+
+            sOptions.IsUnrecognizedEscapeVerbatim = true;
+            string unescaped = StringUtils.Unescape(escaped, stringUnescapeOptions: sOptions, charUnescapeOptions: cOptions);
+
+            Assert.Equal("\\uBAD", unescaped);
         }
 
         [Fact]
@@ -179,6 +283,16 @@ namespace Net.Laceous.Utilities.Tests
         {
             string s = "abc😁def😃ghi😓jklm";
             Assert.Equal(-1, StringUtils.LastIndexOfSurrogatePair(s, 12, 1));
+        }
+
+        [Fact]
+        public void ArgumentNullExceptionTest()
+        {
+            Assert.Throws<ArgumentNullException>(() => StringUtils.Escape(null));
+            Assert.Throws<ArgumentNullException>(() => StringUtils.HasSurrogatePair(null));
+            Assert.Throws<ArgumentNullException>(() => StringUtils.IndexOfSurrogatePair(null));
+            Assert.Throws<ArgumentNullException>(() => StringUtils.LastIndexOfSurrogatePair(null));
+            Assert.Throws<ArgumentNullException>(() => StringUtils.Unescape(null));
         }
     }
 }

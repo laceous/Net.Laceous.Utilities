@@ -16,6 +16,16 @@
         }
 
         /// <summary>
+        /// Checks if the char is a decimal digit (0-9)
+        /// </summary>
+        /// <param name="c">Char to check</param>
+        /// <returns>True if decimal digit, otherwise false</returns>
+        internal static bool IsDecimal(this char c)
+        {
+            return c >= '0' && c <= '9';
+        }
+
+        /// <summary>
         /// Checks if the char is zero
         /// </summary>
         /// <param name="c">Char to check</param>

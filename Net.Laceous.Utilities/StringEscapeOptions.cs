@@ -8,7 +8,7 @@
         /// <summary>
         /// Choose which char types in the string to escape
         /// </summary>
-        public StringEscapeType EscapeType { get; set; }
+        public EscapeType EscapeType { get; set; }
 
         /// <summary>
         /// Escape surrogate pairs together with \U instead of as two separate chars
@@ -20,7 +20,7 @@
         /// </summary>
         /// <param name="escapeType">Choose which char types in the string to escape</param>
         /// <param name="escapeSurrogatePairs">Escape surrogate pairs together with \U instead of as two separate chars</param>
-        public StringEscapeOptions(StringEscapeType escapeType = StringEscapeType.EscapeAll, bool escapeSurrogatePairs = false)
+        public StringEscapeOptions(EscapeType escapeType = EscapeType.EscapeAll, bool escapeSurrogatePairs = false)
         {
             EscapeType = escapeType;
             EscapeSurrogatePairs = escapeSurrogatePairs;
