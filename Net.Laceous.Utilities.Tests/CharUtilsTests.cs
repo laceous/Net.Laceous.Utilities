@@ -5,8 +5,14 @@ namespace Net.Laceous.Utilities.Tests
 {
     public class CharUtilsTests
     {
-        [Fact]
-        public void EscapeTest_CSharp_LowerCaseU4()
+        [Theory]
+        [InlineData('A', "\\u0041")]
+        [InlineData('\t', "\\u0009")]
+        [InlineData('Ä', "\\u00C4")]
+        [InlineData('ㄱ', "\\u3131")]
+        [InlineData(' ', "\\u0020")]
+        [InlineData('\u00A0', "\\u00A0")]
+        public void EscapeTest_CSharp_LowerCaseU4(char original, string escaped)
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
@@ -14,30 +20,17 @@ namespace Net.Laceous.Utilities.Tests
                 EscapeLetter = EscapeLetter.LowerCaseU4
             };
 
-            char original1 = 'A';
-            char original2 = '\t';
-            char original3 = 'Ä';
-            char original4 = 'ㄱ';
-            char original5 = ' ';
-            char original6 = '\u00A0'; // non-breaking space
-
-            string escaped1 = CharUtils.Escape(original1, options);
-            string escaped2 = CharUtils.Escape(original2, options);
-            string escaped3 = CharUtils.Escape(original3, options);
-            string escaped4 = CharUtils.Escape(original4, options);
-            string escaped5 = CharUtils.Escape(original5, options);
-            string escaped6 = CharUtils.Escape(original6, options);
-
-            Assert.Equal("\\u0041", escaped1);
-            Assert.Equal("\\u0009", escaped2);
-            Assert.Equal("\\u00C4", escaped3);
-            Assert.Equal("\\u3131", escaped4);
-            Assert.Equal("\\u0020", escaped5);
-            Assert.Equal("\\u00A0", escaped6);
+            Assert.Equal(escaped, CharUtils.Escape(original, options));
         }
 
-        [Fact]
-        public void EscapeTest_CSharp_LowerCaseX1()
+        [Theory]
+        [InlineData('A', "\\x41")]
+        [InlineData('\t', "\\x9")]
+        [InlineData('Ä', "\\xC4")]
+        [InlineData('ㄱ', "\\x3131")]
+        [InlineData(' ', "\\x20")]
+        [InlineData('\u00A0', "\\xA0")]
+        public void EscapeTest_CSharp_LowerCaseX1(char original, string escaped)
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
@@ -45,30 +38,17 @@ namespace Net.Laceous.Utilities.Tests
                 EscapeLetter = EscapeLetter.LowerCaseX1
             };
 
-            char original1 = 'A';
-            char original2 = '\t';
-            char original3 = 'Ä';
-            char original4 = 'ㄱ';
-            char original5 = ' ';
-            char original6 = '\u00A0'; // non-breaking space
-
-            string escaped1 = CharUtils.Escape(original1, options);
-            string escaped2 = CharUtils.Escape(original2, options);
-            string escaped3 = CharUtils.Escape(original3, options);
-            string escaped4 = CharUtils.Escape(original4, options);
-            string escaped5 = CharUtils.Escape(original5, options);
-            string escaped6 = CharUtils.Escape(original6, options);
-
-            Assert.Equal("\\x41", escaped1);
-            Assert.Equal("\\x9", escaped2);
-            Assert.Equal("\\xC4", escaped3);
-            Assert.Equal("\\x3131", escaped4);
-            Assert.Equal("\\x20", escaped5);
-            Assert.Equal("\\xA0", escaped6);
+            Assert.Equal(escaped, CharUtils.Escape(original, options));
         }
 
-        [Fact]
-        public void EscapeTest_CSharp_LowerCaseX2()
+        [Theory]
+        [InlineData('A', "\\x41")]
+        [InlineData('\t', "\\x09")]
+        [InlineData('Ä', "\\xC4")]
+        [InlineData('ㄱ', "\\x3131")]
+        [InlineData(' ', "\\x20")]
+        [InlineData('\u00A0', "\\xA0")]
+        public void EscapeTest_CSharp_LowerCaseX2(char original, string escaped)
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
@@ -76,30 +56,17 @@ namespace Net.Laceous.Utilities.Tests
                 EscapeLetter = EscapeLetter.LowerCaseX2
             };
 
-            char original1 = 'A';
-            char original2 = '\t';
-            char original3 = 'Ä';
-            char original4 = 'ㄱ';
-            char original5 = ' ';
-            char original6 = '\u00A0'; // non-breaking space
-
-            string escaped1 = CharUtils.Escape(original1, options);
-            string escaped2 = CharUtils.Escape(original2, options);
-            string escaped3 = CharUtils.Escape(original3, options);
-            string escaped4 = CharUtils.Escape(original4, options);
-            string escaped5 = CharUtils.Escape(original5, options);
-            string escaped6 = CharUtils.Escape(original6, options);
-
-            Assert.Equal("\\x41", escaped1);
-            Assert.Equal("\\x09", escaped2);
-            Assert.Equal("\\xC4", escaped3);
-            Assert.Equal("\\x3131", escaped4);
-            Assert.Equal("\\x20", escaped5);
-            Assert.Equal("\\xA0", escaped6);
+            Assert.Equal(escaped, CharUtils.Escape(original, options));
         }
 
-        [Fact]
-        public void EscapeTest_CSharp_LowerCaseX3()
+        [Theory]
+        [InlineData('A', "\\x041")]
+        [InlineData('\t', "\\x009")]
+        [InlineData('Ä', "\\x0C4")]
+        [InlineData('ㄱ', "\\x3131")]
+        [InlineData(' ', "\\x020")]
+        [InlineData('\u00A0', "\\x0A0")]
+        public void EscapeTest_CSharp_LowerCaseX3(char original, string escaped)
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
@@ -107,30 +74,17 @@ namespace Net.Laceous.Utilities.Tests
                 EscapeLetter = EscapeLetter.LowerCaseX3
             };
 
-            char original1 = 'A';
-            char original2 = '\t';
-            char original3 = 'Ä';
-            char original4 = 'ㄱ';
-            char original5 = ' ';
-            char original6 = '\u00A0'; // non-breaking space
-
-            string escaped1 = CharUtils.Escape(original1, options);
-            string escaped2 = CharUtils.Escape(original2, options);
-            string escaped3 = CharUtils.Escape(original3, options);
-            string escaped4 = CharUtils.Escape(original4, options);
-            string escaped5 = CharUtils.Escape(original5, options);
-            string escaped6 = CharUtils.Escape(original6, options);
-
-            Assert.Equal("\\x041", escaped1);
-            Assert.Equal("\\x009", escaped2);
-            Assert.Equal("\\x0C4", escaped3);
-            Assert.Equal("\\x3131", escaped4);
-            Assert.Equal("\\x020", escaped5);
-            Assert.Equal("\\x0A0", escaped6);
+            Assert.Equal(escaped, CharUtils.Escape(original, options));
         }
 
-        [Fact]
-        public void EscapeTest_CSharp_LowerCaseX4()
+        [Theory]
+        [InlineData('A', "\\x0041")]
+        [InlineData('\t', "\\x0009")]
+        [InlineData('Ä', "\\x00C4")]
+        [InlineData('ㄱ', "\\x3131")]
+        [InlineData(' ', "\\x0020")]
+        [InlineData('\u00A0', "\\x00A0")]
+        public void EscapeTest_CSharp_LowerCaseX4(char original, string escaped)
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
@@ -138,30 +92,17 @@ namespace Net.Laceous.Utilities.Tests
                 EscapeLetter = EscapeLetter.LowerCaseX4
             };
 
-            char original1 = 'A';
-            char original2 = '\t';
-            char original3 = 'Ä';
-            char original4 = 'ㄱ';
-            char original5 = ' ';
-            char original6 = '\u00A0'; // non-breaking space
-
-            string escaped1 = CharUtils.Escape(original1, options);
-            string escaped2 = CharUtils.Escape(original2, options);
-            string escaped3 = CharUtils.Escape(original3, options);
-            string escaped4 = CharUtils.Escape(original4, options);
-            string escaped5 = CharUtils.Escape(original5, options);
-            string escaped6 = CharUtils.Escape(original6, options);
-
-            Assert.Equal("\\x0041", escaped1);
-            Assert.Equal("\\x0009", escaped2);
-            Assert.Equal("\\x00C4", escaped3);
-            Assert.Equal("\\x3131", escaped4);
-            Assert.Equal("\\x0020", escaped5);
-            Assert.Equal("\\x00A0", escaped6);
+            Assert.Equal(escaped, CharUtils.Escape(original, options));
         }
 
-        [Fact]
-        public void EscapeTest_CSharp_UpperCaseU8()
+        [Theory]
+        [InlineData('A', "\\U00000041")]
+        [InlineData('\t', "\\U00000009")]
+        [InlineData('Ä', "\\U000000C4")]
+        [InlineData('ㄱ', "\\U00003131")]
+        [InlineData(' ', "\\U00000020")]
+        [InlineData('\u00A0', "\\U000000A0")]
+        public void EscapeTest_CSharp_UpperCaseU8(char original, string escaped)
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
@@ -169,26 +110,7 @@ namespace Net.Laceous.Utilities.Tests
                 EscapeLetter = EscapeLetter.UpperCaseU8
             };
 
-            char original1 = 'A';
-            char original2 = '\t';
-            char original3 = 'Ä';
-            char original4 = 'ㄱ';
-            char original5 = ' ';
-            char original6 = '\u00A0'; // non-breaking space
-
-            string escaped1 = CharUtils.Escape(original1, options);
-            string escaped2 = CharUtils.Escape(original2, options);
-            string escaped3 = CharUtils.Escape(original3, options);
-            string escaped4 = CharUtils.Escape(original4, options);
-            string escaped5 = CharUtils.Escape(original5, options);
-            string escaped6 = CharUtils.Escape(original6, options);
-
-            Assert.Equal("\\U00000041", escaped1);
-            Assert.Equal("\\U00000009", escaped2);
-            Assert.Equal("\\U000000C4", escaped3);
-            Assert.Equal("\\U00003131", escaped4);
-            Assert.Equal("\\U00000020", escaped5);
-            Assert.Equal("\\U000000A0", escaped6);
+            Assert.Equal(escaped, CharUtils.Escape(original, options));
         }
 
         [Fact]
@@ -205,8 +127,14 @@ namespace Net.Laceous.Utilities.Tests
             Assert.Throws<ArgumentException>(() => CharUtils.Escape(original, options));
         }
 
-        [Fact]
-        public void EscapeTest_FSharp_LowerCaseU4()
+        [Theory]
+        [InlineData('A', "\\u0041")]
+        [InlineData('\t', "\\u0009")]
+        [InlineData('Ä', "\\u00C4")]
+        [InlineData('ㄱ', "\\u3131")]
+        [InlineData(' ', "\\u0020")]
+        [InlineData('\u00A0', "\\u00A0")]
+        public void EscapeTest_FSharp_LowerCaseU4(char original, string escaped)
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
@@ -214,26 +142,7 @@ namespace Net.Laceous.Utilities.Tests
                 EscapeLetter = EscapeLetter.LowerCaseU4
             };
 
-            char original1 = 'A';
-            char original2 = '\t';
-            char original3 = 'Ä';
-            char original4 = 'ㄱ';
-            char original5 = ' ';
-            char original6 = '\u00A0'; // non-breaking space
-
-            string escaped1 = CharUtils.Escape(original1, options);
-            string escaped2 = CharUtils.Escape(original2, options);
-            string escaped3 = CharUtils.Escape(original3, options);
-            string escaped4 = CharUtils.Escape(original4, options);
-            string escaped5 = CharUtils.Escape(original5, options);
-            string escaped6 = CharUtils.Escape(original6, options);
-
-            Assert.Equal("\\u0041", escaped1);
-            Assert.Equal("\\u0009", escaped2);
-            Assert.Equal("\\u00C4", escaped3);
-            Assert.Equal("\\u3131", escaped4);
-            Assert.Equal("\\u0020", escaped5);
-            Assert.Equal("\\u00A0", escaped6);
+            Assert.Equal(escaped, CharUtils.Escape(original, options));
         }
 
         [Fact]
@@ -250,8 +159,14 @@ namespace Net.Laceous.Utilities.Tests
             Assert.Throws<ArgumentException>(() => CharUtils.Escape(original, options));
         }
 
-        [Fact]
-        public void EscapeTest_FSharp_LowerCaseX2()
+        [Theory]
+        [InlineData('A', "\\x41")]
+        [InlineData('\t', "\\x09")]
+        [InlineData('Ä', "\\xC4")]
+        [InlineData('ㄱ', "\\u3131")] // this won't fit into \xHH so it becomes \uHHHH
+        [InlineData(' ', "\\x20")]
+        [InlineData('\u00A0', "\\xA0")]
+        public void EscapeTest_FSharp_LowerCaseX2(char original, string escaped)
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
@@ -259,26 +174,7 @@ namespace Net.Laceous.Utilities.Tests
                 EscapeLetter = EscapeLetter.LowerCaseX2
             };
 
-            char original1 = 'A';
-            char original2 = '\t';
-            char original3 = 'Ä';
-            char original4 = 'ㄱ';
-            char original5 = ' ';
-            char original6 = '\u00A0'; // non-breaking space
-
-            string escaped1 = CharUtils.Escape(original1, options);
-            string escaped2 = CharUtils.Escape(original2, options);
-            string escaped3 = CharUtils.Escape(original3, options);
-            string escaped4 = CharUtils.Escape(original4, options);
-            string escaped5 = CharUtils.Escape(original5, options);
-            string escaped6 = CharUtils.Escape(original6, options);
-
-            Assert.Equal("\\x41", escaped1);
-            Assert.Equal("\\x09", escaped2);
-            Assert.Equal("\\xC4", escaped3);
-            Assert.Equal("\\u3131", escaped4); // this won't fit into \xHH so it becomes \uHHHH
-            Assert.Equal("\\x20", escaped5);
-            Assert.Equal("\\xA0", escaped6);
+            Assert.Equal(escaped, CharUtils.Escape(original, options));
         }
 
         [Fact]
@@ -309,8 +205,14 @@ namespace Net.Laceous.Utilities.Tests
             Assert.Throws<ArgumentException>(() => CharUtils.Escape(original, options));
         }
 
-        [Fact]
-        public void EscapeTest_FSharp_UpperCaseU8()
+        [Theory]
+        [InlineData('A', "\\U00000041")]
+        [InlineData('\t', "\\U00000009")]
+        [InlineData('Ä', "\\U000000C4")]
+        [InlineData('ㄱ', "\\U00003131")]
+        [InlineData(' ', "\\U00000020")]
+        [InlineData('\u00A0', "\\U000000A0")]
+        public void EscapeTest_FSharp_UpperCaseU8(char original, string escaped)
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
@@ -318,30 +220,17 @@ namespace Net.Laceous.Utilities.Tests
                 EscapeLetter = EscapeLetter.UpperCaseU8
             };
 
-            char original1 = 'A';
-            char original2 = '\t';
-            char original3 = 'Ä';
-            char original4 = 'ㄱ';
-            char original5 = ' ';
-            char original6 = '\u00A0'; // non-breaking space
-
-            string escaped1 = CharUtils.Escape(original1, options);
-            string escaped2 = CharUtils.Escape(original2, options);
-            string escaped3 = CharUtils.Escape(original3, options);
-            string escaped4 = CharUtils.Escape(original4, options);
-            string escaped5 = CharUtils.Escape(original5, options);
-            string escaped6 = CharUtils.Escape(original6, options);
-
-            Assert.Equal("\\U00000041", escaped1);
-            Assert.Equal("\\U00000009", escaped2);
-            Assert.Equal("\\U000000C4", escaped3);
-            Assert.Equal("\\U00003131", escaped4);
-            Assert.Equal("\\U00000020", escaped5);
-            Assert.Equal("\\U000000A0", escaped6);
+            Assert.Equal(escaped, CharUtils.Escape(original, options));
         }
 
-        [Fact]
-        public void EscapeTest_FSharp_Decimal3()
+        [Theory]
+        [InlineData('A', "\\065")]
+        [InlineData('\t', "\\009")]
+        [InlineData('Ä', "\\196")]
+        [InlineData('ㄱ', "\\u3131")] // this won't fit into \DDD so it becomes \uHHHH
+        [InlineData(' ', "\\032")]
+        [InlineData('\u00A0', "\\160")]
+        public void EscapeTest_FSharp_Decimal3(char original, string escaped)
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
@@ -349,30 +238,22 @@ namespace Net.Laceous.Utilities.Tests
                 EscapeLetter = EscapeLetter.Decimal3
             };
 
-            char original1 = 'A';
-            char original2 = '\t';
-            char original3 = 'Ä';
-            char original4 = 'ㄱ';
-            char original5 = ' ';
-            char original6 = '\u00A0'; // non-breaking space
-
-            string escaped1 = CharUtils.Escape(original1, options);
-            string escaped2 = CharUtils.Escape(original2, options);
-            string escaped3 = CharUtils.Escape(original3, options);
-            string escaped4 = CharUtils.Escape(original4, options);
-            string escaped5 = CharUtils.Escape(original5, options);
-            string escaped6 = CharUtils.Escape(original6, options);
-
-            Assert.Equal("\\065", escaped1);
-            Assert.Equal("\\009", escaped2);
-            Assert.Equal("\\196", escaped3);
-            Assert.Equal("\\u3131", escaped4); // this won't fit into \DDD so it becomes \uHHHH
-            Assert.Equal("\\032", escaped5);
-            Assert.Equal("\\160", escaped6);
+            Assert.Equal(escaped, CharUtils.Escape(original, options));
         }
 
-        [Fact]
-        public void EscapeTest_CSharp_UseShortEscape()
+        [Theory]
+        [InlineData('\'', "\\'")]
+        [InlineData('\"', "\\\"")]
+        [InlineData('\\', "\\\\")]
+        [InlineData('\0', "\\0")]
+        [InlineData('\a', "\\a")]
+        [InlineData('\b', "\\b")]
+        [InlineData('\f', "\\f")]
+        [InlineData('\n', "\\n")]
+        [InlineData('\r', "\\r")]
+        [InlineData('\t', "\\t")]
+        [InlineData('\v', "\\v")]
+        public void EscapeTest_CSharp_UseShortEscape(char original, string escaped)
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
@@ -380,45 +261,22 @@ namespace Net.Laceous.Utilities.Tests
                 UseShortEscape = true
             };
 
-            char original1 = '\'';
-            char original2 = '\"';
-            char original3 = '\\';
-            char original4 = '\0';
-            char original5 = '\a';
-            char original6 = '\b';
-            char original7 = '\f';
-            char original8 = '\n';
-            char original9 = '\r';
-            char original10 = '\t';
-            char original11 = '\v';
-
-            string escaped1 = CharUtils.Escape(original1, options);
-            string escaped2 = CharUtils.Escape(original2, options);
-            string escaped3 = CharUtils.Escape(original3, options);
-            string escaped4 = CharUtils.Escape(original4, options);
-            string escaped5 = CharUtils.Escape(original5, options);
-            string escaped6 = CharUtils.Escape(original6, options);
-            string escaped7 = CharUtils.Escape(original7, options);
-            string escaped8 = CharUtils.Escape(original8, options);
-            string escaped9 = CharUtils.Escape(original9, options);
-            string escaped10 = CharUtils.Escape(original10, options);
-            string escaped11 = CharUtils.Escape(original11, options);
-
-            Assert.Equal("\\'", escaped1);
-            Assert.Equal("\\\"", escaped2);
-            Assert.Equal("\\\\", escaped3);
-            Assert.Equal("\\0", escaped4);
-            Assert.Equal("\\a", escaped5);
-            Assert.Equal("\\b", escaped6);
-            Assert.Equal("\\f", escaped7);
-            Assert.Equal("\\n", escaped8);
-            Assert.Equal("\\r", escaped9);
-            Assert.Equal("\\t", escaped10);
-            Assert.Equal("\\v", escaped11);
+            Assert.Equal(escaped, CharUtils.Escape(original, options));
         }
 
-        [Fact]
-        public void EscapeTest_FSharp_UseShortEscape()
+        [Theory]
+        [InlineData('\'', "\\'")]
+        [InlineData('\"', "\\\"")]
+        [InlineData('\\', "\\\\")]
+        [InlineData('\0', "\\u0000")] // fsharp doesn't define \0
+        [InlineData('\a', "\\a")]
+        [InlineData('\b', "\\b")]
+        [InlineData('\f', "\\f")]
+        [InlineData('\n', "\\n")]
+        [InlineData('\r', "\\r")]
+        [InlineData('\t', "\\t")]
+        [InlineData('\v', "\\v")]
+        public void EscapeTest_FSharp_UseShortEscape(char original, string escaped)
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
@@ -426,45 +284,13 @@ namespace Net.Laceous.Utilities.Tests
                 UseShortEscape = true
             };
 
-            char original1 = '\'';
-            char original2 = '\"';
-            char original3 = '\\';
-            char original4 = '\0';
-            char original5 = '\a';
-            char original6 = '\b';
-            char original7 = '\f';
-            char original8 = '\n';
-            char original9 = '\r';
-            char original10 = '\t';
-            char original11 = '\v';
-
-            string escaped1 = CharUtils.Escape(original1, options);
-            string escaped2 = CharUtils.Escape(original2, options);
-            string escaped3 = CharUtils.Escape(original3, options);
-            string escaped4 = CharUtils.Escape(original4, options);
-            string escaped5 = CharUtils.Escape(original5, options);
-            string escaped6 = CharUtils.Escape(original6, options);
-            string escaped7 = CharUtils.Escape(original7, options);
-            string escaped8 = CharUtils.Escape(original8, options);
-            string escaped9 = CharUtils.Escape(original9, options);
-            string escaped10 = CharUtils.Escape(original10, options);
-            string escaped11 = CharUtils.Escape(original11, options);
-
-            Assert.Equal("\\'", escaped1);
-            Assert.Equal("\\\"", escaped2);
-            Assert.Equal("\\\\", escaped3);
-            Assert.Equal("\\u0000", escaped4); // fsharp doesn't define \0
-            Assert.Equal("\\a", escaped5);
-            Assert.Equal("\\b", escaped6);
-            Assert.Equal("\\f", escaped7);
-            Assert.Equal("\\n", escaped8);
-            Assert.Equal("\\r", escaped9);
-            Assert.Equal("\\t", escaped10);
-            Assert.Equal("\\v", escaped11);
+            Assert.Equal(escaped, CharUtils.Escape(original, options));
         }
 
-        [Fact]
-        public void EscapeTest_CSharp_UseLowerCaseHex()
+        [Theory]
+        [InlineData('Ä', "\\u00c4")]
+        [InlineData('\u00A0', "\\u00a0")]
+        public void EscapeTest_CSharp_UseLowerCaseHex(char original, string escaped)
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
@@ -473,30 +299,13 @@ namespace Net.Laceous.Utilities.Tests
                 UseLowerCaseHex = true
             };
 
-            char original1 = 'A';
-            char original2 = '\t';
-            char original3 = 'Ä';
-            char original4 = 'ㄱ';
-            char original5 = ' ';
-            char original6 = '\u00A0'; // non-breaking space
-
-            string escaped1 = CharUtils.Escape(original1, options);
-            string escaped2 = CharUtils.Escape(original2, options);
-            string escaped3 = CharUtils.Escape(original3, options);
-            string escaped4 = CharUtils.Escape(original4, options);
-            string escaped5 = CharUtils.Escape(original5, options);
-            string escaped6 = CharUtils.Escape(original6, options);
-
-            Assert.Equal("\\u0041", escaped1);
-            Assert.Equal("\\u0009", escaped2);
-            Assert.Equal("\\u00c4", escaped3);
-            Assert.Equal("\\u3131", escaped4);
-            Assert.Equal("\\u0020", escaped5);
-            Assert.Equal("\\u00a0", escaped6);
+            Assert.Equal(escaped, CharUtils.Escape(original, options));
         }
 
-        [Fact]
-        public void EscapeTest_FSharp_UseLowerCaseHex()
+        [Theory]
+        [InlineData('Ä', "\\u00c4")]
+        [InlineData('\u00A0', "\\u00a0")]
+        public void EscapeTest_FSharp_UseLowerCaseHex(char original, string escaped)
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
@@ -505,26 +314,7 @@ namespace Net.Laceous.Utilities.Tests
                 UseLowerCaseHex = true
             };
 
-            char original1 = 'A';
-            char original2 = '\t';
-            char original3 = 'Ä';
-            char original4 = 'ㄱ';
-            char original5 = ' ';
-            char original6 = '\u00A0'; // non-breaking space
-
-            string escaped1 = CharUtils.Escape(original1, options);
-            string escaped2 = CharUtils.Escape(original2, options);
-            string escaped3 = CharUtils.Escape(original3, options);
-            string escaped4 = CharUtils.Escape(original4, options);
-            string escaped5 = CharUtils.Escape(original5, options);
-            string escaped6 = CharUtils.Escape(original6, options);
-
-            Assert.Equal("\\u0041", escaped1);
-            Assert.Equal("\\u0009", escaped2);
-            Assert.Equal("\\u00c4", escaped3);
-            Assert.Equal("\\u3131", escaped4);
-            Assert.Equal("\\u0020", escaped5);
-            Assert.Equal("\\u00a0", escaped6);
+            Assert.Equal(escaped, CharUtils.Escape(original, options));
         }
 
         [Fact]
@@ -546,118 +336,79 @@ namespace Net.Laceous.Utilities.Tests
             Assert.Throws<ArgumentException>(() => CharUtils.EscapeSurrogatePair(original, useLowerCaseHex: true));
         }
 
-        [Fact]
-        public void UnescapeTest_CSharp()
+        [Theory]
+        [InlineData("\\u0041", 'A')]
+        [InlineData("\\t", '\t')]
+        [InlineData("\\xC4", 'Ä')]
+        [InlineData("\\x3131", 'ㄱ')]
+        [InlineData("\\x020", ' ')]
+        [InlineData("\\U000000A0", '\u00A0')]
+        public void UnescapeTest_CSharp(string escaped, char unescaped)
         {
             CharUnescapeOptions options = new CharUnescapeOptions()
             {
                 EscapeLanguage = EscapeLanguage.CSharp
             };
 
-            string escaped1 = "\\u0041";
-            string escaped2 = "\\t";
-            string escaped3 = "\\xC4";
-            string escaped4 = "\\x3131";
-            string escaped5 = "\\x020";
-            string escaped6 = "\\U000000A0";
-
-            char unescaped1 = CharUtils.Unescape(escaped1, options);
-            char unescaped2 = CharUtils.Unescape(escaped2, options);
-            char unescaped3 = CharUtils.Unescape(escaped3, options);
-            char unescaped4 = CharUtils.Unescape(escaped4, options);
-            char unescaped5 = CharUtils.Unescape(escaped5, options);
-            char unescaped6 = CharUtils.Unescape(escaped6, options);
-
-            Assert.Equal('A', unescaped1);
-            Assert.Equal('\t', unescaped2);
-            Assert.Equal('Ä', unescaped3);
-            Assert.Equal('ㄱ', unescaped4);
-            Assert.Equal(' ', unescaped5);
-            Assert.Equal('\u00A0', unescaped6); // non-breaking space
+            Assert.Equal(unescaped, CharUtils.Unescape(escaped, options));
         }
 
-        [Fact]
-        public void UnescapeTest_CSharp_BadInput()
+        [Theory]
+        [InlineData("a")]      // not an escaped char
+        [InlineData("\\uBAD")] // not a valid escape
+        public void UnescapeTest_CSharp_BadInput(string escaped)
         {
             CharUnescapeOptions options = new CharUnescapeOptions()
             {
                 EscapeLanguage = EscapeLanguage.CSharp
             };
 
-            string escaped1 = "a";      // not an escaped char
-            string escaped2 = "\\uBAD"; // not a valid escape
-
-            Assert.Throws<ArgumentException>(() => CharUtils.Unescape(escaped1, options));
-            Assert.Throws<ArgumentException>(() => CharUtils.Unescape(escaped2, options));
+            Assert.Throws<ArgumentException>(() => CharUtils.Unescape(escaped, options));
         }
 
-        [Fact]
-        public void UnescapeTest_FSharp()
+        [Theory]
+        [InlineData("\\u0041", 'A')]
+        [InlineData("\\t", '\t')]
+        [InlineData("\\xC4", 'Ä')]
+        [InlineData("\\u3131", 'ㄱ')]
+        [InlineData("\\032", ' ')]
+        [InlineData("\\U000000A0", '\u00A0')]
+        public void UnescapeTest_FSharp(string escaped, char unescaped)
         {
             CharUnescapeOptions options = new CharUnescapeOptions()
             {
                 EscapeLanguage = EscapeLanguage.FSharp
             };
 
-            string escaped1 = "\\u0041";
-            string escaped2 = "\\t";
-            string escaped3 = "\\xC4";
-            string escaped4 = "\\u3131";
-            string escaped5 = "\\032";
-            string escaped6 = "\\U000000A0";
-
-            char unescaped1 = CharUtils.Unescape(escaped1, options);
-            char unescaped2 = CharUtils.Unescape(escaped2, options);
-            char unescaped3 = CharUtils.Unescape(escaped3, options);
-            char unescaped4 = CharUtils.Unescape(escaped4, options);
-            char unescaped5 = CharUtils.Unescape(escaped5, options);
-            char unescaped6 = CharUtils.Unescape(escaped6, options);
-
-            Assert.Equal('A', unescaped1);
-            Assert.Equal('\t', unescaped2);
-            Assert.Equal('Ä', unescaped3);
-            Assert.Equal('ㄱ', unescaped4);
-            Assert.Equal(' ', unescaped5);
-            Assert.Equal('\u00A0', unescaped6); // non-breaking space
+            Assert.Equal(unescaped, CharUtils.Unescape(escaped, options));
         }
 
-        [Fact]
-        public void UnescapeTest_FSharp_GreaterThan255()
+        [Theory]
+        [InlineData("\\065", 'A')] // valid value (between 000-255)
+        [InlineData("\\321", 'A')] // the rest of these work because the parser allows up to 999 when it parses out DDD
+        [InlineData("\\577", 'A')] // the numbers roll over after 255
+        [InlineData("\\833", 'A')]
+        public void UnescapeTest_FSharp_GreaterThan255(string escaped, char unescaped)
         {
             CharUnescapeOptions options = new CharUnescapeOptions()
             {
                 EscapeLanguage = EscapeLanguage.FSharp
             };
 
-            string escaped1 = "\\065"; // valid value (between 000-255)
-            string escaped2 = "\\321"; // the rest of these work because the parser allows up to 999 when it parses out DDD
-            string escaped3 = "\\577"; // the numbers roll over after 255
-            string escaped4 = "\\833";
-
-            char unescaped1 = CharUtils.Unescape(escaped1, options);
-            char unescaped2 = CharUtils.Unescape(escaped2, options);
-            char unescaped3 = CharUtils.Unescape(escaped3, options);
-            char unescaped4 = CharUtils.Unescape(escaped4, options);
-
-            Assert.Equal('A', unescaped1);
-            Assert.Equal('A', unescaped2);
-            Assert.Equal('A', unescaped3);
-            Assert.Equal('A', unescaped4);
+            Assert.Equal(unescaped, CharUtils.Unescape(escaped, options));
         }
 
-        [Fact]
-        public void UnescapeTest_FSharp_BadInput()
+        [Theory]
+        [InlineData("a")]      // not an escaped char
+        [InlineData("\\uBAD")] // not a valid escape
+        public void UnescapeTest_FSharp_BadInput(string escaped)
         {
             CharUnescapeOptions options = new CharUnescapeOptions()
             {
                 EscapeLanguage = EscapeLanguage.FSharp
             };
 
-            string escaped1 = "a";      // not an escaped char
-            string escaped2 = "\\uBAD"; // not a valid escape
-
-            Assert.Throws<ArgumentException>(() => CharUtils.Unescape(escaped1, options));
-            Assert.Throws<ArgumentException>(() => CharUtils.Unescape(escaped2, options));
+            Assert.Throws<ArgumentException>(() => CharUtils.Unescape(escaped, options));
         }
 
         [Fact]
