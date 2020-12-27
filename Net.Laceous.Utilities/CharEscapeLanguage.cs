@@ -3,7 +3,7 @@
     /// <summary>
     /// C# or F#
     /// </summary>
-    public enum EscapeLanguage
+    public enum CharEscapeLanguage
     {
         /// <summary>
         /// C#
@@ -13,6 +13,11 @@
         /// <summary>
         /// F#
         /// </summary>
-        FSharp
+        FSharp,
+
+        /// <summary>
+        /// PowerShell
+        /// </summary>
+        PowerShell
     }
 }

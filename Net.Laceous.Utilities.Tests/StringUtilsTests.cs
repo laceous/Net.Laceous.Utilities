@@ -10,12 +10,12 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = EscapeType.EscapeAll
+                EscapeType = StringEscapeType.EscapeAll
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.CSharp,
-                EscapeLetter = EscapeLetter.LowerCaseU4
+                EscapeLanguage = CharEscapeLanguage.CSharp,
+                EscapeLetter = CharEscapeLetter.LowerCaseU4
             };
 
             string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
@@ -29,12 +29,12 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = EscapeType.EscapeAll
+                EscapeType = StringEscapeType.EscapeAll
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.FSharp,
-                EscapeLetter = EscapeLetter.LowerCaseU4
+                EscapeLanguage = CharEscapeLanguage.FSharp,
+                EscapeLetter = CharEscapeLetter.LowerCaseU4
             };
 
             string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
@@ -48,12 +48,12 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = EscapeType.EscapeNonAscii
+                EscapeType = StringEscapeType.EscapeNonAscii
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.CSharp,
-                EscapeLetter = EscapeLetter.LowerCaseU4
+                EscapeLanguage = CharEscapeLanguage.CSharp,
+                EscapeLetter = CharEscapeLetter.LowerCaseU4
             };
 
             string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
@@ -67,12 +67,12 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = EscapeType.EscapeNonAscii
+                EscapeType = StringEscapeType.EscapeNonAscii
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.FSharp,
-                EscapeLetter = EscapeLetter.LowerCaseU4
+                EscapeLanguage = CharEscapeLanguage.FSharp,
+                EscapeLetter = CharEscapeLetter.LowerCaseU4
             };
 
             string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
@@ -86,13 +86,13 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = EscapeType.EscapeAll,
+                EscapeType = StringEscapeType.EscapeAll,
                 EscapeSurrogatePairs = true
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.CSharp,
-                EscapeLetter = EscapeLetter.LowerCaseU4
+                EscapeLanguage = CharEscapeLanguage.CSharp,
+                EscapeLetter = CharEscapeLetter.LowerCaseU4
             };
 
             string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
@@ -106,13 +106,13 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = EscapeType.EscapeAll,
+                EscapeType = StringEscapeType.EscapeAll,
                 EscapeSurrogatePairs = true
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.FSharp,
-                EscapeLetter = EscapeLetter.LowerCaseU4
+                EscapeLanguage = CharEscapeLanguage.FSharp,
+                EscapeLetter = CharEscapeLetter.LowerCaseU4
             };
 
             string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
@@ -126,12 +126,12 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = EscapeType.EscapeNonAscii
+                EscapeType = StringEscapeType.EscapeNonAscii
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.CSharp,
-                EscapeLetter = EscapeLetter.LowerCaseX2 // or LowerCaseX1/LowerCaseX3
+                EscapeLanguage = CharEscapeLanguage.CSharp,
+                EscapeLetter = CharEscapeLetter.LowerCaseX2 // or LowerCaseX1/LowerCaseX3
             };
 
             string original = "ÄA";
@@ -146,12 +146,12 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = EscapeType.EscapeNonAscii
+                EscapeType = StringEscapeType.EscapeNonAscii
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.FSharp,
-                EscapeLetter = EscapeLetter.LowerCaseX2 // or LowerCaseX1/LowerCaseX3
+                EscapeLanguage = CharEscapeLanguage.FSharp,
+                EscapeLetter = CharEscapeLetter.LowerCaseX2 // or LowerCaseX1/LowerCaseX3
             };
 
             string original = "ㄱg";
@@ -166,7 +166,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             CharUnescapeOptions options = new CharUnescapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.CSharp
+                EscapeLanguage = CharEscapeLanguage.CSharp
             };
 
             string escaped = "\\u0041\\u0042\\u0043\\u0020\\u00C4\\u00D6\\u00DC\\u0020\\u3131\\u3134\\u3137\\u0020\\uD83D\\uDE01\\uD83D\\uDE03\\uD83D\\uDE13\\u0020\\u000D\\u000A\\u0009";
@@ -180,7 +180,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             CharUnescapeOptions options = new CharUnescapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.FSharp
+                EscapeLanguage = CharEscapeLanguage.FSharp
             };
 
             string escaped = "\\u0041\\u0042\\u0043\\u0020\\u00C4\\u00D6\\u00DC\\u0020\\u3131\\u3134\\u3137\\u0020\\uD83D\\uDE01\\uD83D\\uDE03\\uD83D\\uDE13\\u0020\\u000D\\u000A\\u0009";
@@ -198,7 +198,7 @@ namespace Net.Laceous.Utilities.Tests
             };
             CharUnescapeOptions cOptions = new CharUnescapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.CSharp
+                EscapeLanguage = CharEscapeLanguage.CSharp
             };
 
             string escaped = "\\uBAD";
@@ -220,7 +220,7 @@ namespace Net.Laceous.Utilities.Tests
             };
             CharUnescapeOptions cOptions = new CharUnescapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.FSharp
+                EscapeLanguage = CharEscapeLanguage.FSharp
             };
 
             string escaped = "\\uBAD";

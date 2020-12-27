@@ -3,10 +3,25 @@
     /// <summary>
     /// Which unicode escape letter to use
     /// </summary>
-    public enum EscapeLetter
+    public enum CharEscapeLetter
     {
         /// <summary>
-        /// CSharp/FSharp: \\uHHHH
+        /// PowerShell: `u{H} (or `u{HH}, `u{HHH}, `u{HHHH})
+        /// </summary>
+        LowerCaseU1,
+
+        /// <summary>
+        /// PowerShell: `u{HH} (or `u{HHH}, `u{HHHH})
+        /// </summary>
+        LowerCaseU2,
+
+        /// <summary>
+        /// PowerShell: `u{HHH} (or `u{HHHH})
+        /// </summary>
+        LowerCaseU3,
+
+        /// <summary>
+        /// CSharp/FSharp: \\uHHHH; PowerShell: `u{HHHH}
         /// </summary>
         LowerCaseU4,
 

@@ -3,7 +3,7 @@
     /// <summary>
     /// Which chars to escape in the string
     /// </summary>
-    public enum EscapeType
+    public enum StringEscapeType
     {
         /// <summary>
         /// Escape all chars

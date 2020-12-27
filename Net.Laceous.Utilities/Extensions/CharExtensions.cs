@@ -36,13 +36,35 @@
         }
 
         /// <summary>
-        /// Checks if the char is an ascii print char (including space)
+        /// Checks if the char is {
         /// </summary>
         /// <param name="c">Char to check</param>
-        /// <returns>True if in the range of 32 to 126, otherwise false</returns>
-        internal static bool IsAsciiPrintChar(this char c)
+        /// <returns>True if {, otherwise false</returns>
+        internal static bool IsOpeningCurlyBrace(this char c)
         {
-            return c >= 32 && c <= 126;
+            return c == '{';
+        }
+
+        /// <summary>
+        /// Checks if the char is }
+        /// </summary>
+        /// <param name="c">Char to check</param>
+        /// <returns>True if }, otherwise false</returns>
+        internal static bool IsClosingCurlyBrace(this char c)
+        {
+            return c == '}';
+        }
+
+        /// <summary>
+        /// Checks if the char is an ascii print char (including space)
+        /// Exclude quotes and escape char
+        /// </summary>
+        /// <param name="c">Char to check</param>
+        /// <returns>True if in the range of 32 to 126 (and quotable), otherwise false</returns>
+        internal static bool IsQuotableAscii(this char c, CharEscapeLanguage escapeLanguage)
+        {
+            char escape = escapeLanguage == CharEscapeLanguage.PowerShell ? '`' : '\\';
+            return c != '\'' && c != '\"' && c != escape && c >= 32 && c <= 126;
         }
     }
 }
