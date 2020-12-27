@@ -26,7 +26,7 @@ namespace Net.Laceous.Utilities
                     return EscapeFSharp(c, escapeOptions);
                 case CharEscapeLanguage.PowerShell:
                     return EscapePowerShell(c, escapeOptions);
-                default: // EscapeLanguage.CSharp
+                default: // CSharp
                     return EscapeCSharp(c, escapeOptions);
             }
         }
@@ -39,23 +39,6 @@ namespace Net.Laceous.Utilities
         /// <returns>String with escape sequence for char</returns>
         private static string EscapeCSharp(char c, CharEscapeOptions escapeOptions)
         {
-            if (escapeOptions.EscapeLetter == CharEscapeLetter.Decimal3)
-            {
-                throw new ArgumentException("Decimal3 is not valid for CSharp.", nameof(escapeOptions));
-            }
-            if (escapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseU1)
-            {
-                throw new ArgumentException("LowerCaseU1 is not valid for CSharp.", nameof(escapeOptions));
-            }
-            if (escapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseU2)
-            {
-                throw new ArgumentException("LowerCaseU2 is not valid for CSharp.", nameof(escapeOptions));
-            }
-            if (escapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseU3)
-            {
-                throw new ArgumentException("LowerCaseU3 is not valid for CSharp.", nameof(escapeOptions));
-            }
-
             string xu;
             string hex;
             switch (escapeOptions.EscapeLetter)
@@ -80,10 +63,12 @@ namespace Net.Laceous.Utilities
                     xu = "U";
                     hex = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
                     break;
-                default: // EscapeLetter.LowerCaseU4
+                case CharEscapeLetter.LowerCaseU4:
                     xu = "u";
                     hex = escapeOptions.UseLowerCaseHex ? "x4" : "X4";
                     break;
+                default:
+                    throw new ArgumentException(string.Format("{0} is not valid for CSharp.", escapeOptions.EscapeLetter), nameof(escapeOptions));
             }
 
             if (escapeOptions.UseShortEscape)
@@ -126,31 +111,6 @@ namespace Net.Laceous.Utilities
         /// <returns>String with escape sequence for char</returns>
         private static string EscapeFSharp(char c, CharEscapeOptions escapeOptions)
         {
-            if (escapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX1)
-            {
-                throw new ArgumentException("LowerCaseX1 is not valid for FSharp.", nameof(escapeOptions));
-            }
-            if (escapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX3)
-            {
-                throw new ArgumentException("LowerCaseX3 is not valid for FSharp.", nameof(escapeOptions));
-            }
-            if (escapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX4)
-            {
-                throw new ArgumentException("LowerCaseX4 is not valid for FSharp.", nameof(escapeOptions));
-            }
-            if (escapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseU1)
-            {
-                throw new ArgumentException("LowerCaseU1 is not valid for FSharp.", nameof(escapeOptions));
-            }
-            if (escapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseU2)
-            {
-                throw new ArgumentException("LowerCaseU2 is not valid for FSharp.", nameof(escapeOptions));
-            }
-            if (escapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseU3)
-            {
-                throw new ArgumentException("LowerCaseU3 is not valid for FSharp.", nameof(escapeOptions));
-            }
-
             string xu;
             string hex;
             switch (escapeOptions.EscapeLetter)
@@ -167,10 +127,12 @@ namespace Net.Laceous.Utilities
                     xu = "U";
                     hex = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
                     break;
-                default: // EscapeLetter.LowerCaseU4
+                case CharEscapeLetter.LowerCaseU4:
                     xu = "u";
                     hex = escapeOptions.UseLowerCaseHex ? "x4" : "X4";
                     break;
+                default:
+                    throw new ArgumentException(string.Format("{0} is not valid for FSharp.", escapeOptions.EscapeLetter), nameof(escapeOptions));
             }
 
             if (escapeOptions.UseShortEscape)
@@ -220,29 +182,23 @@ namespace Net.Laceous.Utilities
         /// <returns>String with escape sequence for char</returns>
         private static string EscapePowerShell(Char c, CharEscapeOptions escapeOptions)
         {
-            if (escapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX1)
+            string hex;
+            switch (escapeOptions.EscapeLetter)
             {
-                throw new ArgumentException("LowerCaseX1 is not valid for PowerShell.", nameof(escapeOptions));
-            }
-            if (escapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX2)
-            {
-                throw new ArgumentException("LowerCaseX2 is not valid for PowerShell.", nameof(escapeOptions));
-            }
-            if (escapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX3)
-            {
-                throw new ArgumentException("LowerCaseX3 is not valid for PowerShell.", nameof(escapeOptions));
-            }
-            if (escapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX4)
-            {
-                throw new ArgumentException("LowerCaseX4 is not valid for PowerShell.", nameof(escapeOptions));
-            }
-            if (escapeOptions.EscapeLetter == CharEscapeLetter.UpperCaseU8)
-            {
-                throw new ArgumentException("UpperCaseU8 is not valid for PowerShell.", nameof(escapeOptions));
-            }
-            if (escapeOptions.EscapeLetter == CharEscapeLetter.Decimal3)
-            {
-                throw new ArgumentException("Decimal3 is not valid for PowerShell.", nameof(escapeOptions));
+                case CharEscapeLetter.LowerCaseU1:
+                    hex = escapeOptions.UseLowerCaseHex ? "x1" : "X1";
+                    break;
+                case CharEscapeLetter.LowerCaseU2:
+                    hex = escapeOptions.UseLowerCaseHex ? "x2" : "X2";
+                    break;
+                case CharEscapeLetter.LowerCaseU3:
+                    hex = escapeOptions.UseLowerCaseHex ? "x3" : "X3";
+                    break;
+                case CharEscapeLetter.LowerCaseU4:
+                    hex = escapeOptions.UseLowerCaseHex ? "x4" : "X4";
+                    break;
+                default:
+                    throw new ArgumentException(string.Format("{0} is not valid for PowerShell.", escapeOptions.EscapeLetter), nameof(escapeOptions));
             }
 
             if (escapeOptions.UseShortEscape)
@@ -272,23 +228,6 @@ namespace Net.Laceous.Utilities
                     case '`':
                         return "``";  // not defined in the docs, but useful
                 }
-            }
-
-            string hex;
-            switch (escapeOptions.EscapeLetter)
-            {
-                case CharEscapeLetter.LowerCaseU1:
-                    hex = escapeOptions.UseLowerCaseHex ? "x1" : "X1";
-                    break;
-                case CharEscapeLetter.LowerCaseU2:
-                    hex = escapeOptions.UseLowerCaseHex ? "x2" : "X2";
-                    break;
-                case CharEscapeLetter.LowerCaseU3:
-                    hex = escapeOptions.UseLowerCaseHex ? "x3" : "X3";
-                    break;
-                default: // EscapeLetter.LowerCaseU4
-                    hex = escapeOptions.UseLowerCaseHex ? "x4" : "X4";
-                    break;
             }
 
             return "`u{" + ((int)c).ToString(hex) + "}"; // this is supported in PowerShell v7, but not Windows PowerShell v5

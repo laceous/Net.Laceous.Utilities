@@ -60,6 +60,7 @@
         /// Exclude quotes and escape char
         /// </summary>
         /// <param name="c">Char to check</param>
+        /// <param name="escapeLanguage">Escape language to determine escape char</param>
         /// <returns>True if in the range of 32 to 126 (and quotable), otherwise false</returns>
         internal static bool IsQuotableAscii(this char c, CharEscapeLanguage escapeLanguage)
         {

@@ -114,7 +114,7 @@ namespace Net.Laceous.Utilities
                     return UnescapeFSharp(s, stringUnescapeOptions, charUnescapeOptions);
                 case CharEscapeLanguage.PowerShell:
                     return UnescapePowerShell(s, stringUnescapeOptions, charUnescapeOptions);
-                default: // EscapeLanguage.CSharp
+                default: // CSharp
                     return UnescapeCSharp(s, stringUnescapeOptions, charUnescapeOptions);
             }
         }
