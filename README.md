@@ -54,7 +54,7 @@ Supported [C# escape sequences](https://docs.microsoft.com/en-us/dotnet/csharp/p
 ```fsharp
 Console.OutputEncoding <- Encoding.UTF8 // use a terminal that can support emojis
 
-let ceOptions = new CharEscapeOptions(escapeLanguage = CharEscapeLanguage.FSharp, escapeLetter = CharEscapeLetter.LowerCaseU4, useShortEscape = false)
+let ceOptions = new CharEscapeOptions(escapeLanguage = CharEscapeLanguage.FSharp, escapeLetter = CharEscapeLetter.LowerCaseU4, useLowerCaseHex = false, useShortEscape = false)
 let cuOptions = new CharUnescapeOptions(escapeLanguage = CharEscapeLanguage.FSharp)
 let seOptions = new StringEscapeOptions(escapeType = StringEscapeType.EscapeNonAscii, escapeSurrogatePairs = true)
 let suOptions = new StringUnescapeOptions(isUnrecognizedEscapeVerbatim = true)
