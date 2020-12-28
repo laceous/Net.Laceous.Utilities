@@ -7,7 +7,7 @@ This currently contains char and string utilities targeting [.NET Standard 2.0](
 ### C#
 
 ```csharp
-Console.OutputEncoding = Encoding.UTF8; // use a terminal that can support emojis
+Console.OutputEncoding = Encoding.UTF8; // use a terminal that supports emojis
 
 CharEscapeOptions ceOptions = new CharEscapeOptions(escapeLanguage: CharEscapeLanguage.CSharp, escapeLetter: CharEscapeLetter.LowerCaseU4, useLowerCaseHex: false, useShortEscape: false);
 CharUnescapeOptions cuOptions = new CharUnescapeOptions(escapeLanguage: CharEscapeLanguage.CSharp);
@@ -52,7 +52,7 @@ Supported [C# escape sequences](https://docs.microsoft.com/en-us/dotnet/csharp/p
 ### F#
 
 ```fsharp
-Console.OutputEncoding <- Encoding.UTF8 // use a terminal that can support emojis
+Console.OutputEncoding <- Encoding.UTF8 // use a terminal that supports emojis
 
 let ceOptions = new CharEscapeOptions(escapeLanguage = CharEscapeLanguage.FSharp, escapeLetter = CharEscapeLetter.LowerCaseU4, useLowerCaseHex = false, useShortEscape = false)
 let cuOptions = new CharUnescapeOptions(escapeLanguage = CharEscapeLanguage.FSharp)
