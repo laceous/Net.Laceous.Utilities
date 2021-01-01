@@ -22,9 +22,11 @@ namespace Net.Laceous.Utilities
 
             switch (escapeOptions.EscapeLanguage)
             {
-                case EscapeLanguage.FSharp:
+                case CharEscapeLanguage.FSharp:
                     return EscapeFSharp(c, escapeOptions);
-                default: // EscapeLanguage.CSharp
+                case CharEscapeLanguage.PowerShell:
+                    return EscapePowerShell(c, escapeOptions);
+                default: // CSharp
                     return EscapeCSharp(c, escapeOptions);
             }
         }
@@ -37,39 +39,36 @@ namespace Net.Laceous.Utilities
         /// <returns>String with escape sequence for char</returns>
         private static string EscapeCSharp(char c, CharEscapeOptions escapeOptions)
         {
-            if (escapeOptions.EscapeLetter == EscapeLetter.Decimal3)
-            {
-                throw new ArgumentException("Decimal3 is not valid for CSharp.", nameof(escapeOptions));
-            }
-
             string xu;
             string hex;
             switch (escapeOptions.EscapeLetter)
             {
-                case EscapeLetter.LowerCaseX1:
+                case CharEscapeLetter.LowerCaseX1:
                     xu = "x";
                     hex = escapeOptions.UseLowerCaseHex ? "x1" : "X1";
                     break;
-                case EscapeLetter.LowerCaseX2:
+                case CharEscapeLetter.LowerCaseX2:
                     xu = "x";
                     hex = escapeOptions.UseLowerCaseHex ? "x2" : "X2";
                     break;
-                case EscapeLetter.LowerCaseX3:
+                case CharEscapeLetter.LowerCaseX3:
                     xu = "x";
                     hex = escapeOptions.UseLowerCaseHex ? "x3" : "X3";
                     break;
-                case EscapeLetter.LowerCaseX4:
+                case CharEscapeLetter.LowerCaseX4:
                     xu = "x";
                     hex = escapeOptions.UseLowerCaseHex ? "x4" : "X4";
                     break;
-                case EscapeLetter.UpperCaseU8:
+                case CharEscapeLetter.UpperCaseU8:
                     xu = "U";
                     hex = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
                     break;
-                default: // EscapeLetter.LowerCaseU4
+                case CharEscapeLetter.LowerCaseU4:
                     xu = "u";
                     hex = escapeOptions.UseLowerCaseHex ? "x4" : "X4";
                     break;
+                default:
+                    throw new ArgumentException(string.Format("{0} is not valid for CSharp.", escapeOptions.EscapeLetter), nameof(escapeOptions));
             }
 
             if (escapeOptions.UseShortEscape)
@@ -112,39 +111,28 @@ namespace Net.Laceous.Utilities
         /// <returns>String with escape sequence for char</returns>
         private static string EscapeFSharp(char c, CharEscapeOptions escapeOptions)
         {
-            if (escapeOptions.EscapeLetter == EscapeLetter.LowerCaseX1)
-            {
-                throw new ArgumentException("LowerCaseX1 is not valid for FSharp.", nameof(escapeOptions));
-            }
-            if (escapeOptions.EscapeLetter == EscapeLetter.LowerCaseX3)
-            {
-                throw new ArgumentException("LowerCaseX3 is not valid for FSharp.", nameof(escapeOptions));
-            }
-            if (escapeOptions.EscapeLetter == EscapeLetter.LowerCaseX4)
-            {
-                throw new ArgumentException("LowerCaseX4 is not valid for FSharp.", nameof(escapeOptions));
-            }
-
             string xu;
             string hex;
             switch (escapeOptions.EscapeLetter)
             {
-                case EscapeLetter.Decimal3:
+                case CharEscapeLetter.Decimal3:
                     xu = "";
                     hex = "D3";
                     break;
-                case EscapeLetter.LowerCaseX2:
+                case CharEscapeLetter.LowerCaseX2:
                     xu = "x";
                     hex = escapeOptions.UseLowerCaseHex ? "x2" : "X2";
                     break;
-                case EscapeLetter.UpperCaseU8:
+                case CharEscapeLetter.UpperCaseU8:
                     xu = "U";
                     hex = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
                     break;
-                default: // EscapeLetter.LowerCaseU4
+                case CharEscapeLetter.LowerCaseU4:
                     xu = "u";
                     hex = escapeOptions.UseLowerCaseHex ? "x4" : "X4";
                     break;
+                default:
+                    throw new ArgumentException(string.Format("{0} is not valid for FSharp.", escapeOptions.EscapeLetter), nameof(escapeOptions));
             }
 
             if (escapeOptions.UseShortEscape)
@@ -175,7 +163,7 @@ namespace Net.Laceous.Utilities
                 }
             }
 
-            if (c > 255 && (escapeOptions.EscapeLetter == EscapeLetter.Decimal3 || escapeOptions.EscapeLetter == EscapeLetter.LowerCaseX2))
+            if (c > 255 && (escapeOptions.EscapeLetter == CharEscapeLetter.Decimal3 || escapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX2))
             {
                 // switch to \\uHHHH because we can only support 0-255 here for \\DDD and \\xHH
                 return "\\u" + ((int)c).ToString(escapeOptions.UseLowerCaseHex ? "x4" : "X4");
@@ -187,25 +175,97 @@ namespace Net.Laceous.Utilities
         }
 
         /// <summary>
-        /// Escape surrogate pair with \\UHHHHHHHH
+        /// Escape char with backslash sequence (e.g. \n -> `n)
         /// </summary>
-        /// <param name="highSurrogate">High surrogate</param>
-        /// <param name="lowSurrogate">Low surrogate</param>
-        /// <param name="useLowerCaseHex">Use lower case hex instead of upper case hex</param>
-        /// <returns>String with escape sequence for surrogate pair</returns>
-        public static string EscapeSurrogatePair(char highSurrogate, char lowSurrogate, bool useLowerCaseHex = false)
+        /// <param name="c">Char to escape</param>
+        /// <param name="escapeOptions">Escape options</param>
+        /// <returns>String with escape sequence for char</returns>
+        private static string EscapePowerShell(Char c, CharEscapeOptions escapeOptions)
         {
-            string hex = useLowerCaseHex ? "x8" : "X8";
-            return "\\U" + char.ConvertToUtf32(highSurrogate, lowSurrogate).ToString(hex);
+            string hex;
+            switch (escapeOptions.EscapeLetter)
+            {
+                case CharEscapeLetter.LowerCaseU1:
+                    hex = escapeOptions.UseLowerCaseHex ? "x1" : "X1";
+                    break;
+                case CharEscapeLetter.LowerCaseU2:
+                    hex = escapeOptions.UseLowerCaseHex ? "x2" : "X2";
+                    break;
+                case CharEscapeLetter.LowerCaseU3:
+                    hex = escapeOptions.UseLowerCaseHex ? "x3" : "X3";
+                    break;
+                case CharEscapeLetter.LowerCaseU4:
+                    hex = escapeOptions.UseLowerCaseHex ? "x4" : "X4";
+                    break;
+                default:
+                    throw new ArgumentException(string.Format("{0} is not valid for PowerShell.", escapeOptions.EscapeLetter), nameof(escapeOptions));
+            }
+
+            if (escapeOptions.UseShortEscape)
+            {
+                switch (c)
+                {
+                    case '\0':
+                        return "`0";
+                    case '\a':
+                        return "`a";
+                    case '\b':
+                        return "`b";
+                    case '\x1B':     // escape
+                        return "`e"; // this is supported in PowerShell v7, but not Windows PowerShell v5
+                    case '\f':
+                        return "`f";
+                    case '\n':
+                        return "`n";
+                    case '\r':
+                        return "`r";
+                    case '\t':
+                        return "`t";
+                    case '\v':
+                        return "`v";
+                    case '\"':
+                        return "`\""; // not defined in the docs, but useful
+                    case '`':
+                        return "``";  // not defined in the docs, but useful
+                }
+            }
+
+            return "`u{" + ((int)c).ToString(hex) + "}"; // this is supported in PowerShell v7, but not Windows PowerShell v5
         }
 
         /// <summary>
-        /// Escape surrogate pair with \\UHHHHHHHH
+        /// Escape surrogate pair with \\UHHHHHHHH or `u{HHHHH}
+        /// </summary>
+        /// <param name="highSurrogate">High surrogate</param>
+        /// <param name="lowSurrogate">Low surrogate</param>
+        /// <param name="escapeOptions">Char escape options</param>
+        /// <returns>String with escape sequence for surrogate pair</returns>
+        public static string EscapeSurrogatePair(char highSurrogate, char lowSurrogate, CharEscapeOptions escapeOptions = null)
+        {
+            if (escapeOptions == null)
+            {
+                escapeOptions = new CharEscapeOptions();
+            }
+
+            string hex;
+            switch (escapeOptions.EscapeLanguage)
+            {
+                case CharEscapeLanguage.PowerShell:
+                    hex = escapeOptions.UseLowerCaseHex ? "x5" : "X5";
+                    return "`u{" + char.ConvertToUtf32(highSurrogate, lowSurrogate).ToString(hex) + "}";
+                default: // CSharp/FSharp
+                    hex = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
+                    return "\\U" + char.ConvertToUtf32(highSurrogate, lowSurrogate).ToString(hex);
+            }
+        }
+
+        /// <summary>
+        /// Escape surrogate pair with \\UHHHHHHHH or `u{HHHHH}
         /// </summary>
         /// <param name="s">String containing the surrogate pair</param>
-        /// <param name="useLowerCaseHex">Use lower case hex instead of upper case hex</param>
+        /// <param name="escapeOptions">Char escape options</param>
         /// <returns>String with escape sequence for surrogate pair</returns>
-        public static string EscapeSurrogatePair(string s, bool useLowerCaseHex = false)
+        public static string EscapeSurrogatePair(string s, CharEscapeOptions escapeOptions = null)
         {
             if (s == null)
             {
@@ -214,7 +274,7 @@ namespace Net.Laceous.Utilities
 
             if (IsSurrogatePair(s))
             {
-                return EscapeSurrogatePair(s[0], s[1], useLowerCaseHex);
+                return EscapeSurrogatePair(s[0], s[1], escapeOptions);
             }
             throw new ArgumentException("String did not contain exactly one surrogate pair.", nameof(s));
         }
@@ -236,15 +296,30 @@ namespace Net.Laceous.Utilities
                 unescapeOptions = new CharUnescapeOptions();
             }
 
-            // escaped char will have more than 1 char
-            // longest escaped string: \UHHHHHHHH
-            if (s.Length > 1 && s.Length <= 10 && s.StartsWith("\\", StringComparison.Ordinal))
+            string unescaped = String.Empty;
+            switch (unescapeOptions.EscapeLanguage)
             {
-                string unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
-                if (unescaped.Length == 1)
-                {
-                    return unescaped[0];
-                }
+                case CharEscapeLanguage.PowerShell:
+                    // escaped char will have more than 1 char
+                    // longest escaped string: `u{HHHHHH}
+                    if (s.Length > 1 && s.Length <= 10 && s.StartsWith("`", StringComparison.Ordinal))
+                    {
+                        unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
+                    }
+                    break;
+                default: // CSharp/FSharp
+                    // escaped char will have more than 1 char
+                    // longest escaped string: \UHHHHHHHH
+                    if (s.Length > 1 && s.Length <= 10 && s.StartsWith("\\", StringComparison.Ordinal))
+                    {
+                        unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
+                    }
+                    break;
+            }
+
+            if (unescaped.Length == 1)
+            {
+                return unescaped[0];
             }
             throw new ArgumentException("String did not contain exactly one escaped char.", nameof(s));
         }
@@ -255,27 +330,44 @@ namespace Net.Laceous.Utilities
         /// <param name="s">String containing the escaped surrogate pair</param>
         /// <param name="highSurrogate">Return high surrogate</param>
         /// <param name="lowSurrogate">Return low surrogate</param>
-        public static void UnescapeSurrogatePair(string s, out char highSurrogate, out char lowSurrogate)
+        /// <param name="unescapeOptions">Char unescape options</param>
+        public static void UnescapeSurrogatePair(string s, out char highSurrogate, out char lowSurrogate, CharUnescapeOptions unescapeOptions = null)
         {
             if (s == null)
             {
                 throw new ArgumentNullException(nameof(s));
             }
-
-            // escaped surrogate pairs look like this: \UHHHHHHHH
-            // you could techincally have an escaped surrogate pair look like this: \uHHHH\uHHHH
-            // however, this method is for reversing CharUtils.EscapeSurrogatePair which always uses \U
-            if (s.Length == 10 && s.StartsWith("\\U", StringComparison.Ordinal))
+            if (unescapeOptions == null)
             {
-                // \\U is handled the same between C# and F#
-                string unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true));
+                unescapeOptions = new CharUnescapeOptions();
+            }
 
-                if (IsSurrogatePair(unescaped))
-                {
-                    highSurrogate = unescaped[0];
-                    lowSurrogate = unescaped[1];
-                    return;
-                }
+            string unescaped = String.Empty;
+            switch (unescapeOptions.EscapeLanguage)
+            {
+                case CharEscapeLanguage.PowerShell:
+                    // escaped surrogate pairs look like this: `u{HHHHH}, `u{HHHHHH}
+                    if (s.Length >= 9 && s.Length <= 10 && s.StartsWith("`u{", StringComparison.Ordinal))
+                    {
+                        unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
+                    }
+                    break;
+                default: // CSharp/FSharp
+                    // escaped surrogate pairs look like this: \UHHHHHHHH
+                    // you could techincally have an escaped surrogate pair look like this: \uHHHH\uHHHH
+                    // however, this method is for reversing CharUtils.EscapeSurrogatePair which always uses \U
+                    if (s.Length == 10 && s.StartsWith("\\U", StringComparison.Ordinal))
+                    {
+                        unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
+                    }
+                    break;
+            }
+
+            if (IsSurrogatePair(unescaped))
+            {
+                highSurrogate = unescaped[0];
+                lowSurrogate = unescaped[1];
+                return;
             }
             throw new ArgumentException("String did not contain exactly one escaped surrogate pair.", nameof(s));
         }
@@ -284,15 +376,16 @@ namespace Net.Laceous.Utilities
         /// Unescape backslash sequence to surrogate pair
         /// </summary>
         /// <param name="s">String containing the escaped surrogate pair</param>
+        /// <param name="unescapeOptions">Char unescape options</param>
         /// <returns>String containing the high surrogate + low surrogate</returns>
-        public static string UnescapeSurrogatePair(string s)
+        public static string UnescapeSurrogatePair(string s, CharUnescapeOptions unescapeOptions = null)
         {
             if (s == null)
             {
                 throw new ArgumentNullException(nameof(s));
             }
 
-            UnescapeSurrogatePair(s, out char highSurrogate, out char lowSurrogate);
+            UnescapeSurrogatePair(s, out char highSurrogate, out char lowSurrogate, unescapeOptions);
             return new string(new char[] { highSurrogate, lowSurrogate });
         }
 

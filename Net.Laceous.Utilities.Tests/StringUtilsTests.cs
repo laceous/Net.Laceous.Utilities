@@ -10,12 +10,12 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = EscapeType.EscapeAll
+                EscapeType = StringEscapeType.EscapeAll
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.CSharp,
-                EscapeLetter = EscapeLetter.LowerCaseU4
+                EscapeLanguage = CharEscapeLanguage.CSharp,
+                EscapeLetter = CharEscapeLetter.LowerCaseU4
             };
 
             string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
@@ -29,12 +29,12 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = EscapeType.EscapeAll
+                EscapeType = StringEscapeType.EscapeAll
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.FSharp,
-                EscapeLetter = EscapeLetter.LowerCaseU4
+                EscapeLanguage = CharEscapeLanguage.FSharp,
+                EscapeLetter = CharEscapeLetter.LowerCaseU4
             };
 
             string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
@@ -44,16 +44,35 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Fact]
+        public void EscapeTest_PowerShell_LowerCaseU4_EscapeAll()
+        {
+            StringEscapeOptions sOptions = new StringEscapeOptions()
+            {
+                EscapeType = StringEscapeType.EscapeAll
+            };
+            CharEscapeOptions cOptions = new CharEscapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.PowerShell,
+                EscapeLetter = CharEscapeLetter.LowerCaseU4
+            };
+
+            string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
+            string escaped = StringUtils.Escape(original, stringEscapeOptions: sOptions, charEscapeOptions: cOptions);
+
+            Assert.Equal("`u{0041}`u{0042}`u{0043}`u{0020}`u{00C4}`u{00D6}`u{00DC}`u{0020}`u{3131}`u{3134}`u{3137}`u{0020}`u{D83D}`u{DE01}`u{D83D}`u{DE03}`u{D83D}`u{DE13}`u{0020}`u{000D}`u{000A}`u{0009}", escaped);
+        }
+
+        [Fact]
         public void EscapeTest_CSharp_LowerCaseU4_EscapeNonAscii()
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = EscapeType.EscapeNonAscii
+                EscapeType = StringEscapeType.EscapeNonAscii
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.CSharp,
-                EscapeLetter = EscapeLetter.LowerCaseU4
+                EscapeLanguage = CharEscapeLanguage.CSharp,
+                EscapeLetter = CharEscapeLetter.LowerCaseU4
             };
 
             string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
@@ -67,12 +86,12 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = EscapeType.EscapeNonAscii
+                EscapeType = StringEscapeType.EscapeNonAscii
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.FSharp,
-                EscapeLetter = EscapeLetter.LowerCaseU4
+                EscapeLanguage = CharEscapeLanguage.FSharp,
+                EscapeLetter = CharEscapeLetter.LowerCaseU4
             };
 
             string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
@@ -82,17 +101,36 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Fact]
+        public void EscapeTest_PowerShell_LowerCaseU4_EscapeNonAscii()
+        {
+            StringEscapeOptions sOptions = new StringEscapeOptions()
+            {
+                EscapeType = StringEscapeType.EscapeNonAscii
+            };
+            CharEscapeOptions cOptions = new CharEscapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.PowerShell,
+                EscapeLetter = CharEscapeLetter.LowerCaseU4
+            };
+
+            string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
+            string escaped = StringUtils.Escape(original, stringEscapeOptions: sOptions, charEscapeOptions: cOptions);
+
+            Assert.Equal("ABC `u{00C4}`u{00D6}`u{00DC} `u{3131}`u{3134}`u{3137} `u{D83D}`u{DE01}`u{D83D}`u{DE03}`u{D83D}`u{DE13} `u{000D}`u{000A}`u{0009}", escaped);
+        }
+
+        [Fact]
         public void EscapeTest_CSharp_LowerCaseU4_EscapeAll_EscapeSurrogatePairs()
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = EscapeType.EscapeAll,
+                EscapeType = StringEscapeType.EscapeAll,
                 EscapeSurrogatePairs = true
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.CSharp,
-                EscapeLetter = EscapeLetter.LowerCaseU4
+                EscapeLanguage = CharEscapeLanguage.CSharp,
+                EscapeLetter = CharEscapeLetter.LowerCaseU4
             };
 
             string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
@@ -106,13 +144,13 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = EscapeType.EscapeAll,
+                EscapeType = StringEscapeType.EscapeAll,
                 EscapeSurrogatePairs = true
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.FSharp,
-                EscapeLetter = EscapeLetter.LowerCaseU4
+                EscapeLanguage = CharEscapeLanguage.FSharp,
+                EscapeLetter = CharEscapeLetter.LowerCaseU4
             };
 
             string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
@@ -122,16 +160,36 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Fact]
+        public void EscapeTest_PowerShell_LowerCaseU4_EscapeAll_EscapeSurrogatePairs()
+        {
+            StringEscapeOptions sOptions = new StringEscapeOptions()
+            {
+                EscapeType = StringEscapeType.EscapeAll,
+                EscapeSurrogatePairs = true
+            };
+            CharEscapeOptions cOptions = new CharEscapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.PowerShell,
+                EscapeLetter = CharEscapeLetter.LowerCaseU4
+            };
+
+            string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
+            string escaped = StringUtils.Escape(original, stringEscapeOptions: sOptions, charEscapeOptions: cOptions);
+
+            Assert.Equal("`u{0041}`u{0042}`u{0043}`u{0020}`u{00C4}`u{00D6}`u{00DC}`u{0020}`u{3131}`u{3134}`u{3137}`u{0020}`u{1F601}`u{1F603}`u{1F613}`u{0020}`u{000D}`u{000A}`u{0009}", escaped);
+        }
+
+        [Fact]
         public void EscapeTest_CSharp_EscapeNonAscii_LowerCaseX2()
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = EscapeType.EscapeNonAscii
+                EscapeType = StringEscapeType.EscapeNonAscii
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.CSharp,
-                EscapeLetter = EscapeLetter.LowerCaseX2 // or LowerCaseX1/LowerCaseX3
+                EscapeLanguage = CharEscapeLanguage.CSharp,
+                EscapeLetter = CharEscapeLetter.LowerCaseX2 // or LowerCaseX1/LowerCaseX3
             };
 
             string original = "ÄA";
@@ -146,12 +204,12 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = EscapeType.EscapeNonAscii
+                EscapeType = StringEscapeType.EscapeNonAscii
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.FSharp,
-                EscapeLetter = EscapeLetter.LowerCaseX2 // or LowerCaseX1/LowerCaseX3
+                EscapeLanguage = CharEscapeLanguage.FSharp,
+                EscapeLetter = CharEscapeLetter.LowerCaseX2 // or LowerCaseX1/LowerCaseX3
             };
 
             string original = "ㄱg";
@@ -166,7 +224,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             CharUnescapeOptions options = new CharUnescapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.CSharp
+                EscapeLanguage = CharEscapeLanguage.CSharp
             };
 
             string escaped = "\\u0041\\u0042\\u0043\\u0020\\u00C4\\u00D6\\u00DC\\u0020\\u3131\\u3134\\u3137\\u0020\\uD83D\\uDE01\\uD83D\\uDE03\\uD83D\\uDE13\\u0020\\u000D\\u000A\\u0009";
@@ -180,10 +238,24 @@ namespace Net.Laceous.Utilities.Tests
         {
             CharUnescapeOptions options = new CharUnescapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.FSharp
+                EscapeLanguage = CharEscapeLanguage.FSharp
             };
 
             string escaped = "\\u0041\\u0042\\u0043\\u0020\\u00C4\\u00D6\\u00DC\\u0020\\u3131\\u3134\\u3137\\u0020\\uD83D\\uDE01\\uD83D\\uDE03\\uD83D\\uDE13\\u0020\\u000D\\u000A\\u0009";
+            string unescaped = StringUtils.Unescape(escaped, charUnescapeOptions: options);
+
+            Assert.Equal("ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t", unescaped);
+        }
+
+        [Fact]
+        public void UnescapeTest_PowerShell()
+        {
+            CharUnescapeOptions options = new CharUnescapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.PowerShell
+            };
+
+            string escaped = "`u{0041}`u{0042}`u{0043}`u{0020}`u{00C4}`u{00D6}`u{00DC}`u{0020}`u{3131}`u{3134}`u{3137}`u{0020}`u{D83D}`u{DE01}`u{D83D}`u{DE03}`u{D83D}`u{DE13}`u{0020}`u{000D}`u{000A}`u{0009}";
             string unescaped = StringUtils.Unescape(escaped, charUnescapeOptions: options);
 
             Assert.Equal("ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t", unescaped);
@@ -198,7 +270,7 @@ namespace Net.Laceous.Utilities.Tests
             };
             CharUnescapeOptions cOptions = new CharUnescapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.CSharp
+                EscapeLanguage = CharEscapeLanguage.CSharp
             };
 
             string escaped = "\\uBAD";
@@ -220,7 +292,7 @@ namespace Net.Laceous.Utilities.Tests
             };
             CharUnescapeOptions cOptions = new CharUnescapeOptions()
             {
-                EscapeLanguage = EscapeLanguage.FSharp
+                EscapeLanguage = CharEscapeLanguage.FSharp
             };
 
             string escaped = "\\uBAD";
@@ -231,6 +303,28 @@ namespace Net.Laceous.Utilities.Tests
             string unescaped = StringUtils.Unescape(escaped, stringUnescapeOptions: sOptions, charUnescapeOptions: cOptions);
 
             Assert.Equal("\\uBAD", unescaped);
+        }
+
+        [Fact]
+        public void UnescapeTest_PowerShell_BadInput()
+        {
+            StringUnescapeOptions sOptions = new StringUnescapeOptions()
+            {
+                IsUnrecognizedEscapeVerbatim = false
+            };
+            CharUnescapeOptions cOptions = new CharUnescapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.PowerShell
+            };
+
+            string escaped = "`u{0000BAD}";
+
+            Assert.Throws<ArgumentException>(() => StringUtils.Unescape(escaped, stringUnescapeOptions: sOptions, charUnescapeOptions: cOptions));
+
+            sOptions.IsUnrecognizedEscapeVerbatim = true;
+            string unescaped = StringUtils.Unescape(escaped, stringUnescapeOptions: sOptions, charUnescapeOptions: cOptions);
+
+            Assert.Equal("`u{0000BAD}", unescaped);
         }
 
         [Fact]

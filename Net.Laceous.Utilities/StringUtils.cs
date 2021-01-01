@@ -34,7 +34,7 @@ namespace Net.Laceous.Utilities
 
             CharEscapeOptions charEscapeOptionsLowerCaseX4 = new CharEscapeOptions(
                 escapeLanguage: charEscapeOptions.EscapeLanguage,
-                escapeLetter: EscapeLetter.LowerCaseX4,
+                escapeLetter: CharEscapeLetter.LowerCaseX4,
                 useLowerCaseHex: charEscapeOptions.UseLowerCaseHex,
                 useShortEscape: charEscapeOptions.UseShortEscape
             );
@@ -44,25 +44,25 @@ namespace Net.Laceous.Utilities
             {
                 if (stringEscapeOptions.EscapeSurrogatePairs && char.IsHighSurrogate(s[i]) && i + 1 < s.Length && char.IsLowSurrogate(s[i + 1]))
                 {
-                    sb.Append(CharUtils.EscapeSurrogatePair(s[i], s[++i], charEscapeOptions.UseLowerCaseHex));
+                    sb.Append(CharUtils.EscapeSurrogatePair(s[i], s[++i], charEscapeOptions));
                 }
                 else
                 {
                     switch (stringEscapeOptions.EscapeType)
                     {
-                        case EscapeType.EscapeNonAscii:
-                            if (s[i].IsAsciiPrintChar())
+                        case StringEscapeType.EscapeNonAscii:
+                            if (s[i].IsQuotableAscii(charEscapeOptions.EscapeLanguage))
                             {
                                 sb.Append(s[i]);
                             }
                             else
                             {
-                                if (charEscapeOptions.EscapeLanguage == EscapeLanguage.CSharp)
+                                if (charEscapeOptions.EscapeLanguage == CharEscapeLanguage.CSharp)
                                 {
                                     // pay special attention here because \x is variable length: H, HH, HHH, HHHH
                                     // if the next char is hex then we don't want to insert it in any of the 'H' spaces
                                     // instead we have to output the full fixed length \xHHHH so the next char doesn't become part of this \x sequence
-                                    if ((charEscapeOptions.EscapeLetter == EscapeLetter.LowerCaseX1 || charEscapeOptions.EscapeLetter == EscapeLetter.LowerCaseX2 || charEscapeOptions.EscapeLetter == EscapeLetter.LowerCaseX3) && i + 1 < s.Length && s[i + 1].IsHex())
+                                    if ((charEscapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX1 || charEscapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX2 || charEscapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX3) && i + 1 < s.Length && s[i + 1].IsHex())
                                     {
                                         sb.Append(CharUtils.Escape(s[i], charEscapeOptionsLowerCaseX4));
                                     }
@@ -71,13 +71,13 @@ namespace Net.Laceous.Utilities
                                         sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
                                     }
                                 }
-                                else // EscapeLanguage.FSharp
+                                else // FSharp/PowerShell
                                 {
                                     sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
                                 }
                             }
                             break;
-                        default: // EscapeType.EscapeAll
+                        default: // StringEscapeType.EscapeAll
                             sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
                             break;
                     }
@@ -110,9 +110,11 @@ namespace Net.Laceous.Utilities
 
             switch (charUnescapeOptions.EscapeLanguage)
             {
-                case EscapeLanguage.FSharp:
+                case CharEscapeLanguage.FSharp:
                     return UnescapeFSharp(s, stringUnescapeOptions, charUnescapeOptions);
-                default: // EscapeLanguage.CSharp
+                case CharEscapeLanguage.PowerShell:
+                    return UnescapePowerShell(s, stringUnescapeOptions, charUnescapeOptions);
+                default: // CSharp
                     return UnescapeCSharp(s, stringUnescapeOptions, charUnescapeOptions);
             }
         }
@@ -135,16 +137,6 @@ namespace Net.Laceous.Utilities
             }
             else
             {
-                bool isUnrecognizedEscapeVerbatim;
-                if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim.HasValue)
-                {
-                    isUnrecognizedEscapeVerbatim = stringUnescapeOptions.IsUnrecognizedEscapeVerbatim.Value;
-                }
-                else
-                {
-                    isUnrecognizedEscapeVerbatim = false;
-                }
-
                 StringBuilder sb = new StringBuilder(s.Length);
                 for (int i = 0; i < s.Length; i++)
                 {
@@ -194,7 +186,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (isUnrecognizedEscapeVerbatim)
+                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
                                         {
                                             sb.Append('\\');
                                             sb.Append(s[i]);
@@ -224,7 +216,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (isUnrecognizedEscapeVerbatim)
+                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
                                         {
                                             sb.Append('\\');
                                             sb.Append(s[i]);
@@ -254,7 +246,7 @@ namespace Net.Laceous.Utilities
                                             }
                                             catch (ArgumentOutOfRangeException)
                                             {
-                                                if (!isUnrecognizedEscapeVerbatim)
+                                                if (!stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
                                                 {
                                                     throw;
                                                 }
@@ -274,7 +266,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (isUnrecognizedEscapeVerbatim)
+                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
                                         {
                                             sb.Append('\\');
                                             sb.Append(s[i]);
@@ -286,7 +278,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     break;
                                 default:
-                                    if (isUnrecognizedEscapeVerbatim)
+                                    if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
                                     {
                                         sb.Append('\\');
                                         sb.Append(s[i]);
@@ -300,7 +292,7 @@ namespace Net.Laceous.Utilities
                         }
                         else
                         {
-                            if (isUnrecognizedEscapeVerbatim)
+                            if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
                             {
                                 sb.Append(s[i]);
                             }
@@ -335,16 +327,6 @@ namespace Net.Laceous.Utilities
             }
             else
             {
-                bool isUnrecognizedEscapeVerbatim;
-                if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim.HasValue)
-                {
-                    isUnrecognizedEscapeVerbatim = stringUnescapeOptions.IsUnrecognizedEscapeVerbatim.Value;
-                }
-                else
-                {
-                    isUnrecognizedEscapeVerbatim = true;
-                }
-
                 StringBuilder sb = new StringBuilder(s.Length);
                 for (int i = 0; i < s.Length; i++)
                 {
@@ -391,7 +373,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (isUnrecognizedEscapeVerbatim)
+                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
                                         {
                                             sb.Append('\\');
                                             sb.Append(s[i]);
@@ -409,7 +391,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (isUnrecognizedEscapeVerbatim)
+                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
                                         {
                                             sb.Append('\\');
                                             sb.Append(s[i]);
@@ -439,7 +421,7 @@ namespace Net.Laceous.Utilities
                                             }
                                             catch (ArgumentOutOfRangeException)
                                             {
-                                                if (!isUnrecognizedEscapeVerbatim)
+                                                if (!stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
                                                 {
                                                     throw;
                                                 }
@@ -459,7 +441,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (isUnrecognizedEscapeVerbatim)
+                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
                                         {
                                             sb.Append('\\');
                                             sb.Append(s[i]);
@@ -485,7 +467,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (isUnrecognizedEscapeVerbatim)
+                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
                                         {
                                             sb.Append('\\');
                                             sb.Append(s[i]);
@@ -500,7 +482,211 @@ namespace Net.Laceous.Utilities
                         }
                         else
                         {
-                            if (isUnrecognizedEscapeVerbatim)
+                            if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                            {
+                                sb.Append(s[i]);
+                            }
+                            else
+                            {
+                                throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                            }
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(s[i]);
+                    }
+                }
+                return sb.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Unescape backslash sequences to string (e.g. `r`n -> \r\n)
+        /// </summary>
+        /// <param name="s">String to unescape</param>
+        /// <param name="stringUnescapeOptions">String unescape options</param>
+        /// <param name="charUnescapeOptions">Char unescape options</param>
+        /// <returns>String that's been unescaped</returns>
+        private static string UnescapePowerShell(string s, StringUnescapeOptions stringUnescapeOptions, CharUnescapeOptions charUnescapeOptions)
+        {
+            if (s.IndexOf('`') == -1)
+            {
+                return s;
+            }
+            else
+            {
+                StringBuilder sb = new StringBuilder(s.Length);
+                for (int i = 0; i < s.Length; i++)
+                {
+                    if (s[i] == '`')
+                    {
+                        if (i + 1 < s.Length)
+                        {
+                            switch (s[++i])
+                            {
+                                case '0':
+                                    sb.Append('\0');
+                                    break;
+                                case 'a':
+                                    sb.Append('\a');
+                                    break;
+                                case 'b':
+                                    sb.Append('\b');
+                                    break;
+                                case 'e':
+                                    sb.Append('\x1B');
+                                    break;
+                                case 'f':
+                                    sb.Append('\f');
+                                    break;
+                                case 'n':
+                                    sb.Append('\n');
+                                    break;
+                                case 'r':
+                                    sb.Append('\r');
+                                    break;
+                                case 't':
+                                    sb.Append('\t');
+                                    break;
+                                case 'v':
+                                    sb.Append('\v');
+                                    break;
+                                case '\"':
+                                    sb.Append('\"');
+                                    break;
+                                case '`':
+                                    sb.Append('`');
+                                    break;
+                                case 'u':
+                                    // 1 to 6 hex chars is supported between the curly braces
+                                    if (i + 8 < s.Length && s[i + 1].IsOpeningCurlyBrace() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex() && s[i + 5].IsHex() && s[i + 6].IsHex() && s[i + 7].IsHex() && s[i + 8].IsClosingCurlyBrace())
+                                    {
+                                        if (s[i + 2].IsZero() && s[i + 3].IsZero())
+                                        {
+                                            i += 3;
+                                            sb.Append((char)int.Parse(new string(new char[] { s[++i], s[++i], s[++i], s[++i] }), NumberStyles.AllowHexSpecifier));
+                                            ++i;
+                                        }
+                                        else
+                                        {
+                                            string temp;
+                                            try
+                                            {
+                                                // System.ArgumentOutOfRangeException: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+                                                temp = char.ConvertFromUtf32(int.Parse(new string(new char[] { s[i + 2], s[i + 3], s[i + 4], s[i + 5], s[i + 6], s[i + 7] }), NumberStyles.AllowHexSpecifier));
+                                            }
+                                            catch (ArgumentOutOfRangeException)
+                                            {
+                                                if (!stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                                {
+                                                    throw;
+                                                }
+                                                temp = null;
+                                            }
+                                            if (temp != null)
+                                            {
+                                                i += 8;
+                                                sb.Append(temp);
+                                            }
+                                            else
+                                            {
+                                                sb.Append('`');
+                                                sb.Append(s[i]);
+                                            }
+                                        }
+                                    }
+                                    else if (i + 7 < s.Length && s[i + 1].IsOpeningCurlyBrace() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex() && s[i + 5].IsHex() && s[i + 6].IsHex() && s[i + 7].IsClosingCurlyBrace())
+                                    {
+                                        if (s[i + 2].IsZero())
+                                        {
+                                            i += 2;
+                                            sb.Append((char)int.Parse(new string(new char[] { s[++i], s[++i], s[++i], s[++i] }), NumberStyles.AllowHexSpecifier));
+                                            ++i;
+                                        }
+                                        else
+                                        {
+                                            string temp;
+                                            try
+                                            {
+                                                // System.ArgumentOutOfRangeException: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+                                                temp = char.ConvertFromUtf32(int.Parse(new string(new char[] { s[i + 2], s[i + 3], s[i + 4], s[i + 5], s[i + 6] }), NumberStyles.AllowHexSpecifier));
+                                            }
+                                            catch (ArgumentOutOfRangeException)
+                                            {
+                                                if (!stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                                {
+                                                    throw;
+                                                }
+                                                temp = null;
+                                            }
+                                            if (temp != null)
+                                            {
+                                                i += 7;
+                                                sb.Append(temp);
+                                            }
+                                            else
+                                            {
+                                                sb.Append('`');
+                                                sb.Append(s[i]);
+                                            }
+                                        }
+                                    }
+                                    else if (i + 6 < s.Length && s[i + 1].IsOpeningCurlyBrace() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex() && s[i + 5].IsHex() && s[i + 6].IsClosingCurlyBrace())
+                                    {
+                                        ++i;
+                                        sb.Append((char)int.Parse(new string(new char[] { s[++i], s[++i], s[++i], s[++i] }), NumberStyles.AllowHexSpecifier));
+                                        ++i;
+                                    }
+                                    else if (i + 5 < s.Length && s[i + 1].IsOpeningCurlyBrace() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex() && s[i + 5].IsClosingCurlyBrace())
+                                    {
+                                        ++i;
+                                        sb.Append((char)int.Parse(new string(new char[] { s[++i], s[++i], s[++i] }), NumberStyles.AllowHexSpecifier));
+                                        ++i;
+                                    }
+                                    else if (i + 4 < s.Length && s[i + 1].IsOpeningCurlyBrace() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsClosingCurlyBrace())
+                                    {
+                                        ++i;
+                                        sb.Append((char)int.Parse(new string(new char[] { s[++i], s[++i] }), NumberStyles.AllowHexSpecifier));
+                                        ++i;
+                                    }
+                                    else if (i + 3 < s.Length && s[i + 1].IsOpeningCurlyBrace() && s[i + 2].IsHex() && s[i + 3].IsClosingCurlyBrace())
+                                    {
+                                        ++i;
+                                        sb.Append((char)int.Parse(new string(new char[] { s[++i] }), NumberStyles.AllowHexSpecifier));
+                                        ++i;
+                                    }
+                                    else
+                                    {
+                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                        {
+                                            sb.Append('`');
+                                            sb.Append(s[i]);
+                                        }
+                                        else
+                                        {
+                                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                                        }
+                                        break;
+                                    }
+                                    break;
+                                default:
+                                    if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                    {
+                                        sb.Append('`');
+                                        sb.Append(s[i]);
+                                    }
+                                    else
+                                    {
+                                        throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                                    }
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
                             {
                                 sb.Append(s[i]);
                             }
