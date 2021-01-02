@@ -273,7 +273,7 @@ namespace Net.Laceous.Utilities.Tests
                 EscapeLanguage = CharEscapeLanguage.CSharp
             };
 
-            string escaped = "\\uBAD";
+            string escaped = "\\uBAD"; // bad because it doesn't match a valid escape sequence
 
             Assert.Throws<ArgumentException>(() => StringUtils.Unescape(escaped, stringUnescapeOptions: sOptions, charUnescapeOptions: cOptions));
 
@@ -295,11 +295,8 @@ namespace Net.Laceous.Utilities.Tests
                 EscapeLanguage = CharEscapeLanguage.FSharp
             };
 
-            string escaped = "\\uBAD";
+            string escaped = "\\uBAD"; // this is fine, it's treated as verbatim in F#
 
-            Assert.Throws<ArgumentException>(() => StringUtils.Unescape(escaped, stringUnescapeOptions: sOptions, charUnescapeOptions: cOptions));
-
-            sOptions.IsUnrecognizedEscapeVerbatim = true;
             string unescaped = StringUtils.Unescape(escaped, stringUnescapeOptions: sOptions, charUnescapeOptions: cOptions);
 
             Assert.Equal("\\uBAD", unescaped);
@@ -317,7 +314,7 @@ namespace Net.Laceous.Utilities.Tests
                 EscapeLanguage = CharEscapeLanguage.PowerShell
             };
 
-            string escaped = "`u{0000BAD}";
+            string escaped = "`u{0000BAD}"; // bad because it has 7 digits between the curly braces
 
             Assert.Throws<ArgumentException>(() => StringUtils.Unescape(escaped, stringUnescapeOptions: sOptions, charUnescapeOptions: cOptions));
 
@@ -328,64 +325,9 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Fact]
-        public void HasSurrogatePairTest()
-        {
-            string s1 = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
-            string s2 = "ABC ÄÖÜ ㄱㄴㄷ \r\n\t";
-            Assert.True(StringUtils.HasSurrogatePair(s1));
-            Assert.False(StringUtils.HasSurrogatePair(s2));
-        }
-
-        [Fact]
-        public void IndexOfSurrogatePairTest()
-        {
-            string s = "abc😁def😃ghi😓jklm";
-            int i = StringUtils.IndexOfSurrogatePair(s);
-            Assert.Equal(3, i);
-        }
-
-        [Fact]
-        public void IndexOfSurrogatePairTest_Index()
-        {
-            string s = "abc😁def😃ghi😓jklm";
-            Assert.Equal(8, StringUtils.IndexOfSurrogatePair(s, 4));
-        }
-
-        [Fact]
-        public void IndexOfSurrogatePairTest_Index_Count()
-        {
-            string s = "abc😁def😃ghi😓jklm";
-            Assert.Equal(-1, StringUtils.IndexOfSurrogatePair(s, 4, 1));
-        }
-
-        [Fact]
-        public void LastIndexOfSurrogatePairTest()
-        {
-            string s = "abc😁def😃ghi😓jklm";
-            Assert.Equal(13, StringUtils.LastIndexOfSurrogatePair(s));
-        }
-
-        [Fact]
-        public void LastIndexOfSurrogatePairTest_Index()
-        {
-            string s = "abc😁def😃ghi😓jklm";
-            Assert.Equal(8, StringUtils.LastIndexOfSurrogatePair(s, 12));
-        }
-
-        [Fact]
-        public void LastIndexOfSurrogatePairTest_Index_Count()
-        {
-            string s = "abc😁def😃ghi😓jklm";
-            Assert.Equal(-1, StringUtils.LastIndexOfSurrogatePair(s, 12, 1));
-        }
-
-        [Fact]
         public void ArgumentNullExceptionTest()
         {
             Assert.Throws<ArgumentNullException>(() => StringUtils.Escape(null));
-            Assert.Throws<ArgumentNullException>(() => StringUtils.HasSurrogatePair(null));
-            Assert.Throws<ArgumentNullException>(() => StringUtils.IndexOfSurrogatePair(null));
-            Assert.Throws<ArgumentNullException>(() => StringUtils.LastIndexOfSurrogatePair(null));
             Assert.Throws<ArgumentNullException>(() => StringUtils.Unescape(null));
         }
     }

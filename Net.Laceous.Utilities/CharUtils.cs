@@ -183,6 +183,7 @@ namespace Net.Laceous.Utilities
         private static string EscapePowerShell(Char c, CharEscapeOptions escapeOptions)
         {
             string hex;
+            // we could add LowerCaseU5/LowerCaseU6 here, but probably not worth it
             switch (escapeOptions.EscapeLetter)
             {
                 case CharEscapeLetter.LowerCaseU1:
@@ -223,10 +224,6 @@ namespace Net.Laceous.Utilities
                         return "`t";
                     case '\v':
                         return "`v";
-                    case '\"':
-                        return "`\""; // not defined in the docs, but useful
-                    case '`':
-                        return "``";  // not defined in the docs, but useful
                 }
             }
 
@@ -272,7 +269,7 @@ namespace Net.Laceous.Utilities
                 throw new ArgumentNullException(nameof(s));
             }
 
-            if (IsSurrogatePair(s))
+            if (s.Length == 2 && char.IsSurrogatePair(s, 0))
             {
                 return EscapeSurrogatePair(s[0], s[1], escapeOptions);
             }
@@ -363,7 +360,7 @@ namespace Net.Laceous.Utilities
                     break;
             }
 
-            if (IsSurrogatePair(unescaped))
+            if (unescaped.Length == 2 && char.IsSurrogatePair(unescaped, 0))
             {
                 highSurrogate = unescaped[0];
                 lowSurrogate = unescaped[1];
@@ -387,32 +384,6 @@ namespace Net.Laceous.Utilities
 
             UnescapeSurrogatePair(s, out char highSurrogate, out char lowSurrogate, unescapeOptions);
             return new string(new char[] { highSurrogate, lowSurrogate });
-        }
-
-        /// <summary>
-        /// Passthrough for char.IsSurrogatePair
-        /// </summary>
-        /// <param name="highSurrogate">High surrogate</param>
-        /// <param name="lowSurrogate">Low surrogate</param>
-        /// <returns>True if surrogate pair, otherwise false</returns>
-        public static bool IsSurrogatePair(char highSurrogate, char lowSurrogate)
-        {
-            return char.IsSurrogatePair(highSurrogate, lowSurrogate);
-        }
-
-        /// <summary>
-        /// Checks if the string contains exactly one surrogate pair
-        /// </summary>
-        /// <param name="s">String to check</param>
-        /// <returns>True if surrogate pair, otherwise false</returns>
-        public static bool IsSurrogatePair(string s)
-        {
-            if (s == null)
-            {
-                throw new ArgumentNullException(nameof(s));
-            }
-
-            return s.Length == 2 && IsSurrogatePair(s[0], s[1]);
         }
     }
 }

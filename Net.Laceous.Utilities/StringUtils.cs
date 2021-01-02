@@ -300,7 +300,6 @@ namespace Net.Laceous.Utilities
                             {
                                 throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
                             }
-                            break;
                         }
                     }
                     else
@@ -373,15 +372,9 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                        {
-                                            sb.Append('\\');
-                                            sb.Append(s[i]);
-                                        }
-                                        else
-                                        {
-                                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                        }
+                                        // F# automatically consumes unrecognized escape sequences as verbatim
+                                        sb.Append('\\');
+                                        sb.Append(s[i]);
                                     }
                                     break;
                                 case 'x':
@@ -391,15 +384,8 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                        {
-                                            sb.Append('\\');
-                                            sb.Append(s[i]);
-                                        }
-                                        else
-                                        {
-                                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                        }
+                                        sb.Append('\\');
+                                        sb.Append(s[i]);
                                     }
                                     break;
                                 case 'U':
@@ -441,15 +427,8 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                        {
-                                            sb.Append('\\');
-                                            sb.Append(s[i]);
-                                        }
-                                        else
-                                        {
-                                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                        }
+                                        sb.Append('\\');
+                                        sb.Append(s[i]);
                                     }
                                     break;
                                 default:
@@ -467,21 +446,15 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                        {
-                                            sb.Append('\\');
-                                            sb.Append(s[i]);
-                                        }
-                                        else
-                                        {
-                                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                        }
+                                        sb.Append('\\');
+                                        sb.Append(s[i]);
                                     }
                                     break;
                             }
                         }
                         else
                         {
+                            // F# doesn't allow \ as the last char in the string, that ends up being \" which is a double-quote
                             if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
                             {
                                 sb.Append(s[i]);
@@ -490,7 +463,6 @@ namespace Net.Laceous.Utilities
                             {
                                 throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
                             }
-                            break;
                         }
                     }
                     else
@@ -553,14 +525,9 @@ namespace Net.Laceous.Utilities
                                 case 'v':
                                     sb.Append('\v');
                                     break;
-                                case '\"':
-                                    sb.Append('\"');
-                                    break;
-                                case '`':
-                                    sb.Append('`');
-                                    break;
                                 case 'u':
                                     // 1 to 6 hex chars is supported between the curly braces
+                                    // if something goes wrong here then powershell will throw an error
                                     if (i + 8 < s.Length && s[i + 1].IsOpeningCurlyBrace() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex() && s[i + 5].IsHex() && s[i + 6].IsHex() && s[i + 7].IsHex() && s[i + 8].IsClosingCurlyBrace())
                                     {
                                         if (s[i + 2].IsZero() && s[i + 3].IsZero())
@@ -672,20 +639,15 @@ namespace Net.Laceous.Utilities
                                     }
                                     break;
                                 default:
-                                    if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                    {
-                                        sb.Append('`');
-                                        sb.Append(s[i]);
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                    }
+                                    // powershell automatically consumes unrecognized escape sequences as verbatim
+                                    sb.Append('`');
+                                    sb.Append(s[i]);
                                     break;
                             }
                         }
                         else
                         {
+                            // powershell doesn't allow ` as the last char in the string, that ends up being `" which is a double-quote
                             if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
                             {
                                 sb.Append(s[i]);
@@ -694,7 +656,6 @@ namespace Net.Laceous.Utilities
                             {
                                 throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
                             }
-                            break;
                         }
                     }
                     else
@@ -704,110 +665,6 @@ namespace Net.Laceous.Utilities
                 }
                 return sb.ToString();
             }
-        }
-
-        /// <summary>
-        /// Checks if the string contains at least one surrogate pair
-        /// </summary>
-        /// <param name="s">String to check</param>
-        /// <returns>True if at least one surrogate pair, otherwise false</returns>
-        public static bool HasSurrogatePair(string s)
-        {
-            if (s == null)
-            {
-                throw new ArgumentNullException(nameof(s));
-            }
-
-            return IndexOfSurrogatePair(s) != -1;
-        }
-
-        /// <summary>
-        /// Gets the index for the first surrogate pair in the string
-        /// </summary>
-        /// <param name="s">String to search</param>
-        /// <param name="startIndex">Where to start search from</param>
-        /// <param name="count">Num of chars to look at</param>
-        /// <returns>Index or -1 if not found</returns>
-        public static int IndexOfSurrogatePair(string s, int? startIndex = null, int? count = null)
-        {
-            if (s == null)
-            {
-                throw new ArgumentNullException(nameof(s));
-            }
-
-            if (startIndex == null)
-            {
-                startIndex = 0;
-            }
-            if (count == null)
-            {
-                count = s.Length - startIndex;
-            }
-
-            // > (rather than >=) allows for empty strings
-            if (startIndex < 0 || startIndex > s.Length)
-            {
-                throw new ArgumentOutOfRangeException(nameof(startIndex), "Start index must be positive and less than the length of the string.");
-            }
-            if (count < 0 || startIndex + count > s.Length)
-            {
-                throw new ArgumentOutOfRangeException(nameof(count), "Count must be positive and must refer to a location within the string.");
-            }
-
-            int c = 0;
-            int i = startIndex.Value;
-            for (; c < count && i < s.Length; c++, i++)
-            {
-                if (c + 1 < count && char.IsHighSurrogate(s[i]) && i + 1 < s.Length && char.IsLowSurrogate(s[i + 1]))
-                {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        /// <summary>
-        /// Gets the index for the last surrogate pair in the string
-        /// </summary>
-        /// <param name="s">String to search</param>
-        /// <param name="startIndex">Where to start search from</param>
-        /// <param name="count">Num of chars to look at</param>
-        /// <returns>Index or -1 if not found</returns>
-        public static int LastIndexOfSurrogatePair(string s, int? startIndex = null, int? count = null)
-        {
-            if (s == null)
-            {
-                throw new ArgumentNullException(nameof(s));
-            }
-
-            if (startIndex == null)
-            {
-                startIndex = s.Length == 0 ? 0 : s.Length - 1;
-            }
-            if (count == null)
-            {
-                count = s.Length == 0 ? 0 : startIndex + 1;
-            }
-
-            if (startIndex < 0 || startIndex > s.Length)
-            {
-                throw new ArgumentOutOfRangeException(nameof(startIndex), "Start index must be positive and less than the length of the string.");
-            }
-            if (count < 0 || (s.Length == 0 && count > 0) || startIndex - count < -1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(count), "Count must be positive and must refer to a location within the string.");
-            }
-
-            int c = 0;
-            int i = startIndex.Value;
-            for (; c < count && i >= 0; c++, i--)
-            {
-                if (c + 1 < count && char.IsLowSurrogate(s[i]) && i - 1 >= 0 && char.IsHighSurrogate(s[i - 1]))
-                {
-                    return --i;
-                }
-            }
-            return -1;
         }
     }
 }

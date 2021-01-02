@@ -133,18 +133,4 @@ Supported [PowerShell escape sequences](https://docs.microsoft.com/en-us/powersh
 * `` `r `` (Carriage return)
 * `` `t `` (Horizontal tab)
 * `` `v `` (Vertical tab)
-* `` `" `` (Double quote - not explicitly defined in the docs, but works and is useful)
-* ``` `` ``` (Backtick - not explicitly defined in the docs, but works and is useful)
 * `` `u{H} `` or `` `u{HH} `` or `` `u{HHH} `` or `` `u{HHHH} `` or `` `u{HHHHH} `` or `` `u{HHHHHH} `` (Variable length unicode escape sequence)
-
-## Surrogate pairs
-
-```csharp
-string emoji = "😁"; // 2 char emoji
-Console.WriteLine(CharUtils.IsSurrogatePair(emoji));        // True
-
-string s = "abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓";
-Console.WriteLine(StringUtils.HasSurrogatePair(s));         // True
-Console.WriteLine(StringUtils.IndexOfSurrogatePair(s));     // 20
-Console.WriteLine(StringUtils.LastIndexOfSurrogatePair(s)); // 24
-```

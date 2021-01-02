@@ -529,8 +529,8 @@ namespace Net.Laceous.Utilities.Tests
 
         [Theory]
         [InlineData('\'', "`u{0027}")]
-        [InlineData('\"', "`\"")]
-        [InlineData('`', "``")]
+        [InlineData('\"', "`u{0022}")]
+        [InlineData('`', "`u{0060}")]
         [InlineData('\0', "`0")]
         [InlineData('\a', "`a")]
         [InlineData('\b', "`b")]
@@ -855,22 +855,9 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Fact]
-        public void IsSurrogatePairTest()
-        {
-            string s1 = "😁";
-            string s2 = "ab"; // not a surrogate pair
-
-            Assert.True(CharUtils.IsSurrogatePair(s1));
-            Assert.True(CharUtils.IsSurrogatePair(s1[0], s1[1]));
-            Assert.False(CharUtils.IsSurrogatePair(s2));
-            Assert.False(CharUtils.IsSurrogatePair(s2[0], s2[1]));
-        }
-
-        [Fact]
         public void ArgumentNullExceptionTest()
         {
             Assert.Throws<ArgumentNullException>(() => CharUtils.EscapeSurrogatePair(null));
-            Assert.Throws<ArgumentNullException>(() => CharUtils.IsSurrogatePair(null));
             Assert.Throws<ArgumentNullException>(() => CharUtils.Unescape(null));
             Assert.Throws<ArgumentNullException>(() => CharUtils.UnescapeSurrogatePair(null));
             Assert.Throws<ArgumentNullException>(() => CharUtils.UnescapeSurrogatePair(null, out char highSurrogate, out char lowSurrogate));
