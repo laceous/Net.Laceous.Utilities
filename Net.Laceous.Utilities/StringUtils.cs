@@ -639,8 +639,8 @@ namespace Net.Laceous.Utilities
                                     }
                                     break;
                                 default:
-                                    // powershell automatically consumes unrecognized escape sequences as verbatim
-                                    sb.Append('`');
+                                    // powershell effectively ignores the backtick character for escape sequences it doesn't recognize
+                                    //sb.Append('`');
                                     sb.Append(s[i]);
                                     break;
                             }
