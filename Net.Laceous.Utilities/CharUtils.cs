@@ -179,7 +179,6 @@ namespace Net.Laceous.Utilities
         private static string EscapePowerShell(Char c, CharEscapeOptions escapeOptions)
         {
             string hex;
-            // we could add LowerCaseU5/LowerCaseU6 here, but probably not worth it
             switch (escapeOptions.EscapeLetter)
             {
                 case CharEscapeLetter.LowerCaseU1:
