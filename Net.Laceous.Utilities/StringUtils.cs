@@ -17,6 +17,8 @@ namespace Net.Laceous.Utilities
         /// <param name="stringEscapeOptions">String escape options</param>
         /// <param name="charEscapeOptions">Char escape options</param>
         /// <returns>String with escape sequences for string</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         public static string Escape(string s, StringEscapeOptions stringEscapeOptions = null, CharEscapeOptions charEscapeOptions = null)
         {
             if (s == null)
@@ -93,6 +95,9 @@ namespace Net.Laceous.Utilities
         /// <param name="stringUnescapeOptions">String unescape options</param>
         /// <param name="charUnescapeOptions">Char unescape options</param>
         /// <returns>String that's been unescaped</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         public static string Unescape(string s, StringUnescapeOptions stringUnescapeOptions = null, CharUnescapeOptions charUnescapeOptions = null)
         {
             if (s == null)
@@ -126,6 +131,8 @@ namespace Net.Laceous.Utilities
         /// <param name="stringUnescapeOptions">String unescape options</param>
         /// <param name="charUnescapeOptions">Char unescape options</param>
         /// <returns>String that's been unescaped</returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         private static string UnescapeCSharp(string s, StringUnescapeOptions stringUnescapeOptions, CharUnescapeOptions charUnescapeOptions)
         {
             // using indexOf('\\') and and substring() instead of iterating over each char can be faster if there's relatively few \\ in the string
@@ -310,6 +317,8 @@ namespace Net.Laceous.Utilities
         /// <param name="stringUnescapeOptions">String unescape options</param>
         /// <param name="charUnescapeOptions">Char unescape options</param>
         /// <returns>String that's been unescaped</returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         private static string UnescapeFSharp(string s, StringUnescapeOptions stringUnescapeOptions, CharUnescapeOptions charUnescapeOptions)
         {
             if (s.IndexOf('\\') == -1)
@@ -459,6 +468,8 @@ namespace Net.Laceous.Utilities
         /// <param name="stringUnescapeOptions">String unescape options</param>
         /// <param name="charUnescapeOptions">Char unescape options</param>
         /// <returns>String that's been unescaped</returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         private static string UnescapePowerShell(string s, StringUnescapeOptions stringUnescapeOptions, CharUnescapeOptions charUnescapeOptions)
         {
             if (s.IndexOf('`') == -1)
@@ -625,6 +636,7 @@ namespace Net.Laceous.Utilities
         /// <param name="utf32">Hex to int</param>
         /// <param name="isUnrecognizedEscapeVerbatim">Whether to throw or not</param>
         /// <returns>utf32 converted to string</returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         private static string ConvertFromUtf32(int utf32, bool isUnrecognizedEscapeVerbatim)
         {
             try

@@ -13,6 +13,7 @@ namespace Net.Laceous.Utilities
         /// <param name="c">Char to escape</param>
         /// <param name="escapeOptions">Escape options</param>
         /// <returns>String with escape sequence for char</returns>
+        /// <exception cref="ArgumentException"></exception>
         public static string Escape(char c, CharEscapeOptions escapeOptions = null)
         {
             if (escapeOptions == null)
@@ -37,6 +38,7 @@ namespace Net.Laceous.Utilities
         /// <param name="c">Char to escape</param>
         /// <param name="escapeOptions">Escape options</param>
         /// <returns>String with escape sequence for char</returns>
+        /// <exception cref="ArgumentException"></exception>
         private static string EscapeCSharp(char c, CharEscapeOptions escapeOptions)
         {
             string xu;
@@ -109,6 +111,7 @@ namespace Net.Laceous.Utilities
         /// <param name="c">Char to escape</param>
         /// <param name="escapeOptions">Escape options</param>
         /// <returns>String with escape sequence for char</returns>
+        /// <exception cref="ArgumentException"></exception>
         private static string EscapeFSharp(char c, CharEscapeOptions escapeOptions)
         {
             string xu;
@@ -180,6 +183,7 @@ namespace Net.Laceous.Utilities
         /// <param name="c">Char to escape</param>
         /// <param name="escapeOptions">Escape options</param>
         /// <returns>String with escape sequence for char</returns>
+        /// <exception cref="ArgumentException"></exception>
         private static string EscapePowerShell(Char c, CharEscapeOptions escapeOptions)
         {
             string hex;
@@ -237,6 +241,7 @@ namespace Net.Laceous.Utilities
         /// <param name="lowSurrogate">Low surrogate</param>
         /// <param name="escapeOptions">Char escape options</param>
         /// <returns>String with escape sequence for surrogate pair</returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static string EscapeSurrogatePair(char highSurrogate, char lowSurrogate, CharEscapeOptions escapeOptions = null)
         {
             if (escapeOptions == null)
@@ -262,6 +267,8 @@ namespace Net.Laceous.Utilities
         /// <param name="s">String containing the surrogate pair</param>
         /// <param name="escapeOptions">Char escape options</param>
         /// <returns>String with escape sequence for surrogate pair</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         public static string EscapeSurrogatePair(string s, CharEscapeOptions escapeOptions = null)
         {
             if (s == null)
@@ -282,6 +289,8 @@ namespace Net.Laceous.Utilities
         /// <param name="s">String containing the escaped char</param>
         /// <param name="unescapeOptions">Unescape options</param>
         /// <returns>Char that's been unescaped</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         public static char Unescape(string s, CharUnescapeOptions unescapeOptions = null)
         {
             if (s == null)
@@ -328,6 +337,8 @@ namespace Net.Laceous.Utilities
         /// <param name="highSurrogate">Return high surrogate</param>
         /// <param name="lowSurrogate">Return low surrogate</param>
         /// <param name="unescapeOptions">Char unescape options</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         public static void UnescapeSurrogatePair(string s, out char highSurrogate, out char lowSurrogate, CharUnescapeOptions unescapeOptions = null)
         {
             if (s == null)
@@ -375,13 +386,10 @@ namespace Net.Laceous.Utilities
         /// <param name="s">String containing the escaped surrogate pair</param>
         /// <param name="unescapeOptions">Char unescape options</param>
         /// <returns>String containing the high surrogate + low surrogate</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         public static string UnescapeSurrogatePair(string s, CharUnescapeOptions unescapeOptions = null)
         {
-            if (s == null)
-            {
-                throw new ArgumentNullException(nameof(s));
-            }
-
             UnescapeSurrogatePair(s, out char highSurrogate, out char lowSurrogate, unescapeOptions);
             return new string(new char[] { highSurrogate, lowSurrogate });
         }
