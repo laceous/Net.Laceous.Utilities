@@ -238,29 +238,21 @@ namespace Net.Laceous.Utilities
                                         }
                                         else
                                         {
-                                            string temp;
-                                            try
-                                            {
-                                                // System.ArgumentOutOfRangeException: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
-                                                temp = char.ConvertFromUtf32(int.Parse(new string(new char[] { s[i + 1], s[i + 2], s[i + 3], s[i + 4], s[i + 5], s[i + 6], s[i + 7], s[i + 8] }), NumberStyles.AllowHexSpecifier));
-                                            }
-                                            catch (ArgumentOutOfRangeException)
-                                            {
-                                                if (!stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                                {
-                                                    throw;
-                                                }
-                                                temp = null;
-                                            }
-                                            if (temp != null)
-                                            {
-                                                i += 8;
-                                                sb.Append(temp);
-                                            }
-                                            else
+                                            // int.MaxValue.ToString("X") yields 7FFFFFFF
+                                            // the largest value we could possibly need to parse here is FFFFFFFF which is too large so it becomes -1
+                                            // char.ConvertFromUtf32 will only deal with the following:
+                                            // "A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff)."
+                                            // otherwise it throws an ArgumentOutOfRangeException which we check for
+                                            string temp = ConvertFromUtf32(int.Parse(new string(new char[] { s[i + 1], s[i + 2], s[i + 3], s[i + 4], s[i + 5], s[i + 6], s[i + 7], s[i + 8] }), NumberStyles.AllowHexSpecifier), stringUnescapeOptions.IsUnrecognizedEscapeVerbatim);
+                                            if (temp == null)
                                             {
                                                 sb.Append('\\');
                                                 sb.Append(s[i]);
+                                            }
+                                            else
+                                            {
+                                                i += 8;
+                                                sb.Append(temp);
                                             }
                                         }
                                     }
@@ -393,35 +385,21 @@ namespace Net.Laceous.Utilities
                                     {
                                         if (s[i + 1].IsZero() && s[i + 2].IsZero() && s[i + 3].IsZero() && s[i + 4].IsZero())
                                         {
-                                            // this lets us parse the surrogate codepoint values (0x00d800 ~ 0x00dfff) which we're already supporting for \u and \x
                                             i += 4;
                                             sb.Append((char)int.Parse(new string(new char[] { s[++i], s[++i], s[++i], s[++i] }), NumberStyles.AllowHexSpecifier));
                                         }
                                         else
                                         {
-                                            string temp;
-                                            try
-                                            {
-                                                // System.ArgumentOutOfRangeException: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
-                                                temp = char.ConvertFromUtf32(int.Parse(new string(new char[] { s[i + 1], s[i + 2], s[i + 3], s[i + 4], s[i + 5], s[i + 6], s[i + 7], s[i + 8] }), NumberStyles.AllowHexSpecifier));
-                                            }
-                                            catch (ArgumentOutOfRangeException)
-                                            {
-                                                if (!stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                                {
-                                                    throw;
-                                                }
-                                                temp = null;
-                                            }
-                                            if (temp != null)
-                                            {
-                                                i += 8;
-                                                sb.Append(temp);
-                                            }
-                                            else
+                                            string temp = ConvertFromUtf32(int.Parse(new string(new char[] { s[i + 1], s[i + 2], s[i + 3], s[i + 4], s[i + 5], s[i + 6], s[i + 7], s[i + 8] }), NumberStyles.AllowHexSpecifier), stringUnescapeOptions.IsUnrecognizedEscapeVerbatim);
+                                            if (temp == null)
                                             {
                                                 sb.Append('\\');
                                                 sb.Append(s[i]);
+                                            }
+                                            else
+                                            {
+                                                i += 8;
+                                                sb.Append(temp);
                                             }
                                         }
                                     }
@@ -538,29 +516,16 @@ namespace Net.Laceous.Utilities
                                         }
                                         else
                                         {
-                                            string temp;
-                                            try
-                                            {
-                                                // System.ArgumentOutOfRangeException: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
-                                                temp = char.ConvertFromUtf32(int.Parse(new string(new char[] { s[i + 2], s[i + 3], s[i + 4], s[i + 5], s[i + 6], s[i + 7] }), NumberStyles.AllowHexSpecifier));
-                                            }
-                                            catch (ArgumentOutOfRangeException)
-                                            {
-                                                if (!stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                                {
-                                                    throw;
-                                                }
-                                                temp = null;
-                                            }
-                                            if (temp != null)
-                                            {
-                                                i += 8;
-                                                sb.Append(temp);
-                                            }
-                                            else
+                                            string temp = ConvertFromUtf32(int.Parse(new string(new char[] { s[i + 2], s[i + 3], s[i + 4], s[i + 5], s[i + 6], s[i + 7] }), NumberStyles.AllowHexSpecifier), stringUnescapeOptions.IsUnrecognizedEscapeVerbatim);
+                                            if (temp == null)
                                             {
                                                 sb.Append('`');
                                                 sb.Append(s[i]);
+                                            }
+                                            else
+                                            {
+                                                i += 8;
+                                                sb.Append(temp);
                                             }
                                         }
                                     }
@@ -574,29 +539,16 @@ namespace Net.Laceous.Utilities
                                         }
                                         else
                                         {
-                                            string temp;
-                                            try
-                                            {
-                                                // System.ArgumentOutOfRangeException: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
-                                                temp = char.ConvertFromUtf32(int.Parse(new string(new char[] { s[i + 2], s[i + 3], s[i + 4], s[i + 5], s[i + 6] }), NumberStyles.AllowHexSpecifier));
-                                            }
-                                            catch (ArgumentOutOfRangeException)
-                                            {
-                                                if (!stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                                {
-                                                    throw;
-                                                }
-                                                temp = null;
-                                            }
-                                            if (temp != null)
-                                            {
-                                                i += 7;
-                                                sb.Append(temp);
-                                            }
-                                            else
+                                            string temp = ConvertFromUtf32(int.Parse(new string(new char[] { s[i + 2], s[i + 3], s[i + 4], s[i + 5], s[i + 6] }), NumberStyles.AllowHexSpecifier), stringUnescapeOptions.IsUnrecognizedEscapeVerbatim);
+                                            if (temp == null)
                                             {
                                                 sb.Append('`');
                                                 sb.Append(s[i]);
+                                            }
+                                            else
+                                            {
+                                                i += 7;
+                                                sb.Append(temp);
                                             }
                                         }
                                     }
@@ -664,6 +616,29 @@ namespace Net.Laceous.Utilities
                     }
                 }
                 return sb.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Wrapper for char.ConvertFromUtf32
+        /// </summary>
+        /// <param name="utf32">Hex to int</param>
+        /// <param name="isUnrecognizedEscapeVerbatim">Whether to throw or not</param>
+        /// <returns>utf32 converted to string</returns>
+        private static string ConvertFromUtf32(int utf32, bool isUnrecognizedEscapeVerbatim)
+        {
+            try
+            {
+                // System.ArgumentOutOfRangeException: A valid UTF32 value is between 0x000000 and 0x10ffff, inclusive, and should not include surrogate codepoint values (0x00d800 ~ 0x00dfff).
+                return char.ConvertFromUtf32(utf32);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                if (!isUnrecognizedEscapeVerbatim)
+                {
+                    throw;
+                }
+                return null;
             }
         }
     }
