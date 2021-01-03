@@ -26,11 +26,6 @@
         LowerCaseU4,
 
         /// <summary>
-        /// CSharp/FSharp: \\UHHHHHHHH
-        /// </summary>
-        UpperCaseU8,
-
-        /// <summary>
         /// CSharp: \\xH (or \\xHH, \\xHHH, \\xHHHH)
         /// </summary>
         LowerCaseX1,

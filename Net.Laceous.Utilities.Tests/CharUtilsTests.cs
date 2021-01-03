@@ -137,24 +137,6 @@ namespace Net.Laceous.Utilities.Tests
             Assert.Equal(escaped, CharUtils.Escape(original, options));
         }
 
-        [Theory]
-        [InlineData('A', "\\U00000041")]
-        [InlineData('\t', "\\U00000009")]
-        [InlineData('Ä', "\\U000000C4")]
-        [InlineData('ㄱ', "\\U00003131")]
-        [InlineData(' ', "\\U00000020")]
-        [InlineData('\u00A0', "\\U000000A0")]
-        public void EscapeTest_CSharp_UpperCaseU8(char original, string escaped)
-        {
-            CharEscapeOptions options = new CharEscapeOptions()
-            {
-                EscapeLanguage = CharEscapeLanguage.CSharp,
-                EscapeLetter = CharEscapeLetter.UpperCaseU8
-            };
-
-            Assert.Equal(escaped, CharUtils.Escape(original, options));
-        }
-
         [Fact]
         public void EscapeTest_CSharp_Decimal3()
         {
@@ -287,24 +269,6 @@ namespace Net.Laceous.Utilities.Tests
             char original = 'A';
 
             Assert.Throws<ArgumentException>(() => CharUtils.Escape(original, options));
-        }
-
-        [Theory]
-        [InlineData('A', "\\U00000041")]
-        [InlineData('\t', "\\U00000009")]
-        [InlineData('Ä', "\\U000000C4")]
-        [InlineData('ㄱ', "\\U00003131")]
-        [InlineData(' ', "\\U00000020")]
-        [InlineData('\u00A0', "\\U000000A0")]
-        public void EscapeTest_FSharp_UpperCaseU8(char original, string escaped)
-        {
-            CharEscapeOptions options = new CharEscapeOptions()
-            {
-                EscapeLanguage = CharEscapeLanguage.FSharp,
-                EscapeLetter = CharEscapeLetter.UpperCaseU8
-            };
-
-            Assert.Equal(escaped, CharUtils.Escape(original, options));
         }
 
         [Theory]
@@ -446,20 +410,6 @@ namespace Net.Laceous.Utilities.Tests
             {
                 EscapeLanguage = CharEscapeLanguage.PowerShell,
                 EscapeLetter = CharEscapeLetter.LowerCaseX4
-            };
-
-            char original = 'A';
-
-            Assert.Throws<ArgumentException>(() => CharUtils.Escape(original, options));
-        }
-
-        [Fact]
-        public void EscapeTest_PowerShell_UpperCaseU8()
-        {
-            CharEscapeOptions options = new CharEscapeOptions()
-            {
-                EscapeLanguage = CharEscapeLanguage.PowerShell,
-                EscapeLetter = CharEscapeLetter.UpperCaseU8
             };
 
             char original = 'A';

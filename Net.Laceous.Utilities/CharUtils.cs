@@ -61,10 +61,6 @@ namespace Net.Laceous.Utilities
                     xu = "x";
                     hex = escapeOptions.UseLowerCaseHex ? "x4" : "X4";
                     break;
-                case CharEscapeLetter.UpperCaseU8:
-                    xu = "U";
-                    hex = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
-                    break;
                 case CharEscapeLetter.LowerCaseU4:
                     xu = "u";
                     hex = escapeOptions.UseLowerCaseHex ? "x4" : "X4";
@@ -125,10 +121,6 @@ namespace Net.Laceous.Utilities
                 case CharEscapeLetter.LowerCaseX2:
                     xu = "x";
                     hex = escapeOptions.UseLowerCaseHex ? "x2" : "X2";
-                    break;
-                case CharEscapeLetter.UpperCaseU8:
-                    xu = "U";
-                    hex = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
                     break;
                 case CharEscapeLetter.LowerCaseU4:
                     xu = "u";
