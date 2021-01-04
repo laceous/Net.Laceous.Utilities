@@ -41,6 +41,35 @@ namespace Net.Laceous.Utilities
         /// <exception cref="ArgumentException"></exception>
         private static string EscapeCSharp(char c, CharEscapeOptions escapeOptions)
         {
+            if (escapeOptions.UseShortEscape)
+            {
+                switch (c)
+                {
+                    case '\'':
+                        return "\\'";
+                    case '\"':
+                        return "\\\"";
+                    case '\\':
+                        return "\\\\";
+                    case '\0':
+                        return "\\0";
+                    case '\a':
+                        return "\\a";
+                    case '\b':
+                        return "\\b";
+                    case '\f':
+                        return "\\f";
+                    case '\n':
+                        return "\\n";
+                    case '\r':
+                        return "\\r";
+                    case '\t':
+                        return "\\t";
+                    case '\v':
+                        return "\\v";
+                }
+            }
+
             string xu;
             string hex;
             switch (escapeOptions.EscapeLetter)
@@ -73,35 +102,6 @@ namespace Net.Laceous.Utilities
                     throw new ArgumentException(string.Format("{0} is not a valid EscapeLetter for {1}.", escapeOptions.EscapeLetter, escapeOptions.EscapeLanguage), nameof(escapeOptions));
             }
 
-            if (escapeOptions.UseShortEscape)
-            {
-                switch (c)
-                {
-                    case '\'':
-                        return "\\'";
-                    case '\"':
-                        return "\\\"";
-                    case '\\':
-                        return "\\\\";
-                    case '\0':
-                        return "\\0";
-                    case '\a':
-                        return "\\a";
-                    case '\b':
-                        return "\\b";
-                    case '\f':
-                        return "\\f";
-                    case '\n':
-                        return "\\n";
-                    case '\r':
-                        return "\\r";
-                    case '\t':
-                        return "\\t";
-                    case '\v':
-                        return "\\v";
-                }
-            }
-
             return "\\" + xu + ((int)c).ToString(hex);
         }
 
@@ -114,30 +114,6 @@ namespace Net.Laceous.Utilities
         /// <exception cref="ArgumentException"></exception>
         private static string EscapeFSharp(char c, CharEscapeOptions escapeOptions)
         {
-            string xu;
-            string hex;
-            switch (escapeOptions.EscapeLetter)
-            {
-                case CharEscapeLetter.Decimal3:
-                    xu = "";
-                    hex = "D3";
-                    break;
-                case CharEscapeLetter.LowerCaseX2:
-                    xu = "x";
-                    hex = escapeOptions.UseLowerCaseHex ? "x2" : "X2";
-                    break;
-                case CharEscapeLetter.LowerCaseU4:
-                    xu = "u";
-                    hex = escapeOptions.UseLowerCaseHex ? "x4" : "X4";
-                    break;
-                case CharEscapeLetter.UpperCaseU8:
-                    xu = "U";
-                    hex = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
-                    break;
-                default:
-                    throw new ArgumentException(string.Format("{0} is not a valid EscapeLetter for {1}.", escapeOptions.EscapeLetter, escapeOptions.EscapeLanguage), nameof(escapeOptions));
-            }
-
             if (escapeOptions.UseShortEscape)
             {
                 // FSharp doesn't define \0
@@ -164,6 +140,30 @@ namespace Net.Laceous.Utilities
                     case '\"':
                         return "\\\"";
                 }
+            }
+
+            string xu;
+            string hex;
+            switch (escapeOptions.EscapeLetter)
+            {
+                case CharEscapeLetter.Decimal3:
+                    xu = "";
+                    hex = "D3";
+                    break;
+                case CharEscapeLetter.LowerCaseX2:
+                    xu = "x";
+                    hex = escapeOptions.UseLowerCaseHex ? "x2" : "X2";
+                    break;
+                case CharEscapeLetter.LowerCaseU4:
+                    xu = "u";
+                    hex = escapeOptions.UseLowerCaseHex ? "x4" : "X4";
+                    break;
+                case CharEscapeLetter.UpperCaseU8:
+                    xu = "U";
+                    hex = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
+                    break;
+                default:
+                    throw new ArgumentException(string.Format("{0} is not a valid EscapeLetter for {1}.", escapeOptions.EscapeLetter, escapeOptions.EscapeLanguage), nameof(escapeOptions));
             }
 
             // we can only support 0-255 here for \\DDD and \\xHH
@@ -198,33 +198,8 @@ namespace Net.Laceous.Utilities
         /// <param name="escapeOptions">Escape options</param>
         /// <returns>String with escape sequence for char</returns>
         /// <exception cref="ArgumentException"></exception>
-        private static string EscapePowerShell(Char c, CharEscapeOptions escapeOptions)
+        private static string EscapePowerShell(char c, CharEscapeOptions escapeOptions)
         {
-            string hex;
-            switch (escapeOptions.EscapeLetter)
-            {
-                case CharEscapeLetter.LowerCaseU1:
-                    hex = escapeOptions.UseLowerCaseHex ? "x1" : "X1";
-                    break;
-                case CharEscapeLetter.LowerCaseU2:
-                    hex = escapeOptions.UseLowerCaseHex ? "x2" : "X2";
-                    break;
-                case CharEscapeLetter.LowerCaseU3:
-                    hex = escapeOptions.UseLowerCaseHex ? "x3" : "X3";
-                    break;
-                case CharEscapeLetter.LowerCaseU4:
-                    hex = escapeOptions.UseLowerCaseHex ? "x4" : "X4";
-                    break;
-                case CharEscapeLetter.LowerCaseU5:
-                    hex = escapeOptions.UseLowerCaseHex ? "x5" : "X5";
-                    break;
-                case CharEscapeLetter.LowerCaseU6:
-                    hex = escapeOptions.UseLowerCaseHex ? "x6" : "X6";
-                    break;
-                default:
-                    throw new ArgumentException(string.Format("{0} is not a valid EscapeLetter for {1}.", escapeOptions.EscapeLetter, escapeOptions.EscapeLanguage), nameof(escapeOptions));
-            }
-
             if (escapeOptions.UseShortEscape)
             {
                 switch (c)
@@ -248,6 +223,31 @@ namespace Net.Laceous.Utilities
                     case '\v':
                         return "`v";
                 }
+            }
+
+            string hex;
+            switch (escapeOptions.EscapeLetter)
+            {
+                case CharEscapeLetter.LowerCaseU1:
+                    hex = escapeOptions.UseLowerCaseHex ? "x1" : "X1";
+                    break;
+                case CharEscapeLetter.LowerCaseU2:
+                    hex = escapeOptions.UseLowerCaseHex ? "x2" : "X2";
+                    break;
+                case CharEscapeLetter.LowerCaseU3:
+                    hex = escapeOptions.UseLowerCaseHex ? "x3" : "X3";
+                    break;
+                case CharEscapeLetter.LowerCaseU4:
+                    hex = escapeOptions.UseLowerCaseHex ? "x4" : "X4";
+                    break;
+                case CharEscapeLetter.LowerCaseU5:
+                    hex = escapeOptions.UseLowerCaseHex ? "x5" : "X5";
+                    break;
+                case CharEscapeLetter.LowerCaseU6:
+                    hex = escapeOptions.UseLowerCaseHex ? "x6" : "X6";
+                    break;
+                default:
+                    throw new ArgumentException(string.Format("{0} is not a valid EscapeLetter for {1}.", escapeOptions.EscapeLetter, escapeOptions.EscapeLanguage), nameof(escapeOptions));
             }
 
             return "`u{" + ((int)c).ToString(hex) + "}"; // this is supported in PowerShell v7, but not Windows PowerShell v5
