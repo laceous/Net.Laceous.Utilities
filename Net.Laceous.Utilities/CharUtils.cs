@@ -269,14 +269,31 @@ namespace Net.Laceous.Utilities
                 escapeOptions = new CharEscapeOptions();
             }
 
+            string hex;
             switch (escapeOptions.EscapeLanguage)
             {
-                case CharEscapeLanguage.FSharp:
-                    return EscapeSurrogatePairFSharp(highSurrogate, lowSurrogate, escapeOptions);
                 case CharEscapeLanguage.PowerShell:
-                    return EscapeSurrogatePairPowerShell(highSurrogate, lowSurrogate, escapeOptions);
-                default: // CSharp
-                    return EscapeSurrogatePairCSharp(highSurrogate, lowSurrogate, escapeOptions);
+                    switch (escapeOptions.EscapeLetter)
+                    {
+                        // 1/2/3/4 will output as 5 so we can just fall through
+                        case CharEscapeLetter.LowerCaseU1:
+                        case CharEscapeLetter.LowerCaseU2:
+                        case CharEscapeLetter.LowerCaseU3:
+                        case CharEscapeLetter.LowerCaseU4:
+                        case CharEscapeLetter.LowerCaseU5:
+                            hex = escapeOptions.UseLowerCaseHex ? "x5" : "X5";
+                            break;
+                        case CharEscapeLetter.LowerCaseU6:
+                            hex = escapeOptions.UseLowerCaseHex ? "x6" : "X6";
+                            break;
+                        default:
+                            throw new ArgumentException(string.Format("{0} is not a valid EscapeLetter for {1}.", escapeOptions.EscapeLetter, escapeOptions.EscapeLanguage), nameof(escapeOptions));
+                    }
+                    return "`u{" + char.ConvertToUtf32(highSurrogate, lowSurrogate).ToString(hex) + "}";
+                default: // CSharp/FSharp
+                    // automatically use UpperCaseU8
+                    hex = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
+                    return "\\U" + char.ConvertToUtf32(highSurrogate, lowSurrogate).ToString(hex);
             }
         }
 
@@ -300,93 +317,6 @@ namespace Net.Laceous.Utilities
                 return EscapeSurrogatePair(s[0], s[1], escapeOptions);
             }
             throw new ArgumentException("String did not contain exactly one surrogate pair.", nameof(s));
-        }
-
-        /// <summary>
-        /// Escape surrogate pair with \\UHHHHHHHH
-        /// </summary>
-        /// <param name="highSurrogate">High surrogate</param>
-        /// <param name="lowSurrogate">Low surrogate</param>
-        /// <param name="escapeOptions">Char escape options</param>
-        /// <returns>String with escape sequence for surrogate pair</returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        /// <exception cref="ArgumentException"></exception>
-        private static string EscapeSurrogatePairCSharp(char highSurrogate, char lowSurrogate, CharEscapeOptions escapeOptions = null)
-        {
-            string hex;
-            switch (escapeOptions.EscapeLetter)
-            {
-                // allow all of the normal C# escape letters so you can re-use the same CharEscapeOptions that are used with Escape
-                case CharEscapeLetter.LowerCaseX1:
-                case CharEscapeLetter.LowerCaseX2:
-                case CharEscapeLetter.LowerCaseX3:
-                case CharEscapeLetter.LowerCaseX4:
-                case CharEscapeLetter.LowerCaseU4:
-                case CharEscapeLetter.UpperCaseU8:
-                    hex = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
-                    break;
-                default:
-                    throw new ArgumentException(string.Format("{0} is not a valid EscapeLetter for {1}.", escapeOptions.EscapeLetter, escapeOptions.EscapeLanguage), nameof(escapeOptions));
-            }
-            return "\\U" + char.ConvertToUtf32(highSurrogate, lowSurrogate).ToString(hex);
-        }
-
-        /// <summary>
-        /// Escape surrogate pair with \\UHHHHHHHH
-        /// </summary>
-        /// <param name="highSurrogate">High surrogate</param>
-        /// <param name="lowSurrogate">Low surrogate</param>
-        /// <param name="escapeOptions">Char escape options</param>
-        /// <returns>String with escape sequence for surrogate pair</returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        /// <exception cref="ArgumentException"></exception>
-        private static string EscapeSurrogatePairFSharp(char highSurrogate, char lowSurrogate, CharEscapeOptions escapeOptions = null)
-        {
-            string hex;
-            switch (escapeOptions.EscapeLetter)
-            {
-                // allow all of the normal F# escape letters so you can re-use the same CharEscapeOptions that are used with Escape
-                case CharEscapeLetter.Decimal3:
-                case CharEscapeLetter.LowerCaseX2:
-                case CharEscapeLetter.LowerCaseU4:
-                case CharEscapeLetter.UpperCaseU8:
-                    hex = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
-                    break;
-                default:
-                    throw new ArgumentException(string.Format("{0} is not a valid EscapeLetter for {1}.", escapeOptions.EscapeLetter, escapeOptions.EscapeLanguage), nameof(escapeOptions));
-            }
-            return "\\U" + char.ConvertToUtf32(highSurrogate, lowSurrogate).ToString(hex);
-        }
-
-        /// <summary>
-        /// Escape surrogate pair with `u{HHHHH}
-        /// </summary>
-        /// <param name="highSurrogate">High surrogate</param>
-        /// <param name="lowSurrogate">Low surrogate</param>
-        /// <param name="escapeOptions">Char escape options</param>
-        /// <returns>String with escape sequence for surrogate pair</returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        /// <exception cref="ArgumentException"></exception>
-        private static string EscapeSurrogatePairPowerShell(char highSurrogate, char lowSurrogate, CharEscapeOptions escapeOptions = null)
-        {
-            string hex;
-            switch (escapeOptions.EscapeLetter)
-            {
-                // 1/2/3/4 will output as 5 so we can just fall through
-                case CharEscapeLetter.LowerCaseU1:
-                case CharEscapeLetter.LowerCaseU2:
-                case CharEscapeLetter.LowerCaseU3:
-                case CharEscapeLetter.LowerCaseU4:
-                case CharEscapeLetter.LowerCaseU5:
-                    hex = escapeOptions.UseLowerCaseHex ? "x5" : "X5";
-                    break;
-                case CharEscapeLetter.LowerCaseU6:
-                    hex = escapeOptions.UseLowerCaseHex ? "x6" : "X6";
-                    break;
-                default:
-                    throw new ArgumentException(string.Format("{0} is not a valid EscapeLetter for {1}.", escapeOptions.EscapeLetter, escapeOptions.EscapeLanguage), nameof(escapeOptions));
-            }
-            return "`u{" + char.ConvertToUtf32(highSurrogate, lowSurrogate).ToString(hex) + "}";
         }
 
         /// <summary>
