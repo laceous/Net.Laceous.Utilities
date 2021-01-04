@@ -169,23 +169,19 @@ namespace Net.Laceous.Utilities
             // we can only support 0-255 here for \\DDD and \\xHH
             if (c > 255 && (escapeOptions.EscapeLetter == CharEscapeLetter.Decimal3 || escapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX2))
             {
-                string xuFallback;
-                string hexFallback;
                 switch (escapeOptions.EscapeLetterFallback)
                 {
                     case CharEscapeLetter.LowerCaseU4:
-                        xuFallback = "u";
-                        hexFallback = escapeOptions.UseLowerCaseHex ? "x4" : "X4";
+                        xu = "u";
+                        hex = escapeOptions.UseLowerCaseHex ? "x4" : "X4";
                         break;
                     case CharEscapeLetter.UpperCaseU8:
-                        xuFallback = "U";
-                        hexFallback = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
+                        xu = "U";
+                        hex = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
                         break;
                     default:
                         throw new ArgumentException(string.Format("{0} is not a valid EscapeLetterFallback for {1}.", escapeOptions.EscapeLetter, escapeOptions.EscapeLanguage), nameof(escapeOptions));
                 }
-
-                return "\\" + xuFallback + ((int)c).ToString(hexFallback);
             }
 
             return "\\" + xu + ((int)c).ToString(hex);
