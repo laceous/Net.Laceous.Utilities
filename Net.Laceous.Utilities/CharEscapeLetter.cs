@@ -6,17 +6,17 @@
     public enum CharEscapeLetter
     {
         /// <summary>
-        /// PowerShell: `u{H} (or `u{HH}, `u{HHH}, `u{HHHH})
+        /// PowerShell: `u{H}
         /// </summary>
         LowerCaseU1,
 
         /// <summary>
-        /// PowerShell: `u{HH} (or `u{HHH}, `u{HHHH})
+        /// PowerShell: `u{HH}
         /// </summary>
         LowerCaseU2,
 
         /// <summary>
-        /// PowerShell: `u{HHH} (or `u{HHHH})
+        /// PowerShell: `u{HHH}
         /// </summary>
         LowerCaseU3,
 
@@ -26,17 +26,32 @@
         LowerCaseU4,
 
         /// <summary>
-        /// CSharp: \\xH (or \\xHH, \\xHHH, \\xHHHH)
+        /// PowerShell: `u{HHHHH}
+        /// </summary>
+        LowerCaseU5,
+
+        /// <summary>
+        /// PowerShell: `u{HHHHHH}
+        /// </summary>
+        LowerCaseU6,
+
+        /// <summary>
+        /// CSharp/FSharp: \\UHHHHHHHH
+        /// </summary>
+        UpperCaseU8,
+
+        /// <summary>
+        /// CSharp: \\xH
         /// </summary>
         LowerCaseX1,
 
         /// <summary>
-        /// CSharp: \\xHH (or \\xHHH, \\xHHHH); FSharp: \\xHH (or \\uHHHH)
+        /// CSharp: \\xHH; FSharp: \\xHH
         /// </summary>
         LowerCaseX2,
 
         /// <summary>
-        /// CSharp: \\xHHH (or \\xHHHH)
+        /// CSharp: \\xHHH
         /// </summary>
         LowerCaseX3,
 
@@ -46,7 +61,7 @@
         LowerCaseX4,
 
         /// <summary>
-        /// FSharp: \\DDD (or \\uHHHH)
+        /// FSharp: \\DDD
         /// </summary>
         Decimal3
     }

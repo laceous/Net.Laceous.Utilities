@@ -65,6 +65,34 @@ namespace Net.Laceous.Utilities.Tests
             Assert.Equal(escaped, CharUtils.Escape(original, options));
         }
 
+        [Fact]
+        public void EscapeTest_CSharp_LowerCaseU5()
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.CSharp,
+                EscapeLetter = CharEscapeLetter.LowerCaseU5
+            };
+
+            char original = 'A';
+
+            Assert.Throws<ArgumentException>(() => CharUtils.Escape(original, options));
+        }
+
+        [Fact]
+        public void EscapeTest_CSharp_LowerCaseU6()
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.CSharp,
+                EscapeLetter = CharEscapeLetter.LowerCaseU6
+            };
+
+            char original = 'A';
+
+            Assert.Throws<ArgumentException>(() => CharUtils.Escape(original, options));
+        }
+
         [Theory]
         [InlineData('A', "\\x41")]
         [InlineData('\t', "\\x9")]
@@ -132,6 +160,24 @@ namespace Net.Laceous.Utilities.Tests
             {
                 EscapeLanguage = CharEscapeLanguage.CSharp,
                 EscapeLetter = CharEscapeLetter.LowerCaseX4
+            };
+
+            Assert.Equal(escaped, CharUtils.Escape(original, options));
+        }
+
+        [Theory]
+        [InlineData('A', "\\U00000041")]
+        [InlineData('\t', "\\U00000009")]
+        [InlineData('Ä', "\\U000000C4")]
+        [InlineData('ㄱ', "\\U00003131")]
+        [InlineData(' ', "\\U00000020")]
+        [InlineData('\u00A0', "\\U000000A0")]
+        public void EscapeTest_CSharp_UpperCaseU8(char original, string escaped)
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.CSharp,
+                EscapeLetter = CharEscapeLetter.UpperCaseU8
             };
 
             Assert.Equal(escaped, CharUtils.Escape(original, options));
@@ -212,6 +258,34 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Fact]
+        public void EscapeTest_FSharp_LowerCaseU5()
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.FSharp,
+                EscapeLetter = CharEscapeLetter.LowerCaseU5
+            };
+
+            char original = 'A';
+
+            Assert.Throws<ArgumentException>(() => CharUtils.Escape(original, options));
+        }
+
+        [Fact]
+        public void EscapeTest_FSharp_LowerCaseU6()
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.FSharp,
+                EscapeLetter = CharEscapeLetter.LowerCaseU6
+            };
+
+            char original = 'A';
+
+            Assert.Throws<ArgumentException>(() => CharUtils.Escape(original, options));
+        }
+
+        [Fact]
         public void EscapeTest_FSharp_LowerCaseX1()
         {
             CharEscapeOptions options = new CharEscapeOptions()
@@ -244,6 +318,27 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Fact]
+        public void EscapeTest_FSharp_LowerCaseX2_Fallback()
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.FSharp,
+                EscapeLetter = CharEscapeLetter.LowerCaseX2
+            };
+
+            char original = 'ㄱ';
+
+            options.EscapeLetterFallback = CharEscapeLetter.LowerCaseU4;
+            Assert.Equal("\\u3131", CharUtils.Escape(original, options));
+
+            options.EscapeLetterFallback = CharEscapeLetter.UpperCaseU8;
+            Assert.Equal("\\U00003131", CharUtils.Escape(original, options));
+
+            options.EscapeLetterFallback = CharEscapeLetter.LowerCaseX2; // bad
+            Assert.Throws<ArgumentException>(() => CharUtils.Escape(original, options));
+        }
+
+        [Fact]
         public void EscapeTest_FSharp_LowerCaseX3()
         {
             CharEscapeOptions options = new CharEscapeOptions()
@@ -272,6 +367,24 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Theory]
+        [InlineData('A', "\\U00000041")]
+        [InlineData('\t', "\\U00000009")]
+        [InlineData('Ä', "\\U000000C4")]
+        [InlineData('ㄱ', "\\U00003131")]
+        [InlineData(' ', "\\U00000020")]
+        [InlineData('\u00A0', "\\U000000A0")]
+        public void EscapeTest_FSharp_UpperCaseU8(char original, string escaped)
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.FSharp,
+                EscapeLetter = CharEscapeLetter.UpperCaseU8
+            };
+
+            Assert.Equal(escaped, CharUtils.Escape(original, options));
+        }
+
+        [Theory]
         [InlineData('A', "\\065")]
         [InlineData('\t', "\\009")]
         [InlineData('Ä', "\\196")]
@@ -287,6 +400,27 @@ namespace Net.Laceous.Utilities.Tests
             };
 
             Assert.Equal(escaped, CharUtils.Escape(original, options));
+        }
+
+        [Fact]
+        public void EscapeTest_FSharp_Decimal3_Fallback()
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.FSharp,
+                EscapeLetter = CharEscapeLetter.Decimal3
+            };
+
+            char original = 'ㄱ';
+
+            options.EscapeLetterFallback = CharEscapeLetter.LowerCaseU4;
+            Assert.Equal("\\u3131", CharUtils.Escape(original, options));
+
+            options.EscapeLetterFallback = CharEscapeLetter.UpperCaseU8;
+            Assert.Equal("\\U00003131", CharUtils.Escape(original, options));
+
+            options.EscapeLetterFallback = CharEscapeLetter.Decimal3; // bad
+            Assert.Throws<ArgumentException>(() => CharUtils.Escape(original, options));
         }
 
         [Theory]
@@ -361,6 +495,42 @@ namespace Net.Laceous.Utilities.Tests
             Assert.Equal(escaped, CharUtils.Escape(original, options));
         }
 
+        [Theory]
+        [InlineData('A', "`u{00041}")]
+        [InlineData('\t', "`u{00009}")]
+        [InlineData('Ä', "`u{000C4}")]
+        [InlineData('ㄱ', "`u{03131}")]
+        [InlineData(' ', "`u{00020}")]
+        [InlineData('\u00A0', "`u{000A0}")]
+        public void EscapeTest_PowerShell_LowerCaseU5(char original, string escaped)
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.PowerShell,
+                EscapeLetter = CharEscapeLetter.LowerCaseU5
+            };
+
+            Assert.Equal(escaped, CharUtils.Escape(original, options));
+        }
+
+        [Theory]
+        [InlineData('A', "`u{000041}")]
+        [InlineData('\t', "`u{000009}")]
+        [InlineData('Ä', "`u{0000C4}")]
+        [InlineData('ㄱ', "`u{003131}")]
+        [InlineData(' ', "`u{000020}")]
+        [InlineData('\u00A0', "`u{0000A0}")]
+        public void EscapeTest_PowerShell_LowerCaseU6(char original, string escaped)
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.PowerShell,
+                EscapeLetter = CharEscapeLetter.LowerCaseU6
+            };
+
+            Assert.Equal(escaped, CharUtils.Escape(original, options));
+        }
+
         [Fact]
         public void EscapeTest_PowerShell_LowerCaseX1()
         {
@@ -410,6 +580,20 @@ namespace Net.Laceous.Utilities.Tests
             {
                 EscapeLanguage = CharEscapeLanguage.PowerShell,
                 EscapeLetter = CharEscapeLetter.LowerCaseX4
+            };
+
+            char original = 'A';
+
+            Assert.Throws<ArgumentException>(() => CharUtils.Escape(original, options));
+        }
+
+        [Fact]
+        public void EscapeTest_PowerShell_UpperCaseU8()
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.PowerShell,
+                EscapeLetter = CharEscapeLetter.UpperCaseU8
             };
 
             char original = 'A';
@@ -572,8 +756,10 @@ namespace Net.Laceous.Utilities.Tests
             string original = "😁"; // 2 char emoji
             string escaped1 = CharUtils.EscapeSurrogatePair(original[0], original[1], new CharEscapeOptions(escapeLanguage: CharEscapeLanguage.PowerShell, useLowerCaseHex: false));
             string escaped2 = CharUtils.EscapeSurrogatePair(original, new CharEscapeOptions(escapeLanguage: CharEscapeLanguage.PowerShell, useLowerCaseHex: true));
+            string escaped3 = CharUtils.EscapeSurrogatePair(original, new CharEscapeOptions(escapeLanguage: CharEscapeLanguage.PowerShell, escapeLetter: CharEscapeLetter.LowerCaseU6));
             Assert.Equal("`u{1F601}", escaped1);
             Assert.Equal("`u{1f601}", escaped2);
+            Assert.Equal("`u{01F601}", escaped3);
         }
 
         [Fact]

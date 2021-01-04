@@ -180,6 +180,27 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Fact]
+        public void EscapeTest_PowerShell_LowerCaseU4_EscapeAll_EscapeSurrogatePairs_LowerCaseU6()
+        {
+            StringEscapeOptions sOptions = new StringEscapeOptions()
+            {
+                EscapeType = StringEscapeType.EscapeAll,
+                EscapeSurrogatePairs = true,
+                EscapeLetterSurrogatePairs = CharEscapeLetter.LowerCaseU6
+            };
+            CharEscapeOptions cOptions = new CharEscapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.PowerShell,
+                EscapeLetter = CharEscapeLetter.LowerCaseU4
+            };
+
+            string original = "ABC ÄÖÜ ㄱㄴㄷ 😁😃😓 \r\n\t";
+            string escaped = StringUtils.Escape(original, stringEscapeOptions: sOptions, charEscapeOptions: cOptions);
+
+            Assert.Equal("`u{0041}`u{0042}`u{0043}`u{0020}`u{00C4}`u{00D6}`u{00DC}`u{0020}`u{3131}`u{3134}`u{3137}`u{0020}`u{01F601}`u{01F603}`u{01F613}`u{0020}`u{000D}`u{000A}`u{0009}", escaped);
+        }
+
+        [Fact]
         public void EscapeTest_CSharp_EscapeNonAscii_LowerCaseX2()
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()

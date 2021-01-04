@@ -16,6 +16,11 @@
         public CharEscapeLetter EscapeLetter { get; set; }
 
         /// <summary>
+        /// Choose which fallback unicode escape letter to use
+        /// </summary>
+        public CharEscapeLetter EscapeLetterFallback { get; set; }
+
+        /// <summary>
         /// Use lower case hex instead of upper case hex
         /// </summary>
         public bool UseLowerCaseHex { get; set; }
@@ -30,12 +35,14 @@
         /// </summary>
         /// <param name="escapeLanguage">C# or F#</param>
         /// <param name="escapeLetter">Choose which unicode escape letter to use</param>
+        /// <param name="escapeLetterFallback">Choose which fallback unicode escape letter to use</param>
         /// <param name="useLowerCaseHex">Use lower case hex instead of upper case hex</param>
         /// <param name="useShortEscape">Use built-in short sequences instead of \uHHHH</param>
-        public CharEscapeOptions(CharEscapeLanguage escapeLanguage = CharEscapeLanguage.CSharp, CharEscapeLetter escapeLetter = CharEscapeLetter.LowerCaseU4, bool useLowerCaseHex = false, bool useShortEscape = false)
+        public CharEscapeOptions(CharEscapeLanguage escapeLanguage = CharEscapeLanguage.CSharp, CharEscapeLetter escapeLetter = CharEscapeLetter.LowerCaseU4, CharEscapeLetter escapeLetterFallback = CharEscapeLetter.LowerCaseU4, bool useLowerCaseHex = false, bool useShortEscape = false)
         {
             EscapeLanguage = escapeLanguage;
             EscapeLetter = escapeLetter;
+            EscapeLetterFallback = escapeLetterFallback;
             UseLowerCaseHex = useLowerCaseHex;
             UseShortEscape = useShortEscape;
         }
