@@ -36,7 +36,7 @@ namespace Net.Laceous.Utilities
 
             CharEscapeOptions charEscapeOptionsSurrogatePairs = new CharEscapeOptions(
                 escapeLanguage: charEscapeOptions.EscapeLanguage,
-                escapeLetter: stringEscapeOptions.EscapeLetterSurrogatePairs.HasValue ? stringEscapeOptions.EscapeLetterSurrogatePairs.Value : charEscapeOptions.EscapeLetter,
+                escapeLetter: stringEscapeOptions.EscapeLetterSurrogatePairs ?? charEscapeOptions.EscapeLetter,
                 escapeLetterFallback: charEscapeOptions.EscapeLetterFallback,
                 useLowerCaseHex: charEscapeOptions.UseLowerCaseHex,
                 useShortEscape: charEscapeOptions.UseShortEscape
@@ -53,7 +53,7 @@ namespace Net.Laceous.Utilities
             StringBuilder sb = new StringBuilder(s.Length);
             for (int i = 0; i < s.Length; i++)
             {
-                if (stringEscapeOptions.EscapeSurrogatePairs && char.IsHighSurrogate(s[i]) && i + 1 < s.Length && char.IsLowSurrogate(s[i + 1]))
+                if (stringEscapeOptions.EscapeSurrogatePairs && i + 1 < s.Length && char.IsSurrogatePair(s[i], s[i + 1]))
                 {
                     sb.Append(CharUtils.EscapeSurrogatePair(s[i], s[++i], charEscapeOptionsSurrogatePairs));
                 }
