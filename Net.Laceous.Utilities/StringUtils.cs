@@ -34,17 +34,17 @@ namespace Net.Laceous.Utilities
                 charEscapeOptions = new CharEscapeOptions();
             }
 
-            CharEscapeOptions charEscapeOptionsLowerCaseX4 = new CharEscapeOptions(
+            CharEscapeOptions charEscapeOptionsSurrogatePairs = new CharEscapeOptions(
                 escapeLanguage: charEscapeOptions.EscapeLanguage,
-                escapeLetter: CharEscapeLetter.LowerCaseX4,
+                escapeLetter: stringEscapeOptions.EscapeLetterSurrogatePairs.HasValue ? stringEscapeOptions.EscapeLetterSurrogatePairs.Value : charEscapeOptions.EscapeLetter,
                 escapeLetterFallback: charEscapeOptions.EscapeLetterFallback,
                 useLowerCaseHex: charEscapeOptions.UseLowerCaseHex,
                 useShortEscape: charEscapeOptions.UseShortEscape
             );
 
-            CharEscapeOptions charEscapeOptionsSurrogatePairs = new CharEscapeOptions(
+            CharEscapeOptions charEscapeOptionsLowerCaseX4 = new CharEscapeOptions(
                 escapeLanguage: charEscapeOptions.EscapeLanguage,
-                escapeLetter: stringEscapeOptions.EscapeLetterSurrogatePairs.HasValue ? stringEscapeOptions.EscapeLetterSurrogatePairs.Value : charEscapeOptions.EscapeLetter,
+                escapeLetter: CharEscapeLetter.LowerCaseX4,
                 escapeLetterFallback: charEscapeOptions.EscapeLetterFallback,
                 useLowerCaseHex: charEscapeOptions.UseLowerCaseHex,
                 useShortEscape: charEscapeOptions.UseShortEscape
@@ -61,6 +61,9 @@ namespace Net.Laceous.Utilities
                 {
                     switch (stringEscapeOptions.EscapeType)
                     {
+                        case StringEscapeType.EscapeAll:
+                            sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
+                            break;
                         case StringEscapeType.EscapeNonAscii:
                             if (s[i].IsQuotableAscii(charEscapeOptions.EscapeLanguage))
                             {
@@ -88,9 +91,8 @@ namespace Net.Laceous.Utilities
                                 }
                             }
                             break;
-                        default: // StringEscapeType.EscapeAll
-                            sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
-                            break;
+                        default:
+                            throw new ArgumentException(string.Format("{0} is not a valid EscapeType.", stringEscapeOptions.EscapeType), nameof(stringEscapeOptions));
                     }
                 }
             }
@@ -124,12 +126,14 @@ namespace Net.Laceous.Utilities
 
             switch (charUnescapeOptions.EscapeLanguage)
             {
+                case CharEscapeLanguage.CSharp:
+                    return UnescapeCSharp(s, stringUnescapeOptions, charUnescapeOptions);
                 case CharEscapeLanguage.FSharp:
                     return UnescapeFSharp(s, stringUnescapeOptions, charUnescapeOptions);
                 case CharEscapeLanguage.PowerShell:
                     return UnescapePowerShell(s, stringUnescapeOptions, charUnescapeOptions);
-                default: // CSharp
-                    return UnescapeCSharp(s, stringUnescapeOptions, charUnescapeOptions);
+                default:
+                    throw new ArgumentException(string.Format("{0} is not a valid EscapeLanguage.", charUnescapeOptions.EscapeLanguage), nameof(charUnescapeOptions));
             }
         }
 

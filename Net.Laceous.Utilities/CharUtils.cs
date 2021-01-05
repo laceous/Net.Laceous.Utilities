@@ -23,12 +23,14 @@ namespace Net.Laceous.Utilities
 
             switch (escapeOptions.EscapeLanguage)
             {
+                case CharEscapeLanguage.CSharp:
+                    return EscapeCSharp(c, escapeOptions);
                 case CharEscapeLanguage.FSharp:
                     return EscapeFSharp(c, escapeOptions);
                 case CharEscapeLanguage.PowerShell:
                     return EscapePowerShell(c, escapeOptions);
-                default: // CSharp
-                    return EscapeCSharp(c, escapeOptions);
+                default:
+                    throw new ArgumentException(string.Format("{0} is not a valid EscapeLanguage.", escapeOptions.EscapeLanguage), nameof(escapeOptions));
             }
         }
 
@@ -268,6 +270,11 @@ namespace Net.Laceous.Utilities
             string hex;
             switch (escapeOptions.EscapeLanguage)
             {
+                case CharEscapeLanguage.CSharp:
+                case CharEscapeLanguage.FSharp:
+                    // automatically use UpperCaseU8
+                    hex = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
+                    return "\\U" + char.ConvertToUtf32(highSurrogate, lowSurrogate).ToString(hex);
                 case CharEscapeLanguage.PowerShell:
                     switch (escapeOptions.EscapeLetter)
                     {
@@ -286,10 +293,8 @@ namespace Net.Laceous.Utilities
                             throw new ArgumentException(string.Format("{0} is not a valid EscapeLetter for {1}.", escapeOptions.EscapeLetter, escapeOptions.EscapeLanguage), nameof(escapeOptions));
                     }
                     return "`u{" + char.ConvertToUtf32(highSurrogate, lowSurrogate).ToString(hex) + "}";
-                default: // CSharp/FSharp
-                    // automatically use UpperCaseU8
-                    hex = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
-                    return "\\U" + char.ConvertToUtf32(highSurrogate, lowSurrogate).ToString(hex);
+                default:
+                    throw new ArgumentException(string.Format("{0} is not a valid EscapeLanguage.", escapeOptions.EscapeLanguage), nameof(escapeOptions));
             }
         }
 
@@ -337,6 +342,15 @@ namespace Net.Laceous.Utilities
             string unescaped = String.Empty;
             switch (unescapeOptions.EscapeLanguage)
             {
+                case CharEscapeLanguage.CSharp:
+                case CharEscapeLanguage.FSharp:
+                    // escaped char will have more than 1 char
+                    // longest escaped string: \UHHHHHHHH
+                    if (s.Length > 1 && s.Length <= 10 && s.StartsWith("\\", StringComparison.Ordinal))
+                    {
+                        unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
+                    }
+                    break;
                 case CharEscapeLanguage.PowerShell:
                     // escaped char will have more than 1 char
                     // longest escaped string: `u{HHHHHH}
@@ -345,14 +359,8 @@ namespace Net.Laceous.Utilities
                         unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
                     }
                     break;
-                default: // CSharp/FSharp
-                    // escaped char will have more than 1 char
-                    // longest escaped string: \UHHHHHHHH
-                    if (s.Length > 1 && s.Length <= 10 && s.StartsWith("\\", StringComparison.Ordinal))
-                    {
-                        unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
-                    }
-                    break;
+                default:
+                    throw new ArgumentException(string.Format("{0} is not a valid EscapeLanguage.", unescapeOptions.EscapeLanguage), nameof(unescapeOptions));
             }
 
             if (unescaped.Length == 1)
@@ -385,14 +393,8 @@ namespace Net.Laceous.Utilities
             string unescaped = String.Empty;
             switch (unescapeOptions.EscapeLanguage)
             {
-                case CharEscapeLanguage.PowerShell:
-                    // escaped surrogate pairs look like this: `u{HHHHH}, `u{HHHHHH}
-                    if (s.Length >= 9 && s.Length <= 10 && s.StartsWith("`u{", StringComparison.Ordinal))
-                    {
-                        unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
-                    }
-                    break;
-                default: // CSharp/FSharp
+                case CharEscapeLanguage.CSharp:
+                case CharEscapeLanguage.FSharp:
                     // escaped surrogate pairs look like this: \UHHHHHHHH
                     // you could techincally have an escaped surrogate pair look like this: \uHHHH\uHHHH
                     // however, this method is for reversing CharUtils.EscapeSurrogatePair which always uses \U
@@ -401,6 +403,15 @@ namespace Net.Laceous.Utilities
                         unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
                     }
                     break;
+                case CharEscapeLanguage.PowerShell:
+                    // escaped surrogate pairs look like this: `u{HHHHH}, `u{HHHHHH}
+                    if (s.Length >= 9 && s.Length <= 10 && s.StartsWith("`u{", StringComparison.Ordinal))
+                    {
+                        unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
+                    }
+                    break;
+                default:
+                    throw new ArgumentException(string.Format("{0} is not a valid EscapeLanguage.", unescapeOptions.EscapeLanguage), nameof(unescapeOptions));
             }
 
             if (unescaped.Length == 2 && char.IsSurrogatePair(unescaped, 0))
