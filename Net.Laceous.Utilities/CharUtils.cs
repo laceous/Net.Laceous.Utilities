@@ -313,7 +313,7 @@ namespace Net.Laceous.Utilities
                 throw new ArgumentNullException(nameof(s));
             }
 
-            if (s.Length == 2 && char.IsSurrogatePair(s, 0))
+            if (s.Length == 2 && char.IsSurrogatePair(s[0], s[1]))
             {
                 return EscapeSurrogatePair(s[0], s[1], escapeOptions);
             }
@@ -414,7 +414,7 @@ namespace Net.Laceous.Utilities
                     throw new ArgumentException(string.Format("{0} is not a valid EscapeLanguage.", unescapeOptions.EscapeLanguage), nameof(unescapeOptions));
             }
 
-            if (unescaped.Length == 2 && char.IsSurrogatePair(unescaped, 0))
+            if (unescaped.Length == 2 && char.IsSurrogatePair(unescaped[0], unescaped[1]))
             {
                 highSurrogate = unescaped[0];
                 lowSurrogate = unescaped[1];
