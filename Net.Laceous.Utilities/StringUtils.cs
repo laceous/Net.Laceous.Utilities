@@ -92,7 +92,7 @@ namespace Net.Laceous.Utilities
                             }
                             break;
                         default:
-                            throw new ArgumentException(string.Format("{0} is not a valid EscapeType.", stringEscapeOptions.EscapeType), nameof(stringEscapeOptions));
+                            throw new ArgumentException(string.Format("{0} is not a valid {1}.", stringEscapeOptions.EscapeType, nameof(stringEscapeOptions.EscapeType)), nameof(stringEscapeOptions));
                     }
                 }
             }
@@ -133,7 +133,7 @@ namespace Net.Laceous.Utilities
                 case CharEscapeLanguage.PowerShell:
                     return UnescapePowerShell(s, stringUnescapeOptions, charUnescapeOptions);
                 default:
-                    throw new ArgumentException(string.Format("{0} is not a valid EscapeLanguage.", charUnescapeOptions.EscapeLanguage), nameof(charUnescapeOptions));
+                    throw new ArgumentException(string.Format("{0} is not a valid {1}.", charUnescapeOptions.EscapeLanguage, nameof(charUnescapeOptions.EscapeLanguage)), nameof(charUnescapeOptions));
             }
         }
 

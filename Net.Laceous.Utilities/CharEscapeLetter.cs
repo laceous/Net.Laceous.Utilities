@@ -6,6 +6,11 @@
     public enum CharEscapeLetter
     {
         /// <summary>
+        /// FSharp: \\DDD
+        /// </summary>
+        None3,
+
+        /// <summary>
         /// PowerShell: `u{H}
         /// </summary>
         LowerCaseU1,
@@ -36,11 +41,6 @@
         LowerCaseU6,
 
         /// <summary>
-        /// CSharp/FSharp: \\UHHHHHHHH
-        /// </summary>
-        UpperCaseU8,
-
-        /// <summary>
         /// CSharp: \\xH
         /// </summary>
         LowerCaseX1,
@@ -61,8 +61,8 @@
         LowerCaseX4,
 
         /// <summary>
-        /// FSharp: \\DDD
+        /// CSharp/FSharp: \\UHHHHHHHH
         /// </summary>
-        Decimal3
+        UpperCaseU8
     }
 }

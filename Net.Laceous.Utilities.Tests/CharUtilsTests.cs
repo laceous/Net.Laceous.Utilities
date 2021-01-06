@@ -184,12 +184,12 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Fact]
-        public void EscapeTest_CSharp_Decimal3()
+        public void EscapeTest_CSharp_None3()
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
                 EscapeLanguage = CharEscapeLanguage.CSharp,
-                EscapeLetter = CharEscapeLetter.Decimal3
+                EscapeLetter = CharEscapeLetter.None3
             };
 
             char original = 'A';
@@ -391,24 +391,24 @@ namespace Net.Laceous.Utilities.Tests
         [InlineData('ㄱ', "\\u3131")] // this won't fit into \DDD so it becomes \uHHHH
         [InlineData(' ', "\\032")]
         [InlineData('\u00A0', "\\160")]
-        public void EscapeTest_FSharp_Decimal3(char original, string escaped)
+        public void EscapeTest_FSharp_None3(char original, string escaped)
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
                 EscapeLanguage = CharEscapeLanguage.FSharp,
-                EscapeLetter = CharEscapeLetter.Decimal3
+                EscapeLetter = CharEscapeLetter.None3
             };
 
             Assert.Equal(escaped, CharUtils.Escape(original, options));
         }
 
         [Fact]
-        public void EscapeTest_FSharp_Decimal3_Fallback()
+        public void EscapeTest_FSharp_None3_Fallback()
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
                 EscapeLanguage = CharEscapeLanguage.FSharp,
-                EscapeLetter = CharEscapeLetter.Decimal3
+                EscapeLetter = CharEscapeLetter.None3
             };
 
             char original = 'ㄱ';
@@ -419,7 +419,7 @@ namespace Net.Laceous.Utilities.Tests
             options.EscapeLetterFallback = CharEscapeLetter.UpperCaseU8;
             Assert.Equal("\\U00003131", CharUtils.Escape(original, options));
 
-            options.EscapeLetterFallback = CharEscapeLetter.Decimal3; // bad
+            options.EscapeLetterFallback = CharEscapeLetter.None3; // bad
             Assert.Throws<ArgumentException>(() => CharUtils.Escape(original, options));
         }
 
@@ -602,12 +602,12 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Fact]
-        public void EscapeTest_PowerShell_Decimal3()
+        public void EscapeTest_PowerShell_None3()
         {
             CharEscapeOptions options = new CharEscapeOptions()
             {
                 EscapeLanguage = CharEscapeLanguage.PowerShell,
-                EscapeLetter = CharEscapeLetter.Decimal3
+                EscapeLetter = CharEscapeLetter.None3
             };
 
             char original = 'A';

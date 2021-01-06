@@ -30,7 +30,7 @@ namespace Net.Laceous.Utilities
                 case CharEscapeLanguage.PowerShell:
                     return EscapePowerShell(c, escapeOptions);
                 default:
-                    throw new ArgumentException(string.Format("{0} is not a valid EscapeLanguage.", escapeOptions.EscapeLanguage), nameof(escapeOptions));
+                    throw new ArgumentException(string.Format("{0} is not a valid {1}.", escapeOptions.EscapeLanguage, nameof(escapeOptions.EscapeLanguage)), nameof(escapeOptions));
             }
         }
 
@@ -101,7 +101,7 @@ namespace Net.Laceous.Utilities
                     hex = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
                     break;
                 default:
-                    throw new ArgumentException(string.Format("{0} is not a valid EscapeLetter for {1}.", escapeOptions.EscapeLetter, escapeOptions.EscapeLanguage), nameof(escapeOptions));
+                    throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", escapeOptions.EscapeLetter, nameof(escapeOptions.EscapeLetter), escapeOptions.EscapeLanguage), nameof(escapeOptions));
             }
 
             return "\\" + xu + ((int)c).ToString(hex);
@@ -148,7 +148,7 @@ namespace Net.Laceous.Utilities
             string hex;
             switch (escapeOptions.EscapeLetter)
             {
-                case CharEscapeLetter.Decimal3:
+                case CharEscapeLetter.None3:
                     xu = "";
                     hex = "D3";
                     break;
@@ -165,11 +165,11 @@ namespace Net.Laceous.Utilities
                     hex = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
                     break;
                 default:
-                    throw new ArgumentException(string.Format("{0} is not a valid EscapeLetter for {1}.", escapeOptions.EscapeLetter, escapeOptions.EscapeLanguage), nameof(escapeOptions));
+                    throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", escapeOptions.EscapeLetter, nameof(escapeOptions.EscapeLetter), escapeOptions.EscapeLanguage), nameof(escapeOptions));
             }
 
             // we can only support 0-255 here for \\DDD and \\xHH
-            if (c > 255 && (escapeOptions.EscapeLetter == CharEscapeLetter.Decimal3 || escapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX2))
+            if (c > 255 && (escapeOptions.EscapeLetter == CharEscapeLetter.None3 || escapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX2))
             {
                 switch (escapeOptions.EscapeLetterFallback)
                 {
@@ -182,7 +182,7 @@ namespace Net.Laceous.Utilities
                         hex = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
                         break;
                     default:
-                        throw new ArgumentException(string.Format("{0} is not a valid EscapeLetterFallback for {1}.", escapeOptions.EscapeLetter, escapeOptions.EscapeLanguage), nameof(escapeOptions));
+                        throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", escapeOptions.EscapeLetterFallback, nameof(escapeOptions.EscapeLetterFallback), escapeOptions.EscapeLanguage), nameof(escapeOptions));
                 }
             }
 
@@ -245,7 +245,7 @@ namespace Net.Laceous.Utilities
                     hex = escapeOptions.UseLowerCaseHex ? "x6" : "X6";
                     break;
                 default:
-                    throw new ArgumentException(string.Format("{0} is not a valid EscapeLetter for {1}.", escapeOptions.EscapeLetter, escapeOptions.EscapeLanguage), nameof(escapeOptions));
+                    throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", escapeOptions.EscapeLetter, nameof(escapeOptions.EscapeLetter), escapeOptions.EscapeLanguage), nameof(escapeOptions));
             }
 
             return "`u{" + ((int)c).ToString(hex) + "}"; // this is supported in PowerShell v7, but not Windows PowerShell v5
@@ -290,11 +290,11 @@ namespace Net.Laceous.Utilities
                             hex = escapeOptions.UseLowerCaseHex ? "x6" : "X6";
                             break;
                         default:
-                            throw new ArgumentException(string.Format("{0} is not a valid EscapeLetter for {1}.", escapeOptions.EscapeLetter, escapeOptions.EscapeLanguage), nameof(escapeOptions));
+                            throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", escapeOptions.EscapeLetter, nameof(escapeOptions.EscapeLetter), escapeOptions.EscapeLanguage), nameof(escapeOptions));
                     }
                     return "`u{" + char.ConvertToUtf32(highSurrogate, lowSurrogate).ToString(hex) + "}";
                 default:
-                    throw new ArgumentException(string.Format("{0} is not a valid EscapeLanguage.", escapeOptions.EscapeLanguage), nameof(escapeOptions));
+                    throw new ArgumentException(string.Format("{0} is not a valid {1}.", escapeOptions.EscapeLanguage, nameof(escapeOptions.EscapeLanguage)), nameof(escapeOptions));
             }
         }
 
@@ -360,7 +360,7 @@ namespace Net.Laceous.Utilities
                     }
                     break;
                 default:
-                    throw new ArgumentException(string.Format("{0} is not a valid EscapeLanguage.", unescapeOptions.EscapeLanguage), nameof(unescapeOptions));
+                    throw new ArgumentException(string.Format("{0} is not a valid {1}.", unescapeOptions.EscapeLanguage, nameof(unescapeOptions.EscapeLanguage)), nameof(unescapeOptions));
             }
 
             if (unescaped.Length == 1)
@@ -411,7 +411,7 @@ namespace Net.Laceous.Utilities
                     }
                     break;
                 default:
-                    throw new ArgumentException(string.Format("{0} is not a valid EscapeLanguage.", unescapeOptions.EscapeLanguage), nameof(unescapeOptions));
+                    throw new ArgumentException(string.Format("{0} is not a valid {1}.", unescapeOptions.EscapeLanguage, nameof(unescapeOptions.EscapeLanguage)), nameof(unescapeOptions));
             }
 
             if (unescaped.Length == 2 && char.IsSurrogatePair(unescaped[0], unescaped[1]))
