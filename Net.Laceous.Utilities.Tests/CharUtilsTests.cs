@@ -616,7 +616,7 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Theory]
-        [InlineData('\'', "\\'")]
+        [InlineData('\'', "\\\'")]
         [InlineData('\"', "\\\"")]
         [InlineData('\\', "\\\\")]
         [InlineData('\0', "\\0")]
@@ -639,7 +639,7 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Theory]
-        [InlineData('\'', "\\'")]
+        [InlineData('\'', "\\\'")]
         [InlineData('\"', "\\\"")]
         [InlineData('\\', "\\\\")]
         [InlineData('\0', "\\u0000")] // fsharp doesn't define \0

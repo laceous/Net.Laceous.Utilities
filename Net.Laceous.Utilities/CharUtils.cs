@@ -48,7 +48,7 @@ namespace Net.Laceous.Utilities
                 switch (c)
                 {
                     case '\'':
-                        return "\\'";
+                        return "\\\'";
                     case '\"':
                         return "\\\"";
                     case '\\':
@@ -138,7 +138,7 @@ namespace Net.Laceous.Utilities
                     case '\\':
                         return "\\\\";
                     case '\'':
-                        return "\\'";
+                        return "\\\'";
                     case '\"':
                         return "\\\"";
                 }
