@@ -9,9 +9,9 @@ This currently contains char and string utilities targeting [.NET Standard 2.0](
 ```csharp
 Console.OutputEncoding = Encoding.UTF8; // use a terminal that supports emojis
 
-CharEscapeOptions ceOptions = new CharEscapeOptions(escapeLanguage: CharEscapeLanguage.CSharp, escapeLetter: CharEscapeLetter.LowerCaseU4, escapeLetterFallback: CharEscapeLetter.LowerCaseU4, useLowerCaseHex: false, useShortEscape: false);
+CharEscapeOptions ceOptions = new CharEscapeOptions(escapeLanguage: CharEscapeLanguage.CSharp, escapeLetter: CharEscapeLetter.LowerCaseU4, escapeSurrogatePairLetter: CharEscapeLetter.UpperCaseU8, useLowerCaseHex: false, useShortEscape: false);
 CharUnescapeOptions cuOptions = new CharUnescapeOptions(escapeLanguage: CharEscapeLanguage.CSharp);
-StringEscapeOptions seOptions = new StringEscapeOptions(escapeType: StringEscapeType.EscapeNonAscii, escapeSurrogatePairs: true, escapeLetterSurrogatePairs: CharEscapeLetter.UpperCaseU8);
+StringEscapeOptions seOptions = new StringEscapeOptions(escapeType: StringEscapeType.EscapeNonAscii, escapeSurrogatePairs: true);
 StringUnescapeOptions suOptions = new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true);
 
 char cOriginal = 'Ä';
@@ -54,9 +54,9 @@ Supported [C# escape sequences](https://docs.microsoft.com/en-us/dotnet/csharp/p
 ```fsharp
 Console.OutputEncoding <- Encoding.UTF8 // use a terminal that supports emojis
 
-let ceOptions = new CharEscapeOptions(escapeLanguage = CharEscapeLanguage.FSharp, escapeLetter = CharEscapeLetter.LowerCaseU4, escapeLetterFallback = CharEscapeLetter.LowerCaseU4, useLowerCaseHex = false, useShortEscape = false)
+let ceOptions = new CharEscapeOptions(escapeLanguage = CharEscapeLanguage.FSharp, escapeLetter = CharEscapeLetter.LowerCaseU4, escapeSurrogatePairLetter = CharEscapeLetter.UpperCaseU8, useLowerCaseHex = false, useShortEscape = false)
 let cuOptions = new CharUnescapeOptions(escapeLanguage = CharEscapeLanguage.FSharp)
-let seOptions = new StringEscapeOptions(escapeType = StringEscapeType.EscapeNonAscii, escapeSurrogatePairs = true, escapeLetterSurrogatePairs = CharEscapeLetter.UpperCaseU8)
+let seOptions = new StringEscapeOptions(escapeType = StringEscapeType.EscapeNonAscii, escapeSurrogatePairs = true)
 let suOptions = new StringUnescapeOptions(isUnrecognizedEscapeVerbatim = true)
 
 let cOriginal = 'Ä'
@@ -99,9 +99,9 @@ Supported [F# escape sequences](https://docs.microsoft.com/en-us/dotnet/fsharp/l
 ```powershell
 Add-Type -Path '/path/to/Net.Laceous.Utilities.dll'
 
-$ceOptions = [Net.Laceous.Utilities.CharEscapeOptions]::New('PowerShell', 'LowerCaseU4', 'LowerCaseU4', $false, $false)
+$ceOptions = [Net.Laceous.Utilities.CharEscapeOptions]::New('PowerShell', 'LowerCaseU4', 'LowerCaseU4', 'LowerCaseU5', 'LowerCaseU5', $false, $false)
 $cuOptions = [Net.Laceous.Utilities.CharUnescapeOptions]::New('PowerShell')
-$seOptions = [Net.Laceous.Utilities.StringEscapeOptions]::New('EscapeNonAscii', $true, 'LowerCaseU5')
+$seOptions = [Net.Laceous.Utilities.StringEscapeOptions]::New('EscapeNonAscii', $true)
 $suOptions = [Net.Laceous.Utilities.StringUnescapeOptions]::New($true)
 
 $cOriginal = 'Ä'
