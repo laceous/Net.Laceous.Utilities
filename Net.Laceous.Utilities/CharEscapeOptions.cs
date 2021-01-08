@@ -50,14 +50,15 @@
         /// <param name="escapeSurrogatePairLetterFallback"></param>
         /// <param name="useLowerCaseHex">Use lower case hex instead of upper case hex</param>
         /// <param name="useShortEscape">Use built-in short sequences instead of \uHHHH</param>
-        public CharEscapeOptions(CharEscapeLanguage escapeLanguage = CharEscapeLanguage.CSharp, CharEscapeLetter escapeLetter = CharEscapeLetter.LowerCaseU4, CharEscapeLetter? escapeLetterFallback = null,
-            CharEscapeLetter? escapeSurrogatePairLetter = null, CharEscapeLetter? escapeSurrogatePairLetterFallback = null, bool useLowerCaseHex = false, bool useShortEscape = false)
+        public CharEscapeOptions(CharEscapeLanguage escapeLanguage = CharEscapeLanguage.CSharp, CharEscapeLetter escapeLetter = CharEscapeLetter.LowerCaseU4,
+            CharEscapeLetter escapeLetterFallback = CharEscapeLetter.LowerCaseU4, CharEscapeLetter escapeSurrogatePairLetter = CharEscapeLetter.UpperCaseU8, 
+            CharEscapeLetter escapeSurrogatePairLetterFallback = CharEscapeLetter.UpperCaseU8, bool useLowerCaseHex = false, bool useShortEscape = false)
         {
             EscapeLanguage = escapeLanguage;
             EscapeLetter = escapeLetter;
-            EscapeLetterFallback = escapeLetterFallback ?? escapeLetter;
-            EscapeSurrogatePairLetter = escapeSurrogatePairLetter ?? escapeLetter;
-            EscapeSurrogatePairLetterFallback = escapeSurrogatePairLetterFallback ?? escapeLetterFallback ?? escapeLetter;
+            EscapeLetterFallback = escapeLetterFallback;
+            EscapeSurrogatePairLetter = escapeSurrogatePairLetter;
+            EscapeSurrogatePairLetterFallback = escapeSurrogatePairLetterFallback;
             UseLowerCaseHex = useLowerCaseHex;
             UseShortEscape = useShortEscape;
         }

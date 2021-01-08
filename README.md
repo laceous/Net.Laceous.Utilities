@@ -153,7 +153,7 @@ from Net.Laceous.Utilities import StringEscapeOptions
 from Net.Laceous.Utilities import StringEscapeType
 from Net.Laceous.Utilities import StringUnescapeOptions
 
-# working around the following error
+# work around the following error:
 # UnicodeEncodeError: 'utf-8' codec can't encode characters in position x-x: surrogates not allowed
 def sp(s):
     return s.encode('utf-16', 'surrogatepass').decode('utf-16', 'replace')
@@ -164,7 +164,7 @@ seOptions = StringEscapeOptions(escapeType = StringEscapeType.EscapeNonAscii, es
 suOptions = StringUnescapeOptions(isUnrecognizedEscapeVerbatim = True)
 
 cOriginal = 'Ä'
-cEscaped = sp(CharUtils.Escape(cOriginal, ceOptions))
+cEscaped = CharUtils.Escape(cOriginal, ceOptions)
 cUnescaped = sp(CharUtils.Unescape(cEscaped, cuOptions))
 print(f"\"{cEscaped}\"") # "\u00C4"
 print(cUnescaped)        # Ä
@@ -194,8 +194,10 @@ print(eUnescaped)        # 😁
 # print(single_surrogate)     # fail
 # print(sp(single_surrogate)) # success as \uFFFD
 #
-# python -> c# : a single surrogate (e.g. \uD83D) will pass through as the replacement character (\uFFFD)
-# python -> c# : a valid surrogate pair (e.g. \uD83D\uDE01) will pass through correctly (e.g. the same as \U0001F601)
+# python -> dotnet : a single surrogate (e.g. \uD83D) will pass through as the replacement character (\uFFFD)
+# python -> dotnet : a surrogate pair (e.g. \uD83D\uDE01 or \U0001F601) will pass through correctly
+# dotnet -> python : a single surrogate (e.g. \uD83D) will pass through as the replacement character (\uFFFD)
+# dotnet -> python : a surrogate pair will pass through individually (e.g. \uD83D\uDE01) so we need the sp function to deal with it
 ```
 
 The above was tested with Python 3.8 and [Python.NET](http://pythonnet.github.io/)
