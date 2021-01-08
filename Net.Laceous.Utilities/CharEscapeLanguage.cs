@@ -18,6 +18,11 @@
         /// <summary>
         /// PowerShell
         /// </summary>
-        PowerShell
+        PowerShell,
+
+        /// <summary>
+        /// Python
+        /// </summary>
+        Python
     }
 }

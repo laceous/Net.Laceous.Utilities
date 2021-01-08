@@ -1,7 +1,9 @@
 ﻿using Net.Laceous.Utilities.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Unicode;
 
 namespace Net.Laceous.Utilities
 {
@@ -37,7 +39,7 @@ namespace Net.Laceous.Utilities
             CharEscapeOptions charEscapeOptionsSurrogatePairs = new CharEscapeOptions(
                 escapeLanguage: charEscapeOptions.EscapeLanguage,
                 escapeLetter: stringEscapeOptions.EscapeLetterSurrogatePairs ?? charEscapeOptions.EscapeLetter,
-                escapeLetterFallback: charEscapeOptions.EscapeLetterFallback,
+                escapeLetterFallback: stringEscapeOptions.EscapeLetterFallbackSurrogatePairs ?? charEscapeOptions.EscapeLetterFallback,
                 useLowerCaseHex: charEscapeOptions.UseLowerCaseHex,
                 useShortEscape: charEscapeOptions.UseShortEscape
             );
@@ -45,6 +47,14 @@ namespace Net.Laceous.Utilities
             CharEscapeOptions charEscapeOptionsLowerCaseX4 = new CharEscapeOptions(
                 escapeLanguage: charEscapeOptions.EscapeLanguage,
                 escapeLetter: CharEscapeLetter.LowerCaseX4,
+                escapeLetterFallback: charEscapeOptions.EscapeLetterFallback,
+                useLowerCaseHex: charEscapeOptions.UseLowerCaseHex,
+                useShortEscape: charEscapeOptions.UseShortEscape
+            );
+
+            CharEscapeOptions charEscapeOptionsNone3 = new CharEscapeOptions(
+                escapeLanguage: charEscapeOptions.EscapeLanguage,
+                escapeLetter: CharEscapeLetter.None3,
                 escapeLetterFallback: charEscapeOptions.EscapeLetterFallback,
                 useLowerCaseHex: charEscapeOptions.UseLowerCaseHex,
                 useShortEscape: charEscapeOptions.UseShortEscape
@@ -79,6 +89,18 @@ namespace Net.Laceous.Utilities
                                     if ((charEscapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX1 || charEscapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX2 || charEscapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX3) && i + 1 < s.Length && s[i + 1].IsHex())
                                     {
                                         sb.Append(CharUtils.Escape(s[i], charEscapeOptionsLowerCaseX4));
+                                    }
+                                    else
+                                    {
+                                        sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
+                                    }
+                                }
+                                else if (charEscapeOptions.EscapeLanguage == CharEscapeLanguage.Python)
+                                {
+                                    // workaround for variable length: \o, \oo, \ooo
+                                    if ((charEscapeOptions.EscapeLetter == CharEscapeLetter.None1 || charEscapeOptions.EscapeLetter == CharEscapeLetter.None2) && i + 1 < s.Length && s[i + 1].IsOctal())
+                                    {
+                                        sb.Append(CharUtils.Escape(s[i], charEscapeOptionsNone3));
                                     }
                                     else
                                     {
@@ -132,6 +154,8 @@ namespace Net.Laceous.Utilities
                     return UnescapeFSharp(s, stringUnescapeOptions, charUnescapeOptions);
                 case CharEscapeLanguage.PowerShell:
                     return UnescapePowerShell(s, stringUnescapeOptions, charUnescapeOptions);
+                case CharEscapeLanguage.Python:
+                    return UnescapePython(s, stringUnescapeOptions, charUnescapeOptions);
                 default:
                     throw new ArgumentException(string.Format("{0} is not a valid {1}.", charUnescapeOptions.EscapeLanguage, nameof(charUnescapeOptions.EscapeLanguage)), nameof(charUnescapeOptions));
             }
@@ -643,6 +667,198 @@ namespace Net.Laceous.Utilities
             }
         }
 
+        private static string UnescapePython(string s, StringUnescapeOptions stringUnescapeOptions, CharUnescapeOptions charUnescapeOptions)
+        {
+            if (s.IndexOf('\\') == -1)
+            {
+                return s;
+            }
+            else
+            {
+                StringBuilder sb = new StringBuilder(s.Length);
+                for (int i = 0; i < s.Length; i++)
+                {
+                    if (s[i] == '\\')
+                    {
+                        if (i + 1 < s.Length)
+                        {
+                            switch (s[++i])
+                            {
+                                case '\\':
+                                    sb.Append('\\');
+                                    break;
+                                case '\'':
+                                    sb.Append('\'');
+                                    break;
+                                case '\"':
+                                    sb.Append('\"');
+                                    break;
+                                case 'a':
+                                    sb.Append('\a');
+                                    break;
+                                case 'b':
+                                    sb.Append('\b');
+                                    break;
+                                case 'f':
+                                    sb.Append('\f');
+                                    break;
+                                case 'n':
+                                    sb.Append('\n');
+                                    break;
+                                case 'r':
+                                    sb.Append('\r');
+                                    break;
+                                case 't':
+                                    sb.Append('\t');
+                                    break;
+                                case 'v':
+                                    sb.Append('\v');
+                                    break;
+                                case 'u':
+                                    if (i + 4 < s.Length && s[i + 1].IsHex() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex())
+                                    {
+                                        sb.Append((char)int.Parse(new string(new char[] { s[++i], s[++i], s[++i], s[++i] }), NumberStyles.AllowHexSpecifier));
+                                    }
+                                    else
+                                    {
+                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                        {
+                                            sb.Append('\\');
+                                            sb.Append(s[i]);
+                                        }
+                                        else
+                                        {
+                                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                                        }
+                                    }
+                                    break;
+                                case 'x':
+                                    if (i + 2 < s.Length && s[i + 1].IsHex() && s[i + 2].IsHex())
+                                    {
+                                        sb.Append((char)int.Parse(new string(new char[] { s[++i], s[++i] }), NumberStyles.AllowHexSpecifier));
+                                    }
+                                    else
+                                    {
+                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                        {
+                                            sb.Append('\\');
+                                            sb.Append(s[i]);
+                                        }
+                                        else
+                                        {
+                                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                                        }
+                                    }
+                                    break;
+                                case 'U':
+                                    if (i + 8 < s.Length && s[i + 1].IsHex() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex() && s[i + 5].IsHex() && s[i + 6].IsHex() && s[i + 7].IsHex() && s[i + 8].IsHex())
+                                    {
+                                        if (s[i + 1].IsZero() && s[i + 2].IsZero() && s[i + 3].IsZero() && s[i + 4].IsZero())
+                                        {
+                                            i += 4;
+                                            sb.Append((char)int.Parse(new string(new char[] { s[++i], s[++i], s[++i], s[++i] }), NumberStyles.AllowHexSpecifier));
+                                        }
+                                        else
+                                        {
+                                            string temp = ConvertFromUtf32(int.Parse(new string(new char[] { s[i + 1], s[i + 2], s[i + 3], s[i + 4], s[i + 5], s[i + 6], s[i + 7], s[i + 8] }), NumberStyles.AllowHexSpecifier), stringUnescapeOptions.IsUnrecognizedEscapeVerbatim);
+                                            if (temp == null)
+                                            {
+                                                if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                                {
+                                                    sb.Append('\\');
+                                                    sb.Append(s[i]);
+                                                }
+                                                else
+                                                {
+                                                    throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                                                }
+                                            }
+                                            else
+                                            {
+                                                i += 8;
+                                                sb.Append(temp);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                        {
+                                            sb.Append('\\');
+                                            sb.Append(s[i]);
+                                        }
+                                        else
+                                        {
+                                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                                        }
+                                    }
+                                    break;
+                                case 'N':
+                                    {
+                                        // \N{Latin Capital Letter A} -> A
+                                        string temp = FindStringFromBracedName(s, ref i, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim);
+                                        if (temp == null)
+                                        {
+                                            if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                            {
+                                                sb.Append('\\');
+                                                sb.Append(s[i]);
+                                            }
+                                            else
+                                            {
+                                                throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                                            }
+                                        }
+                                        else
+                                        {
+                                            sb.Append(temp);
+                                        }
+                                    }
+                                    break;
+                                default:
+                                    // "" can support up to \777 unlike b"" which can only support up to \377 before rolling over
+                                    if (i + 2 < s.Length && s[i].IsOctal() && s[i + 1].IsOctal() && s[i + 2].IsOctal())
+                                    {
+                                        sb.Append((char)Convert.ToInt32(new string(new char[] { s[i], s[++i], s[++i] }), 8));
+                                    }
+                                    else if (i + 1 < s.Length && s[i].IsOctal() && s[i + 1].IsOctal())
+                                    {
+                                        sb.Append((char)Convert.ToInt32(new string(new char[] { s[i], s[++i] }), 8));
+                                    }
+                                    else if (s[i].IsOctal())
+                                    {
+                                        sb.Append((char)Convert.ToInt32(new string(new char[] { s[i] }), 8));
+                                    }
+                                    else
+                                    {
+                                        // python treats this as verbatim
+                                        sb.Append('\\');
+                                        sb.Append(s[i]);
+                                    }
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                            {
+                                sb.Append(s[i]);
+                            }
+                            else
+                            {
+                                throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(s[i]);
+                    }
+                }
+                return sb.ToString();
+            }
+        }
+
         /// <summary>
         /// Wrapper for char.ConvertFromUtf32
         /// </summary>
@@ -665,6 +881,92 @@ namespace Net.Laceous.Utilities
                 }
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Lookup for name -> codePoint because UnicodeInfo only has codePoint -> name
+        /// </summary>
+        private static Dictionary<string, int> NameToCodePointDictionary = null;
+
+        /// <summary>
+        /// Lazy initialize NameToCodePointDictionary
+        /// </summary>
+        private static void InitializeNameToCodePointDictionary()
+        {
+            if (NameToCodePointDictionary == null)
+            {
+                NameToCodePointDictionary = new Dictionary<string, int>();
+                foreach (UnicodeBlock block in UnicodeInfo.GetBlocks())
+                {
+                    foreach (int codePoint in block.CodePointRange)
+                    {
+                        UnicodeCharInfo charInfo = UnicodeInfo.GetCharInfo(codePoint);
+                        if (!string.IsNullOrEmpty(charInfo.Name))
+                        {
+                            NameToCodePointDictionary[charInfo.Name.ToUpperInvariant()] = codePoint;
+                        }
+                        foreach (UnicodeNameAlias alias in charInfo.NameAliases)
+                        {
+                            if (!string.IsNullOrEmpty(alias.Name))
+                            {
+                                NameToCodePointDictionary[alias.Name.ToUpperInvariant()] = codePoint;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Pull out name from {name}, convert it to a codePoint, convert it to a string
+        /// </summary>
+        /// <param name="s">String</param>
+        /// <param name="i">String index</param>
+        /// <returns>String for name</returns>
+        private static string FindStringFromBracedName(string s, ref int i, bool isUnrecognizedEscapeVerbatim)
+        {
+            int j = 1;
+            if (i + j < s.Length && s[i + j].IsOpeningCurlyBrace())
+            {
+                bool foundClosingCurlyBrace = false;
+                StringBuilder nsb = new StringBuilder();
+                while (!foundClosingCurlyBrace && i + j + 1 < s.Length)
+                {
+                    if (s[i + ++j].IsClosingCurlyBrace())
+                    {
+                        foundClosingCurlyBrace = true;
+                    }
+                    else
+                    {
+                        nsb.Append(s[i + j]);
+                    }
+                }
+                if (foundClosingCurlyBrace)
+                {
+                    if (j >= 3) // {x}
+                    {
+                        InitializeNameToCodePointDictionary();
+                        if (NameToCodePointDictionary.TryGetValue(nsb.ToString().ToUpperInvariant(), out int codePoint))
+                        {
+                            if (codePoint >= char.MinValue && codePoint <= char.MaxValue)
+                            {
+                                i += j;
+                                return ((char)codePoint).ToString();
+                            }
+                            else
+                            {
+                                string temp = ConvertFromUtf32(codePoint, isUnrecognizedEscapeVerbatim);
+                                if (temp != null)
+                                {
+                                    i += j;
+                                    return temp;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return null;
         }
     }
 }
