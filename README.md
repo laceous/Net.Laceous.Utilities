@@ -134,3 +134,85 @@ Supported [PowerShell escape sequences](https://docs.microsoft.com/en-us/powersh
 * `` `t `` (Horizontal tab)
 * `` `v `` (Vertical tab)
 * `` `u{H} `` or `` `u{HH} `` or `` `u{HHH} `` or `` `u{HHHH} `` or `` `u{HHHHH} `` or `` `u{HHHHHH} `` (Variable length unicode escape sequence)
+
+### Python
+
+```python
+import sys
+import clr
+# path to Net.Laceous.Utilities.dll and UnicodeInformation.dll
+sys.path.append('/path/to/Net.Laceous.Utilities')
+clr.AddReference('Net.Laceous.Utilities')
+from Net.Laceous.Utilities import CharUtils
+from Net.Laceous.Utilities import CharEscapeOptions
+from Net.Laceous.Utilities import CharEscapeLanguage
+from Net.Laceous.Utilities import CharEscapeLetter
+from Net.Laceous.Utilities import CharUnescapeOptions
+from Net.Laceous.Utilities import StringUtils
+from Net.Laceous.Utilities import StringEscapeOptions
+from Net.Laceous.Utilities import StringEscapeType
+from Net.Laceous.Utilities import StringUnescapeOptions
+
+# working around the following error
+# UnicodeEncodeError: 'utf-8' codec can't encode characters in position x-x: surrogates not allowed
+def sp(s):
+    return s.encode('utf-16', 'surrogatepass').decode('utf-16', 'replace')
+
+ceOptions = CharEscapeOptions(escapeLanguage = CharEscapeLanguage.Python, escapeLetter = CharEscapeLetter.LowerCaseU4, escapeLetterSurrogatePair = CharEscapeLetter.UpperCaseU8, useLowerCaseHex = False, useShortEscape = False)
+cuOptions = CharUnescapeOptions(escapeLanguage = CharEscapeLanguage.Python)
+seOptions = StringEscapeOptions(escapeType = StringEscapeType.EscapeNonAscii, escapeSurrogatePairs = True)
+suOptions = StringUnescapeOptions(isUnrecognizedEscapeVerbatim = True)
+
+cOriginal = 'Ä'
+cEscaped = sp(CharUtils.Escape(cOriginal, ceOptions))
+cUnescaped = sp(CharUtils.Unescape(cEscaped, cuOptions))
+print(f"\"{cEscaped}\"") # "\u00C4"
+print(cUnescaped)        # Ä
+
+sOriginal = 'abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓'
+sEscaped = StringUtils.Escape(sOriginal, seOptions, ceOptions)
+sUnescaped = sp(StringUtils.Unescape(sEscaped, suOptions, cuOptions))
+print(f"\"{sEscaped}\"") # "abc ABC 123 \u00C4\u00D6\u00DC \u3131\u3134\u3137 \U0001F601\U0001F603\U0001F613"
+print(sUnescaped)        # abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓
+
+# this requires UnicodeInformation.dll
+ceOptions.EscapeLetterSurrogatePair = CharEscapeLetter.UpperCaseN1
+
+eOriginal = '😁'
+eEscaped = CharUtils.EscapeSurrogatePair(eOriginal, ceOptions)
+eUnescaped = sp(CharUtils.UnescapeSurrogatePair(eEscaped, cuOptions))
+print(f"\"{eEscaped}\"") # "\N{Grinning Face With Smiling Eyes}"
+print(eUnescaped)        # 😁
+
+# two_char_emoji_1 = '\uD83D\uDE01' # 😁
+# two_char_emoji_2 = '\U0001F601'   # 😁
+# print(two_char_emoji_1)     # fail
+# print(sp(two_char_emoji_1)) # success
+# print(two_char_emoji_2)     # success
+#
+# single_surrogate = '\uD83D' # illegal
+# print(single_surrogate)     # fail
+# print(sp(single_surrogate)) # success as \uFFFD
+#
+# python -> c# : a single surrogate (e.g. \uD83D) will pass through as the replacement character (\uFFFD)
+# python -> c# : a valid surrogate pair (e.g. \uD83D\uDE01) will pass through correctly (e.g. the same as \U0001F601)
+```
+
+The above was tested with Python 3.8 and [Python.NET](http://pythonnet.github.io/)
+
+Supported [Python escape sequences](https://docs.python.org/3/reference/lexical_analysis.html#string-and-bytes-literals):
+* `\\` (Backslash)
+* `\'` (Single quote)
+* `\"` (Double quote)
+* `\a` (Bell)
+* `\b` (Backspace)
+* `\f` (Formfeed)
+* `\n` (Linefeed)
+* `\r` (Carriage return)
+* `\t` (Horizontal tab)
+* `\v` (Vertical tab)
+* `\O` or `\OO` or `\OOO` (Variable length octal escape sequence; 0-777)
+* `\uHHHH` (16-bit hex value)
+* `\UHHHHHHHH` (32-bit hex value)
+* `\N{name}` (Character named *name* in the Unicode database)
+  * This requires [UnicodeInformation](https://www.nuget.org/packages/UnicodeInformation/)

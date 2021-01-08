@@ -36,18 +36,12 @@ namespace Net.Laceous.Utilities
                 charEscapeOptions = new CharEscapeOptions();
             }
 
-            CharEscapeOptions charEscapeOptionsSurrogatePairs = new CharEscapeOptions(
-                escapeLanguage: charEscapeOptions.EscapeLanguage,
-                escapeLetter: stringEscapeOptions.EscapeLetterSurrogatePairs ?? charEscapeOptions.EscapeLetter,
-                escapeLetterFallback: stringEscapeOptions.EscapeLetterFallbackSurrogatePairs ?? charEscapeOptions.EscapeLetterFallback,
-                useLowerCaseHex: charEscapeOptions.UseLowerCaseHex,
-                useShortEscape: charEscapeOptions.UseShortEscape
-            );
-
             CharEscapeOptions charEscapeOptionsLowerCaseX4 = new CharEscapeOptions(
                 escapeLanguage: charEscapeOptions.EscapeLanguage,
                 escapeLetter: CharEscapeLetter.LowerCaseX4,
                 escapeLetterFallback: charEscapeOptions.EscapeLetterFallback,
+                escapeSurrogatePairLetter: charEscapeOptions.EscapeSurrogatePairLetter,
+                escapeSurrogatePairLetterFallback: charEscapeOptions.EscapeSurrogatePairLetterFallback,
                 useLowerCaseHex: charEscapeOptions.UseLowerCaseHex,
                 useShortEscape: charEscapeOptions.UseShortEscape
             );
@@ -56,6 +50,8 @@ namespace Net.Laceous.Utilities
                 escapeLanguage: charEscapeOptions.EscapeLanguage,
                 escapeLetter: CharEscapeLetter.None3,
                 escapeLetterFallback: charEscapeOptions.EscapeLetterFallback,
+                escapeSurrogatePairLetter: charEscapeOptions.EscapeSurrogatePairLetter,
+                escapeSurrogatePairLetterFallback: charEscapeOptions.EscapeSurrogatePairLetterFallback,
                 useLowerCaseHex: charEscapeOptions.UseLowerCaseHex,
                 useShortEscape: charEscapeOptions.UseShortEscape
             );
@@ -65,7 +61,7 @@ namespace Net.Laceous.Utilities
             {
                 if (stringEscapeOptions.EscapeSurrogatePairs && i + 1 < s.Length && char.IsSurrogatePair(s[i], s[i + 1]))
                 {
-                    sb.Append(CharUtils.EscapeSurrogatePair(s[i], s[++i], charEscapeOptionsSurrogatePairs));
+                    sb.Append(CharUtils.EscapeSurrogatePair(s[i], s[++i], charEscapeOptions));
                 }
                 else
                 {
