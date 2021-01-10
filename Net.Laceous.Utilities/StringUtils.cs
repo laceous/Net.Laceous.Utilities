@@ -924,25 +924,25 @@ namespace Net.Laceous.Utilities
             int j = 1;
             if (i + j < s.Length && s[i + j].IsLeftBrace())
             {
-                bool foundClosingCurlyBrace = false;
-                StringBuilder nsb = new StringBuilder();
-                while (!foundClosingCurlyBrace && i + j + 1 < s.Length)
+                bool foundRightBrace = false;
+                StringBuilder sb = new StringBuilder();
+                while (!foundRightBrace && i + j + 1 < s.Length)
                 {
                     if (s[i + ++j].IsRightBrace())
                     {
-                        foundClosingCurlyBrace = true;
+                        foundRightBrace = true;
                     }
                     else
                     {
-                        nsb.Append(s[i + j]);
+                        sb.Append(s[i + j]);
                     }
                 }
-                if (foundClosingCurlyBrace)
+                if (foundRightBrace)
                 {
                     if (j >= 3) // {x}
                     {
                         InitializeNameToCodePointDictionary();
-                        if (NameToCodePointDictionary.TryGetValue(nsb.ToString().ToUpperInvariant(), out int codePoint))
+                        if (NameToCodePointDictionary.TryGetValue(sb.ToString().ToUpperInvariant(), out int codePoint))
                         {
                             if (codePoint >= char.MinValue && codePoint <= char.MaxValue)
                             {
