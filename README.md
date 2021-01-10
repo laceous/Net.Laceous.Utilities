@@ -156,14 +156,14 @@ seOptions = StringEscapeOptions(escapeType = StringEscapeType.EscapeNonAscii, es
 suOptions = StringUnescapeOptions(isUnrecognizedEscapeVerbatim = True)
 
 cOriginal = 'Ä'
-cEscaped = CharUtils.Escape(cOriginal, ceOptions)
-cUnescaped = CharUtils.Unescape(cEscaped, cuOptions)
+cEscaped = CharUtils.Escape(cOriginal, escapeOptions = ceOptions)
+cUnescaped = CharUtils.Unescape(cEscaped, unescapeOptions = cuOptions)
 print(f"\"{cEscaped}\"") # "\u00C4"
 print(sp(cUnescaped))    # Ä
 
 sOriginal = 'abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓'
-sEscaped = StringUtils.Escape(sOriginal, seOptions, ceOptions)
-sUnescaped = StringUtils.Unescape(sEscaped, suOptions, cuOptions)
+sEscaped = StringUtils.Escape(sOriginal, stringEscapeOptions = seOptions, charEscapeOptions = ceOptions)
+sUnescaped = StringUtils.Unescape(sEscaped, stringUnescapeOptions = suOptions, charUnescapeOptions = cuOptions)
 print(f"\"{sEscaped}\"") # "abc ABC 123 \u00C4\u00D6\u00DC \u3131\u3134\u3137 \U0001F601\U0001F603\U0001F613"
 print(sp(sUnescaped))    # abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓
 
@@ -171,8 +171,8 @@ print(sp(sUnescaped))    # abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓
 ceOptions.SurrogatePairEscapeLetter = CharEscapeLetter.UpperCaseN1
 
 eOriginal = '😁'
-eEscaped = CharUtils.EscapeSurrogatePair(eOriginal, ceOptions)
-eUnescaped = CharUtils.UnescapeSurrogatePair(eEscaped, cuOptions)
+eEscaped = CharUtils.EscapeSurrogatePair(eOriginal, escapeOptions = ceOptions)
+eUnescaped = CharUtils.UnescapeSurrogatePair(eEscaped, unescapeOptions = cuOptions)
 print(f"\"{eEscaped}\"") # "\N{Grinning Face With Smiling Eyes}"
 print(sp(eUnescaped))    # 😁
 
