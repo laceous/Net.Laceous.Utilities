@@ -9,7 +9,7 @@ This currently contains char and string utilities targeting [.NET Standard 2.0](
 ```csharp
 Console.OutputEncoding = Encoding.UTF8; // use a terminal that supports emojis
 
-CharEscapeOptions ceOptions = new CharEscapeOptions(escapeLanguage: CharEscapeLanguage.CSharp, escapeLetter: CharEscapeLetter.LowerCaseU4, escapeSurrogatePairLetter: CharEscapeLetter.UpperCaseU8, useLowerCaseHex: false, useShortEscape: false);
+CharEscapeOptions ceOptions = new CharEscapeOptions(escapeLanguage: CharEscapeLanguage.CSharp, escapeLetter: CharEscapeLetter.LowerCaseU4, escapeLetterFallback: CharEscapeLetter.LowerCaseU4, surrogatePairEscapeLetter: CharEscapeLetter.UpperCaseU8, surrogatePairEscapeLetterFallback: CharEscapeLetter.UpperCaseU8, useLowerCaseHex: false, useShortEscape: false);
 CharUnescapeOptions cuOptions = new CharUnescapeOptions(escapeLanguage: CharEscapeLanguage.CSharp);
 StringEscapeOptions seOptions = new StringEscapeOptions(escapeType: StringEscapeType.EscapeNonAscii, escapeSurrogatePairs: true);
 StringUnescapeOptions suOptions = new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true);
@@ -54,7 +54,7 @@ Supported [C# escape sequences](https://docs.microsoft.com/en-us/dotnet/csharp/p
 ```fsharp
 Console.OutputEncoding <- Encoding.UTF8 // use a terminal that supports emojis
 
-let ceOptions = new CharEscapeOptions(escapeLanguage = CharEscapeLanguage.FSharp, escapeLetter = CharEscapeLetter.LowerCaseU4, escapeSurrogatePairLetter = CharEscapeLetter.UpperCaseU8, useLowerCaseHex = false, useShortEscape = false)
+let ceOptions = new CharEscapeOptions(escapeLanguage = CharEscapeLanguage.FSharp, escapeLetter = CharEscapeLetter.LowerCaseU4, escapeLetterFallback = CharEscapeLetter.LowerCaseU4, surrogatePairEscapeLetter = CharEscapeLetter.UpperCaseU8, surrogatePairEscapeLetterFallback = CharEscapeLetter.UpperCaseU8, useLowerCaseHex = false, useShortEscape = false)
 let cuOptions = new CharUnescapeOptions(escapeLanguage = CharEscapeLanguage.FSharp)
 let seOptions = new StringEscapeOptions(escapeType = StringEscapeType.EscapeNonAscii, escapeSurrogatePairs = true)
 let suOptions = new StringUnescapeOptions(isUnrecognizedEscapeVerbatim = true)
@@ -143,46 +143,38 @@ import clr
 # path to Net.Laceous.Utilities.dll and UnicodeInformation.dll
 sys.path.append('/path/to/Net.Laceous.Utilities')
 clr.AddReference('Net.Laceous.Utilities')
-from Net.Laceous.Utilities import CharUtils
-from Net.Laceous.Utilities import CharEscapeOptions
-from Net.Laceous.Utilities import CharEscapeLanguage
-from Net.Laceous.Utilities import CharEscapeLetter
-from Net.Laceous.Utilities import CharUnescapeOptions
-from Net.Laceous.Utilities import StringUtils
-from Net.Laceous.Utilities import StringEscapeOptions
-from Net.Laceous.Utilities import StringEscapeType
-from Net.Laceous.Utilities import StringUnescapeOptions
+from Net.Laceous.Utilities import *
 
 # work around the following error:
 # UnicodeEncodeError: 'utf-8' codec can't encode characters in position x-x: surrogates not allowed
 def sp(s):
     return s.encode('utf-16', 'surrogatepass').decode('utf-16', 'replace')
 
-ceOptions = CharEscapeOptions(escapeLanguage = CharEscapeLanguage.Python, escapeLetter = CharEscapeLetter.LowerCaseU4, escapeLetterSurrogatePair = CharEscapeLetter.UpperCaseU8, useLowerCaseHex = False, useShortEscape = False)
+ceOptions = CharEscapeOptions(escapeLanguage = CharEscapeLanguage.Python, escapeLetter = CharEscapeLetter.LowerCaseU4, escapeLetterFallback = CharEscapeLetter.LowerCaseU4, surrogatePairEscapeLetter = CharEscapeLetter.UpperCaseU8, surrogatePairEscapeLetterFallback = CharEscapeLetter.UpperCaseU8, useLowerCaseHex = False, useShortEscape = False)
 cuOptions = CharUnescapeOptions(escapeLanguage = CharEscapeLanguage.Python)
 seOptions = StringEscapeOptions(escapeType = StringEscapeType.EscapeNonAscii, escapeSurrogatePairs = True)
 suOptions = StringUnescapeOptions(isUnrecognizedEscapeVerbatim = True)
 
 cOriginal = 'Ä'
 cEscaped = CharUtils.Escape(cOriginal, ceOptions)
-cUnescaped = sp(CharUtils.Unescape(cEscaped, cuOptions))
+cUnescaped = CharUtils.Unescape(cEscaped, cuOptions)
 print(f"\"{cEscaped}\"") # "\u00C4"
-print(cUnescaped)        # Ä
+print(sp(cUnescaped))    # Ä
 
 sOriginal = 'abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓'
 sEscaped = StringUtils.Escape(sOriginal, seOptions, ceOptions)
-sUnescaped = sp(StringUtils.Unescape(sEscaped, suOptions, cuOptions))
+sUnescaped = StringUtils.Unescape(sEscaped, suOptions, cuOptions)
 print(f"\"{sEscaped}\"") # "abc ABC 123 \u00C4\u00D6\u00DC \u3131\u3134\u3137 \U0001F601\U0001F603\U0001F613"
-print(sUnescaped)        # abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓
+print(sp(sUnescaped))    # abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓
 
 # this requires UnicodeInformation.dll
-ceOptions.EscapeLetterSurrogatePair = CharEscapeLetter.UpperCaseN1
+ceOptions.SurrogatePairEscapeLetter = CharEscapeLetter.UpperCaseN1
 
 eOriginal = '😁'
 eEscaped = CharUtils.EscapeSurrogatePair(eOriginal, ceOptions)
-eUnescaped = sp(CharUtils.UnescapeSurrogatePair(eEscaped, cuOptions))
+eUnescaped = CharUtils.UnescapeSurrogatePair(eEscaped, cuOptions)
 print(f"\"{eEscaped}\"") # "\N{Grinning Face With Smiling Eyes}"
-print(eUnescaped)        # 😁
+print(sp(eUnescaped))    # 😁
 
 # two_char_emoji_1 = '\uD83D\uDE01' # 😁
 # two_char_emoji_2 = '\U0001F601'   # 😁
@@ -197,7 +189,7 @@ print(eUnescaped)        # 😁
 # python -> dotnet : a single surrogate (e.g. \uD83D) will pass through as the replacement character (\uFFFD)
 # python -> dotnet : a surrogate pair (e.g. \uD83D\uDE01 or \U0001F601) will pass through correctly
 # dotnet -> python : a single surrogate (e.g. \uD83D) will pass through as the replacement character (\uFFFD)
-# dotnet -> python : a surrogate pair will pass through individually (e.g. \uD83D\uDE01) so we need the sp function to deal with it
+# dotnet -> python : a surrogate pair will pass through individually (e.g. \uD83D\uDE01) so the sp function is needed to deal with it
 ```
 
 The above was tested with Python 3.8 and [Python.NET](http://pythonnet.github.io/)

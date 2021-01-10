@@ -123,7 +123,7 @@ namespace Net.Laceous.Utilities
         {
             if (escapeOptions.UseShortEscape)
             {
-                // FSharp doesn't define \0
+                // FSharp doesn't define \0, the closest is \000
                 switch (c)
                 {
                     case '\a':
@@ -210,6 +210,7 @@ namespace Net.Laceous.Utilities
         {
             if (escapeOptions.UseShortEscape)
             {
+                // `` and `" might be useful
                 switch (c)
                 {
                     case '\0':
@@ -272,6 +273,7 @@ namespace Net.Laceous.Utilities
         {
             if (escapeOptions.UseShortEscape)
             {
+                // \0 isn't defined on its own, but it technically works as part of an octal escape
                 switch (c)
                 {
                     case '\\':
@@ -323,7 +325,7 @@ namespace Net.Laceous.Utilities
                     }
                     break;
                 case CharEscapeLetter.LowerCaseX2:
-                    if (c > 0xFF) // 255 (decimal)
+                    if (c <= 0xFF) // 255 (decimal)
                     {
                         xu = "x";
                         suffix = ((int)c).ToString(escapeOptions.UseLowerCaseHex ? "x2" : "X2");
@@ -340,7 +342,7 @@ namespace Net.Laceous.Utilities
                 case CharEscapeLetter.UpperCaseN1:
                     UnicodeCharInfo charInfo = UnicodeInfo.GetCharInfo((int)c); // python 3.3 added support for aliases, fall back to that if there's no name
                     string name = !string.IsNullOrEmpty(charInfo.Name) ? charInfo.Name : charInfo.NameAliases.Count > 0 ? charInfo.NameAliases[0].Name : null;
-                    if (!string.IsNullOrEmpty(name))
+                    if (!string.IsNullOrEmpty(name) && !name.Contains("}")) // StringComparison.Ordinal
                     {
                         xu = "N";
                         suffix = "{" + CultureInfo.InvariantCulture.TextInfo.ToTitleCase(name.ToLowerInvariant()) + "}";
@@ -402,7 +404,7 @@ namespace Net.Laceous.Utilities
         }
 
         /// <summary>
-        /// Escape surrogate pair with \\UHHHHHHHH or `u{HHHHH}
+        /// Escape surrogate pair with \\UHHHHHHHH
         /// </summary>
         /// <param name="highSurrogate">High surrogate</param>
         /// <param name="lowSurrogate">Low surrogate</param>
@@ -415,20 +417,20 @@ namespace Net.Laceous.Utilities
             int codePoint = char.ConvertToUtf32(highSurrogate, lowSurrogate);
 
             string hex;
-            switch (escapeOptions.EscapeSurrogatePairLetter)
+            switch (escapeOptions.SurrogatePairEscapeLetter)
             {
                 case CharEscapeLetter.UpperCaseU8:
                     hex = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
                     break;
                 default:
-                    throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", escapeOptions.EscapeSurrogatePairLetter, nameof(escapeOptions.EscapeSurrogatePairLetter), escapeOptions.EscapeLanguage), nameof(escapeOptions));
+                    throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", escapeOptions.SurrogatePairEscapeLetter, nameof(escapeOptions.SurrogatePairEscapeLetter), escapeOptions.EscapeLanguage), nameof(escapeOptions));
             }
 
             return "\\U" + codePoint.ToString(hex);
         }
 
         /// <summary>
-        /// Escape surrogate pair with \\UHHHHHHHH or `u{HHHHH}
+        /// Escape surrogate pair with \\UHHHHHHHH
         /// </summary>
         /// <param name="highSurrogate">High surrogate</param>
         /// <param name="lowSurrogate">Low surrogate</param>
@@ -441,20 +443,20 @@ namespace Net.Laceous.Utilities
             int codePoint = char.ConvertToUtf32(highSurrogate, lowSurrogate);
 
             string hex;
-            switch (escapeOptions.EscapeSurrogatePairLetter)
+            switch (escapeOptions.SurrogatePairEscapeLetter)
             {
                 case CharEscapeLetter.UpperCaseU8:
                     hex = escapeOptions.UseLowerCaseHex ? "x8" : "X8";
                     break;
                 default:
-                    throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", escapeOptions.EscapeSurrogatePairLetter, nameof(escapeOptions.EscapeSurrogatePairLetter), escapeOptions.EscapeLanguage), nameof(escapeOptions));
+                    throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", escapeOptions.SurrogatePairEscapeLetter, nameof(escapeOptions.SurrogatePairEscapeLetter), escapeOptions.EscapeLanguage), nameof(escapeOptions));
             }
 
             return "\\U" + codePoint.ToString(hex);
         }
 
         /// <summary>
-        /// Escape surrogate pair with \\UHHHHHHHH or `u{HHHHH}
+        /// Escape surrogate pair with `u{HHHHH}
         /// </summary>
         /// <param name="highSurrogate">High surrogate</param>
         /// <param name="lowSurrogate">Low surrogate</param>
@@ -467,7 +469,7 @@ namespace Net.Laceous.Utilities
             int codePoint = char.ConvertToUtf32(highSurrogate, lowSurrogate);
 
             string hex;
-            switch (escapeOptions.EscapeSurrogatePairLetter)
+            switch (escapeOptions.SurrogatePairEscapeLetter)
             {
                 // 1/2/3/4 will output as 5 so we can just fall through
                 case CharEscapeLetter.LowerCaseU1:
@@ -481,14 +483,14 @@ namespace Net.Laceous.Utilities
                     hex = escapeOptions.UseLowerCaseHex ? "x6" : "X6";
                     break;
                 default:
-                    throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", escapeOptions.EscapeSurrogatePairLetter, nameof(escapeOptions.EscapeSurrogatePairLetter), escapeOptions.EscapeLanguage), nameof(escapeOptions));
+                    throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", escapeOptions.SurrogatePairEscapeLetter, nameof(escapeOptions.SurrogatePairEscapeLetter), escapeOptions.EscapeLanguage), nameof(escapeOptions));
             }
 
             return "`u{" + codePoint.ToString(hex) + "}";
         }
 
         /// <summary>
-        /// Escape surrogate pair with \\UHHHHHHHH or `u{HHHHH}
+        /// Escape surrogate pair with \\UHHHHHHHH
         /// </summary>
         /// <param name="highSurrogate">High surrogate</param>
         /// <param name="lowSurrogate">Low surrogate</param>
@@ -502,7 +504,7 @@ namespace Net.Laceous.Utilities
 
             string xu = null;
             string suffix = null;
-            switch (escapeOptions.EscapeSurrogatePairLetter)
+            switch (escapeOptions.SurrogatePairEscapeLetter)
             {
                 case CharEscapeLetter.UpperCaseU8:
                     xu = "U";
@@ -511,26 +513,26 @@ namespace Net.Laceous.Utilities
                 case CharEscapeLetter.UpperCaseN1:
                     UnicodeCharInfo charInfo = UnicodeInfo.GetCharInfo(codePoint);
                     string name = !string.IsNullOrEmpty(charInfo.Name) ? charInfo.Name : charInfo.NameAliases.Count > 0 ? charInfo.NameAliases[0].Name : null;
-                    if (!string.IsNullOrEmpty(name))
+                    if (!string.IsNullOrEmpty(name) && !name.Contains("}"))
                     {
                         xu = "N";
                         suffix = "{" + CultureInfo.InvariantCulture.TextInfo.ToTitleCase(name.ToLowerInvariant()) + "}";
                     }
                     break;
                 default:
-                    throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", escapeOptions.EscapeSurrogatePairLetter, nameof(escapeOptions.EscapeSurrogatePairLetter), escapeOptions.EscapeLanguage), nameof(escapeOptions));
+                    throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", escapeOptions.SurrogatePairEscapeLetter, nameof(escapeOptions.SurrogatePairEscapeLetter), escapeOptions.EscapeLanguage), nameof(escapeOptions));
             }
 
             if (xu == null || suffix == null)
             {
-                switch (escapeOptions.EscapeSurrogatePairLetterFallback)
+                switch (escapeOptions.SurrogatePairEscapeLetterFallback)
                 {
                     case CharEscapeLetter.UpperCaseU8:
                         xu = "U";
                         suffix = codePoint.ToString(escapeOptions.UseLowerCaseHex ? "x8" : "X8");
                         break;
                     default:
-                        throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", escapeOptions.EscapeSurrogatePairLetterFallback, nameof(escapeOptions.EscapeSurrogatePairLetterFallback), escapeOptions.EscapeLanguage), nameof(escapeOptions));
+                        throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", escapeOptions.SurrogatePairEscapeLetterFallback, nameof(escapeOptions.SurrogatePairEscapeLetterFallback), escapeOptions.EscapeLanguage), nameof(escapeOptions));
                 }
             }
 

@@ -40,8 +40,8 @@ namespace Net.Laceous.Utilities
                 escapeLanguage: charEscapeOptions.EscapeLanguage,
                 escapeLetter: CharEscapeLetter.LowerCaseX4,
                 escapeLetterFallback: charEscapeOptions.EscapeLetterFallback,
-                escapeSurrogatePairLetter: charEscapeOptions.EscapeSurrogatePairLetter,
-                escapeSurrogatePairLetterFallback: charEscapeOptions.EscapeSurrogatePairLetterFallback,
+                surrogatePairEscapeLetter: charEscapeOptions.SurrogatePairEscapeLetter,
+                surrogatePairEscapeLetterFallback: charEscapeOptions.SurrogatePairEscapeLetterFallback,
                 useLowerCaseHex: charEscapeOptions.UseLowerCaseHex,
                 useShortEscape: charEscapeOptions.UseShortEscape
             );
@@ -50,8 +50,8 @@ namespace Net.Laceous.Utilities
                 escapeLanguage: charEscapeOptions.EscapeLanguage,
                 escapeLetter: CharEscapeLetter.None3,
                 escapeLetterFallback: charEscapeOptions.EscapeLetterFallback,
-                escapeSurrogatePairLetter: charEscapeOptions.EscapeSurrogatePairLetter,
-                escapeSurrogatePairLetterFallback: charEscapeOptions.EscapeSurrogatePairLetterFallback,
+                surrogatePairEscapeLetter: charEscapeOptions.SurrogatePairEscapeLetter,
+                surrogatePairEscapeLetterFallback: charEscapeOptions.SurrogatePairEscapeLetterFallback,
                 useLowerCaseHex: charEscapeOptions.UseLowerCaseHex,
                 useShortEscape: charEscapeOptions.UseShortEscape
             );
@@ -550,7 +550,7 @@ namespace Net.Laceous.Utilities
                                 case 'u':
                                     // 1 to 6 hex chars is supported between the curly braces
                                     // if something goes wrong here then powershell will throw an error
-                                    if (i + 8 < s.Length && s[i + 1].IsOpeningCurlyBrace() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex() && s[i + 5].IsHex() && s[i + 6].IsHex() && s[i + 7].IsHex() && s[i + 8].IsClosingCurlyBrace())
+                                    if (i + 8 < s.Length && s[i + 1].IsLeftBrace() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex() && s[i + 5].IsHex() && s[i + 6].IsHex() && s[i + 7].IsHex() && s[i + 8].IsRightBrace())
                                     {
                                         if (s[i + 2].IsZero() && s[i + 3].IsZero())
                                         {
@@ -573,7 +573,7 @@ namespace Net.Laceous.Utilities
                                             }
                                         }
                                     }
-                                    else if (i + 7 < s.Length && s[i + 1].IsOpeningCurlyBrace() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex() && s[i + 5].IsHex() && s[i + 6].IsHex() && s[i + 7].IsClosingCurlyBrace())
+                                    else if (i + 7 < s.Length && s[i + 1].IsLeftBrace() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex() && s[i + 5].IsHex() && s[i + 6].IsHex() && s[i + 7].IsRightBrace())
                                     {
                                         if (s[i + 2].IsZero())
                                         {
@@ -596,25 +596,25 @@ namespace Net.Laceous.Utilities
                                             }
                                         }
                                     }
-                                    else if (i + 6 < s.Length && s[i + 1].IsOpeningCurlyBrace() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex() && s[i + 5].IsHex() && s[i + 6].IsClosingCurlyBrace())
+                                    else if (i + 6 < s.Length && s[i + 1].IsLeftBrace() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex() && s[i + 5].IsHex() && s[i + 6].IsRightBrace())
                                     {
                                         ++i;
                                         sb.Append((char)int.Parse(new string(new char[] { s[++i], s[++i], s[++i], s[++i] }), NumberStyles.AllowHexSpecifier));
                                         ++i;
                                     }
-                                    else if (i + 5 < s.Length && s[i + 1].IsOpeningCurlyBrace() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex() && s[i + 5].IsClosingCurlyBrace())
+                                    else if (i + 5 < s.Length && s[i + 1].IsLeftBrace() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex() && s[i + 5].IsRightBrace())
                                     {
                                         ++i;
                                         sb.Append((char)int.Parse(new string(new char[] { s[++i], s[++i], s[++i] }), NumberStyles.AllowHexSpecifier));
                                         ++i;
                                     }
-                                    else if (i + 4 < s.Length && s[i + 1].IsOpeningCurlyBrace() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsClosingCurlyBrace())
+                                    else if (i + 4 < s.Length && s[i + 1].IsLeftBrace() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsRightBrace())
                                     {
                                         ++i;
                                         sb.Append((char)int.Parse(new string(new char[] { s[++i], s[++i] }), NumberStyles.AllowHexSpecifier));
                                         ++i;
                                     }
-                                    else if (i + 3 < s.Length && s[i + 1].IsOpeningCurlyBrace() && s[i + 2].IsHex() && s[i + 3].IsClosingCurlyBrace())
+                                    else if (i + 3 < s.Length && s[i + 1].IsLeftBrace() && s[i + 2].IsHex() && s[i + 3].IsRightBrace())
                                     {
                                         ++i;
                                         sb.Append((char)int.Parse(new string(new char[] { s[++i] }), NumberStyles.AllowHexSpecifier));
@@ -922,13 +922,13 @@ namespace Net.Laceous.Utilities
         private static string FindStringFromBracedName(string s, ref int i, bool isUnrecognizedEscapeVerbatim)
         {
             int j = 1;
-            if (i + j < s.Length && s[i + j].IsOpeningCurlyBrace())
+            if (i + j < s.Length && s[i + j].IsLeftBrace())
             {
                 bool foundClosingCurlyBrace = false;
                 StringBuilder nsb = new StringBuilder();
                 while (!foundClosingCurlyBrace && i + j + 1 < s.Length)
                 {
-                    if (s[i + ++j].IsClosingCurlyBrace())
+                    if (s[i + ++j].IsRightBrace())
                     {
                         foundClosingCurlyBrace = true;
                     }

@@ -50,7 +50,7 @@
         /// </summary>
         /// <param name="c">Char to check</param>
         /// <returns>True if {, otherwise false</returns>
-        internal static bool IsOpeningCurlyBrace(this char c)
+        internal static bool IsLeftBrace(this char c)
         {
             return c == '{';
         }
@@ -60,7 +60,7 @@
         /// </summary>
         /// <param name="c">Char to check</param>
         /// <returns>True if }, otherwise false</returns>
-        internal static bool IsClosingCurlyBrace(this char c)
+        internal static bool IsRightBrace(this char c)
         {
             return c == '}';
         }

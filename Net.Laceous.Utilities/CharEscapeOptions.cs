@@ -6,7 +6,7 @@
     public class CharEscapeOptions
     {
         /// <summary>
-        /// C# or F#
+        /// C# / F# / PowerShell / Python
         /// </summary>
         public CharEscapeLanguage EscapeLanguage { get; set; }
 
@@ -21,14 +21,14 @@
         public CharEscapeLetter EscapeLetterFallback { get; set; }
 
         /// <summary>
-        /// 
+        /// Choose which surrogate pair escape letter to use
         /// </summary>
-        public CharEscapeLetter EscapeSurrogatePairLetter { get; set; }
+        public CharEscapeLetter SurrogatePairEscapeLetter { get; set; }
 
         /// <summary>
-        /// 
+        /// Choose which surrogate pair fallback escape letter to use
         /// </summary>
-        public CharEscapeLetter EscapeSurrogatePairLetterFallback { get; set; }
+        public CharEscapeLetter SurrogatePairEscapeLetterFallback { get; set; }
 
         /// <summary>
         /// Use lower case hex instead of upper case hex
@@ -36,29 +36,29 @@
         public bool UseLowerCaseHex { get; set; }
 
         /// <summary>
-        /// Use \', \", \\, \0, \a, \b, \f, \n, \r, \t, \v instead of \uHHHH
+        /// Use defined short escape (e.g. \n, \r, \t) instead of \uHHHH
         /// </summary>
         public bool UseShortEscape { get; set; }
 
         /// <summary>
         /// Initialize new instance of CharEscapeOptions with selected options
         /// </summary>
-        /// <param name="escapeLanguage">C# or F#</param>
+        /// <param name="escapeLanguage">C# / F# / PowerShell / Python</param>
         /// <param name="escapeLetter">Choose which unicode escape letter to use</param>
         /// <param name="escapeLetterFallback">Choose which fallback unicode escape letter to use</param>
-        /// <param name="escapeSurrogatePairLetter"></param>
-        /// <param name="escapeSurrogatePairLetterFallback"></param>
+        /// <param name="surrogatePairEscapeLetter">Choose which surrogate pair escape letter to use</param>
+        /// <param name="surrogatePairEscapeLetterFallback">Choose which surrogate pair fallback escape letter to use</param>
         /// <param name="useLowerCaseHex">Use lower case hex instead of upper case hex</param>
         /// <param name="useShortEscape">Use built-in short sequences instead of \uHHHH</param>
         public CharEscapeOptions(CharEscapeLanguage escapeLanguage = CharEscapeLanguage.CSharp, CharEscapeLetter escapeLetter = CharEscapeLetter.LowerCaseU4,
-            CharEscapeLetter escapeLetterFallback = CharEscapeLetter.LowerCaseU4, CharEscapeLetter escapeSurrogatePairLetter = CharEscapeLetter.UpperCaseU8, 
-            CharEscapeLetter escapeSurrogatePairLetterFallback = CharEscapeLetter.UpperCaseU8, bool useLowerCaseHex = false, bool useShortEscape = false)
+            CharEscapeLetter escapeLetterFallback = CharEscapeLetter.LowerCaseU4, CharEscapeLetter surrogatePairEscapeLetter = CharEscapeLetter.UpperCaseU8, 
+            CharEscapeLetter surrogatePairEscapeLetterFallback = CharEscapeLetter.UpperCaseU8, bool useLowerCaseHex = false, bool useShortEscape = false)
         {
             EscapeLanguage = escapeLanguage;
             EscapeLetter = escapeLetter;
             EscapeLetterFallback = escapeLetterFallback;
-            EscapeSurrogatePairLetter = escapeSurrogatePairLetter;
-            EscapeSurrogatePairLetterFallback = escapeSurrogatePairLetterFallback;
+            SurrogatePairEscapeLetter = surrogatePairEscapeLetter;
+            SurrogatePairEscapeLetterFallback = surrogatePairEscapeLetterFallback;
             UseLowerCaseHex = useLowerCaseHex;
             UseShortEscape = useShortEscape;
         }
