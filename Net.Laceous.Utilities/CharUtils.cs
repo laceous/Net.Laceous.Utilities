@@ -627,7 +627,6 @@ namespace Net.Laceous.Utilities
         /// <param name="highSurrogate">Return high surrogate</param>
         /// <param name="lowSurrogate">Return low surrogate</param>
         /// <param name="unescapeOptions">Char unescape options</param>
-        /// <returns>Surrogate pair that's been unescaped</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
         public static void UnescapeSurrogatePair(string s, out char highSurrogate, out char lowSurrogate, CharUnescapeOptions unescapeOptions = null)
