@@ -6,3 +6,4 @@ bin/
 
 # Ignore these files
 *.user
+.DS_Store
