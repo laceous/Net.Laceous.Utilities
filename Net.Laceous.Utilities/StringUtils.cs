@@ -759,15 +759,8 @@ namespace Net.Laceous.Utilities
                                             string temp = ConvertFromUtf32(int.Parse(new string(new char[] { s[i + 1], s[i + 2], s[i + 3], s[i + 4], s[i + 5], s[i + 6], s[i + 7], s[i + 8] }), NumberStyles.AllowHexSpecifier), stringUnescapeOptions.IsUnrecognizedEscapeVerbatim);
                                             if (temp == null)
                                             {
-                                                if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                                {
-                                                    sb.Append('\\');
-                                                    sb.Append(s[i]);
-                                                }
-                                                else
-                                                {
-                                                    throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                                }
+                                                sb.Append('\\');
+                                                sb.Append(s[i]);
                                             }
                                             else
                                             {
