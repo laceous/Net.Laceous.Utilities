@@ -26,6 +26,16 @@
         }
 
         /// <summary>
+        /// Checks if the char is an octal digit (0-7)
+        /// </summary>
+        /// <param name="c">Char to check</param>
+        /// <returns>True if octal digit, otherwise false</returns>
+        internal static bool IsOctal(this char c)
+        {
+            return c >= '0' && c <= '7';
+        }
+
+        /// <summary>
         /// Checks if the char is zero
         /// </summary>
         /// <param name="c">Char to check</param>
@@ -40,7 +50,7 @@
         /// </summary>
         /// <param name="c">Char to check</param>
         /// <returns>True if {, otherwise false</returns>
-        internal static bool IsOpeningCurlyBrace(this char c)
+        internal static bool IsLeftBrace(this char c)
         {
             return c == '{';
         }
@@ -50,7 +60,7 @@
         /// </summary>
         /// <param name="c">Char to check</param>
         /// <returns>True if }, otherwise false</returns>
-        internal static bool IsClosingCurlyBrace(this char c)
+        internal static bool IsRightBrace(this char c)
         {
             return c == '}';
         }
