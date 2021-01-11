@@ -892,6 +892,7 @@ namespace Net.Laceous.Utilities
             if (NameToCodePointDictionary == null)
             {
                 NameToCodePointDictionary = new Dictionary<string, int>();
+                // for (int codePoint = 0; codePoint <= 0x10FFFF; codePoint++)
                 foreach (UnicodeBlock block in UnicodeInfo.GetBlocks())
                 {
                     foreach (int codePoint in block.CodePointRange)
