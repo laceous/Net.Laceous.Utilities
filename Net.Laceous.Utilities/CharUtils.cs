@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Linq;
 using System.Unicode;
 
 namespace Net.Laceous.Utilities
@@ -604,7 +603,7 @@ namespace Net.Laceous.Utilities
                     // escaped char will have more than 1 char
                     // right now the max length of name in \N{name} is 88; min overall is 5: \N{x}
                     // non-N max is: \UHHHHHHHH
-                    if ((s.Length > 1 && s.Length <= 10 && s.StartsWith("\\", StringComparison.Ordinal)) || (s.Length >= 5 && s.StartsWith("\\N{", StringComparison.Ordinal) && s.EndsWith("}", StringComparison.Ordinal) && s.Count(c => c == '}') == 1))
+                    if ((s.Length > 1 && s.Length <= 10 && s.StartsWith("\\", StringComparison.Ordinal)) || (s.Length >= 5 && s.StartsWith("\\N{", StringComparison.Ordinal) && s.IndexOf('}') == s.Length - 1))
                     {
                         unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
                     }
@@ -662,7 +661,7 @@ namespace Net.Laceous.Utilities
                     break;
                 case CharEscapeLanguage.Python:
                     // escaped surrogate pairs look like this: \UHHHHHHHH, \N{name}
-                    if ((s.Length == 10 && s.StartsWith("\\U", StringComparison.Ordinal)) || (s.Length >= 5 && s.StartsWith("\\N{", StringComparison.Ordinal) && s.EndsWith("}", StringComparison.Ordinal) && s.Count(c => c == '}') == 1))
+                    if ((s.Length == 10 && s.StartsWith("\\U", StringComparison.Ordinal)) || (s.Length >= 5 && s.StartsWith("\\N{", StringComparison.Ordinal) && s.IndexOf('}') == s.Length - 1))
                     {
                         unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
                     }
