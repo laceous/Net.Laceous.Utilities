@@ -789,8 +789,8 @@ namespace Net.Laceous.Utilities.Tests
 
         [Theory]
         [InlineData('\'', "`u{0027}")]
-        [InlineData('\"', "`u{0022}")]
-        [InlineData('`', "`u{0060}")]
+        [InlineData('\"', "`\"")]
+        [InlineData('`', "``")]
         [InlineData('\0', "`0")]
         [InlineData('\a', "`a")]
         [InlineData('\b', "`b")]

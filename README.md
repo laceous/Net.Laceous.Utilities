@@ -62,20 +62,20 @@ let suOptions = new StringUnescapeOptions(isUnrecognizedEscapeVerbatim = true)
 let cOriginal = 'Ä'
 let cEscaped = CharUtils.Escape(cOriginal, escapeOptions = ceOptions)
 let cUnescaped = CharUtils.Unescape(cEscaped, unescapeOptions = cuOptions)
-printfn "\'%s\'" (cEscaped) // '\u00C4'
-printfn "%c" (cUnescaped)   // Ä
+printfn "\'%s\'" cEscaped // '\u00C4'
+printfn "%c" cUnescaped   // Ä
 
 let eOriginal = "😁"; // 2 char emoji
 let eEscaped = CharUtils.EscapeSurrogatePair(eOriginal, escapeOptions = ceOptions)
 let eUnescaped = CharUtils.UnescapeSurrogatePair(eEscaped, unescapeOptions = cuOptions)
-printfn "\"%s\"" (eEscaped) // "\U0001F601"
-printfn "%s" (eUnescaped)   // 😁
+printfn "\"%s\"" eEscaped // "\U0001F601"
+printfn "%s" eUnescaped   // 😁
 
 let sOriginal = "abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓"
 let sEscaped = StringUtils.Escape(sOriginal, stringEscapeOptions = seOptions, charEscapeOptions = ceOptions)
 let sUnescaped = StringUtils.Unescape(sEscaped, stringUnescapeOptions = suOptions, charUnescapeOptions = cuOptions)
-printfn "\"%s\"" (sEscaped) // "abc ABC 123 \u00C4\u00D6\u00DC \u3131\u3134\u3137 \U0001F601\U0001F603\U0001F613"
-printfn "%s" (sUnescaped)   // abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓
+printfn "\"%s\"" sEscaped // "abc ABC 123 \u00C4\u00D6\u00DC \u3131\u3134\u3137 \U0001F601\U0001F603\U0001F613"
+printfn "%s" sUnescaped   // abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓
 ```
 
 Supported [F# escape sequences](https://docs.microsoft.com/en-us/dotnet/fsharp/language-reference/strings#remarks):
@@ -133,6 +133,8 @@ Supported [PowerShell escape sequences](https://docs.microsoft.com/en-us/powersh
 * `` `r `` (Carriage return)
 * `` `t `` (Horizontal tab)
 * `` `v `` (Vertical tab)
+* ``` `` ``` (Backtick - listed [here](https://docs.microsoft.com/en-us/powershell/scripting/developer/cmdlet/supporting-wildcard-characters-in-cmdlet-parameters?view=powershell-7.1))
+* `` `" `` (Double quote - listed [here](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_quoting_rules?view=powershell-7.1))
 * `` `u{H} `` or `` `u{HH} `` or `` `u{HHH} `` or `` `u{HHHH} `` or `` `u{HHHHH} `` or `` `u{HHHHHH} `` (Variable length unicode escape sequence)
 
 ### Python

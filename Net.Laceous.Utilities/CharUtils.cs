@@ -209,7 +209,9 @@ namespace Net.Laceous.Utilities
         {
             if (escapeOptions.UseShortEscape)
             {
-                // `` and `" might be useful
+                // escaping single quotes here doesn't make any sense
+                // within double-quoted strings `' is the same as '
+                // within single-quoted strings `' doesn't work, you have to double ' to ''
                 switch (c)
                 {
                     case '\0':
@@ -230,6 +232,10 @@ namespace Net.Laceous.Utilities
                         return "`t";
                     case '\v':
                         return "`v";
+                    case '`':
+                        return "``";
+                    case '\"':
+                        return "`\""; // technically you can use either `" or "" within double-quoted strings, but this library doesn't deal with doubled quote chars (you should pre/post-process with string.Replace for those cases)
                 }
             }
 
@@ -272,7 +278,7 @@ namespace Net.Laceous.Utilities
         {
             if (escapeOptions.UseShortEscape)
             {
-                // \0 isn't defined on its own, but it technically works as part of an octal escape
+                // \0 isn't defined on its own, but you can get one char octal escapes below with the None1 option
                 switch (c)
                 {
                     case '\\':

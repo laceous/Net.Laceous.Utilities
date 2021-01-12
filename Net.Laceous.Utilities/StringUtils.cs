@@ -71,7 +71,7 @@ namespace Net.Laceous.Utilities
                             sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
                             break;
                         case StringEscapeType.EscapeNonAscii:
-                            if (s[i].IsQuotableAscii(charEscapeOptions.EscapeLanguage))
+                            if (s[i].IsPrintAscii())
                             {
                                 sb.Append(s[i]);
                             }
@@ -546,6 +546,12 @@ namespace Net.Laceous.Utilities
                                     break;
                                 case 'v':
                                     sb.Append('\v');
+                                    break;
+                                case '`':
+                                    sb.Append('`');
+                                    break;
+                                case '\"':
+                                    sb.Append('\"');
                                     break;
                                 case 'u':
                                     // 1 to 6 hex chars is supported between the curly braces
