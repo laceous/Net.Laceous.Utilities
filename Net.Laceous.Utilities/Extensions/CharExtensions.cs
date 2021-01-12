@@ -1,4 +1,6 @@
-﻿namespace Net.Laceous.Utilities.Extensions
+﻿using System;
+
+namespace Net.Laceous.Utilities.Extensions
 {
     /// <summary>
     /// Adds extension methods to chars
@@ -67,12 +69,30 @@
 
         /// <summary>
         /// Checks if the char is an ascii print char (including space)
+        /// Exclude escape char + string quote chars
         /// </summary>
         /// <param name="c">Char to check</param>
         /// <returns>True if in the range of 32 to 126, otherwise false</returns>
-        internal static bool IsPrintAscii(this char c)
+        internal static bool IsQuotableAscii(this char c, CharEscapeLanguage escapeLanguage)
         {
-            return c >= 32 && c <= 126;
+            char[] chars;
+            switch (escapeLanguage)
+            {
+                case CharEscapeLanguage.CSharp:
+                case CharEscapeLanguage.FSharp:
+                    chars = new char[] { '\\', '\"' };
+                    break;
+                case CharEscapeLanguage.PowerShell:
+                    chars = new char[] { '`', '\"' };
+                    break;
+                case CharEscapeLanguage.Python:
+                    chars = new char[] { '\\', '\"', '\'' };
+                    break;
+                default:
+                    throw new ArgumentException(string.Format("{0} is not a valid {1}.", escapeLanguage, nameof(escapeLanguage)), nameof(escapeLanguage));
+            }
+
+            return Array.IndexOf(chars, c) == -1 && c >= 32 && c <= 126;
         }
     }
 }

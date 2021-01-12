@@ -71,7 +71,7 @@ namespace Net.Laceous.Utilities
                             sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
                             break;
                         case StringEscapeType.EscapeNonAscii:
-                            if (s[i].IsPrintAscii())
+                            if (s[i].IsQuotableAscii(charEscapeOptions.EscapeLanguage))
                             {
                                 sb.Append(s[i]);
                             }
