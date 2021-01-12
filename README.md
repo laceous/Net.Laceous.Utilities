@@ -113,7 +113,7 @@ Write-Host $cUnescaped     # Ä
 $eOriginal = '😁' # 2 char emoji
 $eEscaped = [Net.Laceous.Utilities.CharUtils]::EscapeSurrogatePair($eOriginal, $ceOptions)
 $eUnescaped = [Net.Laceous.Utilities.CharUtils]::UnescapeSurrogatePair($eEscaped, $cuOptions)
-Write-Host "`"$eEscaped`"" # // "`u{1F601}"
+Write-Host "`"$eEscaped`"" # "`u{1F601}"
 Write-Host $eUnescaped     # 😁
 
 $sOriginal = 'abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓'
