@@ -73,7 +73,7 @@ namespace Net.Laceous.Utilities.Extensions
         /// </summary>
         /// <param name="c">Char to check</param>
         /// <param name="escapeLanguage">Escape language</param>
-        /// <returns>True if in the range of 32 to 126, otherwise false</returns>
+        /// <returns>True if in the range of 32 to 126 (and not escape or string quote chars), otherwise false</returns>
         internal static bool IsQuotableAscii(this char c, CharEscapeLanguage escapeLanguage)
         {
             char[] chars;
