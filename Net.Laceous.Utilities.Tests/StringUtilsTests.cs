@@ -10,7 +10,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = StringEscapeType.EscapeAll
+                EscapeKind = StringEscapeKind.EscapeAll
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
@@ -29,7 +29,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = StringEscapeType.EscapeAll
+                EscapeKind = StringEscapeKind.EscapeAll
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
@@ -48,7 +48,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = StringEscapeType.EscapeAll
+                EscapeKind = StringEscapeKind.EscapeAll
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
@@ -67,7 +67,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = StringEscapeType.EscapeAll
+                EscapeKind = StringEscapeKind.EscapeAll
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
@@ -86,7 +86,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = StringEscapeType.EscapeNonAscii
+                EscapeKind = StringEscapeKind.EscapeNonAscii
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
@@ -105,7 +105,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = StringEscapeType.EscapeNonAscii
+                EscapeKind = StringEscapeKind.EscapeNonAscii
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
@@ -124,7 +124,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = StringEscapeType.EscapeNonAscii
+                EscapeKind = StringEscapeKind.EscapeNonAscii
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
@@ -143,7 +143,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = StringEscapeType.EscapeNonAscii
+                EscapeKind = StringEscapeKind.EscapeNonAscii
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
@@ -162,7 +162,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = StringEscapeType.EscapeAll,
+                EscapeKind = StringEscapeKind.EscapeAll,
                 EscapeSurrogatePairs = true
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
@@ -183,7 +183,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = StringEscapeType.EscapeAll,
+                EscapeKind = StringEscapeKind.EscapeAll,
                 EscapeSurrogatePairs = true
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
@@ -204,7 +204,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = StringEscapeType.EscapeAll,
+                EscapeKind = StringEscapeKind.EscapeAll,
                 EscapeSurrogatePairs = true
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
@@ -225,7 +225,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = StringEscapeType.EscapeAll,
+                EscapeKind = StringEscapeKind.EscapeAll,
                 EscapeSurrogatePairs = true
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
@@ -246,7 +246,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = StringEscapeType.EscapeAll,
+                EscapeKind = StringEscapeKind.EscapeAll,
                 EscapeSurrogatePairs = true
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
@@ -267,7 +267,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = StringEscapeType.EscapeAll,
+                EscapeKind = StringEscapeKind.EscapeAll,
                 EscapeSurrogatePairs = true
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
@@ -288,7 +288,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = StringEscapeType.EscapeNonAscii
+                EscapeKind = StringEscapeKind.EscapeNonAscii
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
@@ -308,7 +308,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = StringEscapeType.EscapeNonAscii
+                EscapeKind = StringEscapeKind.EscapeNonAscii
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {
@@ -329,7 +329,7 @@ namespace Net.Laceous.Utilities.Tests
         {
             StringEscapeOptions sOptions = new StringEscapeOptions()
             {
-                EscapeType = StringEscapeType.EscapeNonAscii
+                EscapeKind = StringEscapeKind.EscapeNonAscii
             };
             CharEscapeOptions cOptions = new CharEscapeOptions()
             {

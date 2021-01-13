@@ -68,6 +68,41 @@ namespace Net.Laceous.Utilities.Extensions
         }
 
         /// <summary>
+        /// Checks if the char is "
+        /// </summary>
+        /// <param name="c">Char to check</param>
+        /// <returns>True if ", otherwise false</returns>
+        internal static bool IsDoubleQuote(this char c)
+        {
+            return c == '\"';
+        }
+
+        /// <summary>
+        /// Checks if the char is '
+        /// </summary>
+        /// <param name="c">Char to check</param>
+        /// <returns>True if ', otherwise false</returns>
+        internal static bool IsSingleQuote(this char c)
+        {
+            return c == '\'';
+        }
+
+        /// <summary>
+        /// Checks if the char is \
+        /// </summary>
+        /// <param name="c">Char to check</param>
+        /// <returns>True if \, otherwise false</returns>
+        internal static bool IsBackslash(this char c)
+        {
+            return c == '\\';
+        }
+
+        internal static bool IsBacktick(this char c)
+        {
+            return c == '`';
+        }
+
+        /// <summary>
         /// Checks if the char is an ascii print char (including space)
         /// Exclude escape char + string quote chars
         /// </summary>
@@ -77,24 +112,27 @@ namespace Net.Laceous.Utilities.Extensions
         /// <exception cref="ArgumentException"></exception>
         internal static bool IsQuotableAscii(this char c, CharEscapeLanguage escapeLanguage)
         {
+            // make sure to always escape: escape chars and quotes in a way that will work for all normal string types
+            // e.g. \" works in all these python string types: "\"", '\"', """\"""", '''\"'''
+            // and is required in some, go simple for now and always escape them
             char[] chars;
             switch (escapeLanguage)
             {
                 case CharEscapeLanguage.CSharp:
                 case CharEscapeLanguage.FSharp:
-                    chars = new char[] { '\\', '\"' };
+                    chars = new char[] { '\\', '\"' }; // this is meant for strings (not chars) so we can leave off \'
                     break;
                 case CharEscapeLanguage.PowerShell:
-                    chars = new char[] { '`', '\"' };
+                    chars = new char[] { '`', '\"' }; // \' are verbatim strings in PowerShell
                     break;
                 case CharEscapeLanguage.Python:
-                    chars = new char[] { '\\', '\"', '\'' };
+                    chars = new char[] { '\\', '\"', '\'' }; // maybe look at StringQuoteKind at some point?
                     break;
                 default:
                     throw new ArgumentException(string.Format("{0} is not a valid {1}.", escapeLanguage, nameof(escapeLanguage)), nameof(escapeLanguage));
             }
 
-            return Array.IndexOf(chars, c) == -1 && c >= 32 && c <= 126;
+            return Array.IndexOf(chars, c) == -1 && c >= 32 && c <= 126; // space - tilde (~)
         }
     }
 }

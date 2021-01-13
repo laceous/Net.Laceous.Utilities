@@ -235,7 +235,7 @@ namespace Net.Laceous.Utilities
                     case '`':
                         return "``";
                     case '\"':
-                        return "`\""; // technically you can use either `" or "" within double-quoted strings, but this library doesn't deal with doubled quote chars (you should pre/post-process with string.Replace for those cases)
+                        return "`\""; // technically you can use either `" or "" within double-quoted strings
                 }
             }
 
@@ -600,7 +600,7 @@ namespace Net.Laceous.Utilities
                 case CharEscapeLanguage.PowerShell:
                     // escaped char will have more than 1 char
                     // longest escaped string: `u{HHHHHH}
-                    if (s.Length > 1 && s.Length <= 10 && s.StartsWith("`", StringComparison.Ordinal))
+                    if ((s.Length > 1 && s.Length <= 10 && s.StartsWith("`", StringComparison.Ordinal)) || s == "\"\"") // "" is a special case inside "" that escapes a single "
                     {
                         unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
                     }

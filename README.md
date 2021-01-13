@@ -11,8 +11,8 @@ Console.OutputEncoding = Encoding.UTF8; // use a terminal that supports emojis
 
 CharEscapeOptions ceOptions = new CharEscapeOptions(escapeLanguage: CharEscapeLanguage.CSharp, escapeLetter: CharEscapeLetter.LowerCaseU4, escapeLetterFallback: CharEscapeLetter.LowerCaseU4, surrogatePairEscapeLetter: CharEscapeLetter.UpperCaseU8, surrogatePairEscapeLetterFallback: CharEscapeLetter.UpperCaseU8, useLowerCaseHex: false, useShortEscape: false);
 CharUnescapeOptions cuOptions = new CharUnescapeOptions(escapeLanguage: CharEscapeLanguage.CSharp);
-StringEscapeOptions seOptions = new StringEscapeOptions(escapeType: StringEscapeType.EscapeNonAscii, escapeSurrogatePairs: true);
-StringUnescapeOptions suOptions = new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true);
+StringEscapeOptions seOptions = new StringEscapeOptions(escapeKind: StringEscapeKind.EscapeNonAscii, escapeSurrogatePairs: true);
+StringUnescapeOptions suOptions = new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true, quoteKind: StringQuoteKind.DoubleQuote);
 
 char cOriginal = 'Ä';
 string cEscaped = CharUtils.Escape(cOriginal, escapeOptions: ceOptions);
@@ -49,6 +49,9 @@ Supported [C# escape sequences](https://docs.microsoft.com/en-us/dotnet/csharp/p
 * `\xH` or `\xHH` or `\xHHH` or `\xHHHH` (Variable length unicode escape sequence)
 * `\UHHHHHHHH` (Unicode escape sequence for surrogate pairs)
 
+Supported C# string types:
+* "string"
+
 ### F#
 
 ```fsharp
@@ -56,8 +59,8 @@ Console.OutputEncoding <- Encoding.UTF8 // use a terminal that supports emojis
 
 let ceOptions = new CharEscapeOptions(escapeLanguage = CharEscapeLanguage.FSharp, escapeLetter = CharEscapeLetter.LowerCaseU4, escapeLetterFallback = CharEscapeLetter.LowerCaseU4, surrogatePairEscapeLetter = CharEscapeLetter.UpperCaseU8, surrogatePairEscapeLetterFallback = CharEscapeLetter.UpperCaseU8, useLowerCaseHex = false, useShortEscape = false)
 let cuOptions = new CharUnescapeOptions(escapeLanguage = CharEscapeLanguage.FSharp)
-let seOptions = new StringEscapeOptions(escapeType = StringEscapeType.EscapeNonAscii, escapeSurrogatePairs = true)
-let suOptions = new StringUnescapeOptions(isUnrecognizedEscapeVerbatim = true)
+let seOptions = new StringEscapeOptions(escapeKind = StringEscapeKind.EscapeNonAscii, escapeSurrogatePairs = true)
+let suOptions = new StringUnescapeOptions(isUnrecognizedEscapeVerbatim = true, quoteKind = StringQuoteKind.DoubleQuote)
 
 let cOriginal = 'Ä'
 let cEscaped = CharUtils.Escape(cOriginal, escapeOptions = ceOptions)
@@ -94,6 +97,9 @@ Supported [F# escape sequences](https://docs.microsoft.com/en-us/dotnet/fsharp/l
 * `\uHHHH` (Unicode escape sequence)
 * `\UHHHHHHHH` (Unicode escape sequence for surrogate pairs)
 
+Supported F# string types:
+* "string"
+
 ### PowerShell
 
 ```powershell
@@ -102,21 +108,21 @@ Add-Type -Path '/path/to/Net.Laceous.Utilities.dll'
 $ceOptions = [Net.Laceous.Utilities.CharEscapeOptions]::New('PowerShell', 'LowerCaseU4', 'LowerCaseU4', 'LowerCaseU5', 'LowerCaseU5', $false, $false)
 $cuOptions = [Net.Laceous.Utilities.CharUnescapeOptions]::New('PowerShell')
 $seOptions = [Net.Laceous.Utilities.StringEscapeOptions]::New('EscapeNonAscii', $true)
-$suOptions = [Net.Laceous.Utilities.StringUnescapeOptions]::New($true)
+$suOptions = [Net.Laceous.Utilities.StringUnescapeOptions]::New($true, 'DoubleQuote')
 
-$cOriginal = 'Ä'
+$cOriginal = "Ä"
 $cEscaped = [Net.Laceous.Utilities.CharUtils]::Escape($cOriginal, $ceOptions)
 $cUnescaped = [Net.Laceous.Utilities.CharUtils]::Unescape($cEscaped, $cuOptions)
 Write-Host "`"$cEscaped`"" # "`u{00C4}"
 Write-Host $cUnescaped     # Ä
 
-$eOriginal = '😁' # 2 char emoji
+$eOriginal = "😁" # 2 char emoji
 $eEscaped = [Net.Laceous.Utilities.CharUtils]::EscapeSurrogatePair($eOriginal, $ceOptions)
 $eUnescaped = [Net.Laceous.Utilities.CharUtils]::UnescapeSurrogatePair($eEscaped, $cuOptions)
 Write-Host "`"$eEscaped`"" # "`u{1F601}"
 Write-Host $eUnescaped     # 😁
 
-$sOriginal = 'abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓'
+$sOriginal = "abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓"
 $sEscaped = [Net.Laceous.Utilities.StringUtils]::Escape($sOriginal, $seOptions, $ceOptions)
 $sUnescaped = [Net.Laceous.Utilities.StringUtils]::Unescape($sEscaped, $suOptions, $cuOptions)
 Write-Host "`"$sEscaped`"" # "abc ABC 123 `u{00C4}`u{00D6}`u{00DC} `u{3131}`u{3134}`u{3137} `u{1F601}`u{1F603}`u{1F613}"
@@ -137,6 +143,9 @@ Supported [PowerShell escape sequences](https://docs.microsoft.com/en-us/powersh
 * `` `" `` (Double quote - listed [here](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_quoting_rules?view=powershell-7.1))
 * `` `u{H} `` or `` `u{HH} `` or `` `u{HHH} `` or `` `u{HHHH} `` or `` `u{HHHHH} `` or `` `u{HHHHHH} `` (Variable length unicode escape sequence)
 
+Supported PowerShell string types:
+* "string"
+
 ### Python
 
 ```python
@@ -154,16 +163,16 @@ def sp(s):
 
 ceOptions = CharEscapeOptions(escapeLanguage = CharEscapeLanguage.Python, escapeLetter = CharEscapeLetter.LowerCaseU4, escapeLetterFallback = CharEscapeLetter.LowerCaseU4, surrogatePairEscapeLetter = CharEscapeLetter.UpperCaseU8, surrogatePairEscapeLetterFallback = CharEscapeLetter.UpperCaseU8, useLowerCaseHex = False, useShortEscape = False)
 cuOptions = CharUnescapeOptions(escapeLanguage = CharEscapeLanguage.Python)
-seOptions = StringEscapeOptions(escapeType = StringEscapeType.EscapeNonAscii, escapeSurrogatePairs = True)
-suOptions = StringUnescapeOptions(isUnrecognizedEscapeVerbatim = True)
+seOptions = StringEscapeOptions(escapeKind = StringEscapeKind.EscapeNonAscii, escapeSurrogatePairs = True)
+suOptions = StringUnescapeOptions(isUnrecognizedEscapeVerbatim = True, quoteKind = StringQuoteKind.DoubleQuote)
 
-cOriginal = 'Ä'
+cOriginal = "Ä"
 cEscaped = CharUtils.Escape(cOriginal, escapeOptions = ceOptions)
 cUnescaped = CharUtils.Unescape(cEscaped, unescapeOptions = cuOptions)
 print(f"\"{cEscaped}\"") # "\u00C4"
 print(sp(cUnescaped))    # Ä
 
-sOriginal = 'abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓'
+sOriginal = "abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓"
 sEscaped = StringUtils.Escape(sOriginal, stringEscapeOptions = seOptions, charEscapeOptions = ceOptions)
 sUnescaped = StringUtils.Unescape(sEscaped, stringUnescapeOptions = suOptions, charUnescapeOptions = cuOptions)
 print(f"\"{sEscaped}\"") # "abc ABC 123 \u00C4\u00D6\u00DC \u3131\u3134\u3137 \U0001F601\U0001F603\U0001F613"
@@ -172,7 +181,7 @@ print(sp(sUnescaped))    # abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓
 # this requires UnicodeInformation.dll
 ceOptions.SurrogatePairEscapeLetter = CharEscapeLetter.UpperCaseN1
 
-eOriginal = '😁'
+eOriginal = "😁"
 eEscaped = CharUtils.EscapeSurrogatePair(eOriginal, escapeOptions = ceOptions)
 eUnescaped = CharUtils.UnescapeSurrogatePair(eEscaped, unescapeOptions = cuOptions)
 print(f"\"{eEscaped}\"") # "\N{Grinning Face With Smiling Eyes}"
@@ -212,3 +221,9 @@ Supported [Python escape sequences](https://docs.python.org/3/reference/lexical_
 * `\UHHHHHHHH` (32-bit hex value)
 * `\N{name}` (Character named *name* in the Unicode database)
   * This requires [UnicodeInformation](https://www.nuget.org/packages/UnicodeInformation/)
+
+Supported Python string types:
+* "string"
+* 'string'
+* """string"""
+* '''string'''
