@@ -97,6 +97,11 @@ namespace Net.Laceous.Utilities.Extensions
             return c == '\\';
         }
 
+        /// <summary>
+        /// Checks if the char is `
+        /// </summary>
+        /// <param name="c">Char to check</param>
+        /// <returns>True if `, otherwise false</returns>
         internal static bool IsBacktick(this char c)
         {
             return c == '`';
