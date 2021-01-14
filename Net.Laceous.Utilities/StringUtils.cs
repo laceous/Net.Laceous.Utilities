@@ -111,17 +111,6 @@ namespace Net.Laceous.Utilities
                         sb.Insert(0, '\"');
                         sb.Append('\"');
                         break;
-                    case StringQuoteKind.SingleQuote:
-                        if (s.Length == 1)
-                        {
-                            sb.Insert(0, '\'');
-                            sb.Append('\'');
-                        }
-                        else
-                        {
-                            throw new ArgumentException(string.Format("{0} is only a valid {1} for {2} when the input string is 1 char.", stringEscapeOptions.QuoteKind, nameof(stringEscapeOptions.QuoteKind), charEscapeOptions.EscapeLanguage), nameof(stringEscapeOptions));
-                        }
-                        break;
                     default:
                         throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", stringEscapeOptions.QuoteKind, nameof(stringEscapeOptions.QuoteKind), charEscapeOptions.EscapeLanguage), nameof(stringEscapeOptions));
                 }
@@ -1071,6 +1060,9 @@ namespace Net.Laceous.Utilities
                                     break;
                                 case 'v':
                                     sb.Append('\v');
+                                    break;
+                                case '0':
+                                    sb.Append('\0');
                                     break;
                                 case 'u':
                                     if (i + 4 < s.Length && s[i + 1].IsHex() && s[i + 2].IsHex() && s[i + 3].IsHex() && s[i + 4].IsHex())

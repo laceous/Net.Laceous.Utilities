@@ -278,7 +278,6 @@ namespace Net.Laceous.Utilities
         {
             if (escapeOptions.UseShortEscape)
             {
-                // \0 isn't defined on its own, but you can get one char octal escapes below with the None1 option
                 switch (c)
                 {
                     case '\\':
@@ -301,6 +300,8 @@ namespace Net.Laceous.Utilities
                         return "\\t";
                     case '\v':
                         return "\\v";
+                    case '\0':
+                        return "\\0"; // this is an octal escape in Python, add it here for parity with other languages
                 }
             }
 
