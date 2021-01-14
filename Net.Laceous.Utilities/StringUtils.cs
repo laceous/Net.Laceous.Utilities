@@ -36,6 +36,23 @@ namespace Net.Laceous.Utilities
                 charEscapeOptions = new CharEscapeOptions();
             }
 
+            switch (charEscapeOptions.EscapeLanguage)
+            {
+                case CharEscapeLanguage.CSharp:
+                    return EscapeCSharp(s, stringEscapeOptions, charEscapeOptions);
+                case CharEscapeLanguage.FSharp:
+                    return EscapeFSharp(s, stringEscapeOptions, charEscapeOptions);
+                case CharEscapeLanguage.PowerShell:
+                    return EscapePowerShell(s, stringEscapeOptions, charEscapeOptions);
+                case CharEscapeLanguage.Python:
+                    return EscapePython(s, stringEscapeOptions, charEscapeOptions);
+                default:
+                    throw new ArgumentException(string.Format("{0} is not a valid {1}.", charEscapeOptions.EscapeLanguage, nameof(charEscapeOptions.EscapeLanguage)), nameof(charEscapeOptions));
+            }
+        }
+
+        private static string EscapeCSharp(string s, StringEscapeOptions stringEscapeOptions, CharEscapeOptions charEscapeOptions)
+        {
             CharEscapeOptions charEscapeOptionsLowerCaseX4 = new CharEscapeOptions(
                 escapeLanguage: charEscapeOptions.EscapeLanguage,
                 escapeLetter: CharEscapeLetter.LowerCaseX4,
@@ -46,6 +63,168 @@ namespace Net.Laceous.Utilities
                 useShortEscape: charEscapeOptions.UseShortEscape
             );
 
+            StringBuilder sb = new StringBuilder(s.Length);
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (stringEscapeOptions.EscapeSurrogatePairs && i + 1 < s.Length && char.IsSurrogatePair(s[i], s[i + 1]))
+                {
+                    sb.Append(CharUtils.EscapeSurrogatePair(s[i], s[++i], charEscapeOptions));
+                }
+                else
+                {
+                    switch (stringEscapeOptions.EscapeKind)
+                    {
+                        case StringEscapeKind.EscapeAll:
+                            sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
+                            break;
+                        case StringEscapeKind.EscapeNonAscii:
+                            if (s[i].IsPrintAscii() && !s[i].IsBackslash() && !s[i].IsDoubleQuote())
+                            {
+                                sb.Append(s[i]);
+                            }
+                            else
+                            {
+                                // pay special attention here because \x is variable length: H, HH, HHH, HHHH
+                                // if the next char is hex then we don't want to insert it in any of the 'H' spaces
+                                // instead we have to output the full fixed length \xHHHH so the next char doesn't become part of this \x sequence
+                                if ((charEscapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX1 || charEscapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX2 || charEscapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX3) && i + 1 < s.Length && s[i + 1].IsHex())
+                                {
+                                    sb.Append(CharUtils.Escape(s[i], charEscapeOptionsLowerCaseX4));
+                                }
+                                else
+                                {
+                                    sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
+                                }
+                            }
+                            break;
+                        default:
+                            throw new ArgumentException(string.Format("{0} is not a valid {1}.", stringEscapeOptions.EscapeKind, nameof(stringEscapeOptions.EscapeKind)), nameof(stringEscapeOptions));
+                    }
+                }
+            }
+
+            if (stringEscapeOptions.AddQuotes)
+            {
+                switch (stringEscapeOptions.QuoteKind)
+                {
+                    case StringQuoteKind.DoubleQuote:
+                        sb.Insert(0, '\"');
+                        sb.Append('\"');
+                        break;
+                    case StringQuoteKind.SingleQuote:
+                        if (s.Length == 1)
+                        {
+                            sb.Insert(0, '\'');
+                            sb.Append('\'');
+                        }
+                        else
+                        {
+                            throw new ArgumentException(string.Format("{0} is only a valid {1} for {2} when the input string is 1 char.", stringEscapeOptions.QuoteKind, nameof(stringEscapeOptions.QuoteKind), charEscapeOptions.EscapeLanguage), nameof(stringEscapeOptions));
+                        }
+                        break;
+                    default:
+                        throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", stringEscapeOptions.QuoteKind, nameof(stringEscapeOptions.QuoteKind), charEscapeOptions.EscapeLanguage), nameof(stringEscapeOptions));
+                }
+            }
+            return sb.ToString();
+        }
+
+        private static string EscapeFSharp(string s, StringEscapeOptions stringEscapeOptions, CharEscapeOptions charEscapeOptions)
+        {
+            StringBuilder sb = new StringBuilder(s.Length);
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (stringEscapeOptions.EscapeSurrogatePairs && i + 1 < s.Length && char.IsSurrogatePair(s[i], s[i + 1]))
+                {
+                    sb.Append(CharUtils.EscapeSurrogatePair(s[i], s[++i], charEscapeOptions));
+                }
+                else
+                {
+                    switch (stringEscapeOptions.EscapeKind)
+                    {
+                        case StringEscapeKind.EscapeAll:
+                            sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
+                            break;
+                        case StringEscapeKind.EscapeNonAscii:
+                            if (s[i].IsPrintAscii() && !s[i].IsBackslash() && !s[i].IsDoubleQuote())
+                            {
+                                sb.Append(s[i]);
+                            }
+                            else
+                            {
+                                sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
+                            }
+                            break;
+                        default:
+                            throw new ArgumentException(string.Format("{0} is not a valid {1}.", stringEscapeOptions.EscapeKind, nameof(stringEscapeOptions.EscapeKind)), nameof(stringEscapeOptions));
+                    }
+                }
+            }
+
+            if (stringEscapeOptions.AddQuotes)
+            {
+                switch (stringEscapeOptions.QuoteKind)
+                {
+                    case StringQuoteKind.DoubleQuote:
+                        sb.Insert(0, '\"');
+                        sb.Append('\"');
+                        break;
+                    default:
+                        throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", stringEscapeOptions.QuoteKind, nameof(stringEscapeOptions.QuoteKind), charEscapeOptions.EscapeLanguage), nameof(stringEscapeOptions));
+                }
+            }
+            return sb.ToString();
+        }
+
+        private static string EscapePowerShell(string s, StringEscapeOptions stringEscapeOptions, CharEscapeOptions charEscapeOptions)
+        {
+            StringBuilder sb = new StringBuilder(s.Length);
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (stringEscapeOptions.EscapeSurrogatePairs && i + 1 < s.Length && char.IsSurrogatePair(s[i], s[i + 1]))
+                {
+                    sb.Append(CharUtils.EscapeSurrogatePair(s[i], s[++i], charEscapeOptions));
+                }
+                else
+                {
+                    switch (stringEscapeOptions.EscapeKind)
+                    {
+                        case StringEscapeKind.EscapeAll:
+                            sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
+                            break;
+                        case StringEscapeKind.EscapeNonAscii:
+                            if (s[i].IsPrintAscii() && !s[i].IsBacktick() && !s[i].IsDoubleQuote())
+                            {
+                                sb.Append(s[i]);
+                            }
+                            else
+                            {
+                                sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
+                            }
+                            break;
+                        default:
+                            throw new ArgumentException(string.Format("{0} is not a valid {1}.", stringEscapeOptions.EscapeKind, nameof(stringEscapeOptions.EscapeKind)), nameof(stringEscapeOptions));
+                    }
+                }
+            }
+
+            if (stringEscapeOptions.AddQuotes)
+            {
+                switch (stringEscapeOptions.QuoteKind)
+                {
+                    case StringQuoteKind.DoubleQuote:
+                        sb.Insert(0, '\"');
+                        sb.Append('\"');
+                        break;
+                    default:
+                        throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", stringEscapeOptions.QuoteKind, nameof(stringEscapeOptions.QuoteKind), charEscapeOptions.EscapeLanguage), nameof(stringEscapeOptions));
+                }
+            }
+            return sb.ToString();
+        }
+
+        private static string EscapePython(string s, StringEscapeOptions stringEscapeOptions, CharEscapeOptions charEscapeOptions)
+        {
             CharEscapeOptions charEscapeOptionsNone3 = new CharEscapeOptions(
                 escapeLanguage: charEscapeOptions.EscapeLanguage,
                 escapeLetter: CharEscapeLetter.None3,
@@ -71,39 +250,20 @@ namespace Net.Laceous.Utilities
                             sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
                             break;
                         case StringEscapeKind.EscapeNonAscii:
-                            if (s[i].IsQuotableAscii(charEscapeOptions.EscapeLanguage))
+                            // go simple for now and escape all the quote chars
+                            // that way you can copy the output and put it within any python string quote type: "s", 's', """s""", '''s'''
+                            if (s[i].IsPrintAscii() && !s[i].IsBackslash() && !s[i].IsDoubleQuote() && !s[i].IsSingleQuote())
                             {
                                 sb.Append(s[i]);
                             }
                             else
                             {
-                                if (charEscapeOptions.EscapeLanguage == CharEscapeLanguage.CSharp)
+                                // workaround for variable length: \o, \oo, \ooo
+                                if ((charEscapeOptions.EscapeLetter == CharEscapeLetter.None1 || charEscapeOptions.EscapeLetter == CharEscapeLetter.None2) && i + 1 < s.Length && s[i + 1].IsOctal())
                                 {
-                                    // pay special attention here because \x is variable length: H, HH, HHH, HHHH
-                                    // if the next char is hex then we don't want to insert it in any of the 'H' spaces
-                                    // instead we have to output the full fixed length \xHHHH so the next char doesn't become part of this \x sequence
-                                    if ((charEscapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX1 || charEscapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX2 || charEscapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX3) && i + 1 < s.Length && s[i + 1].IsHex())
-                                    {
-                                        sb.Append(CharUtils.Escape(s[i], charEscapeOptionsLowerCaseX4));
-                                    }
-                                    else
-                                    {
-                                        sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
-                                    }
+                                    sb.Append(CharUtils.Escape(s[i], charEscapeOptionsNone3));
                                 }
-                                else if (charEscapeOptions.EscapeLanguage == CharEscapeLanguage.Python)
-                                {
-                                    // workaround for variable length: \o, \oo, \ooo
-                                    if ((charEscapeOptions.EscapeLetter == CharEscapeLetter.None1 || charEscapeOptions.EscapeLetter == CharEscapeLetter.None2) && i + 1 < s.Length && s[i + 1].IsOctal())
-                                    {
-                                        sb.Append(CharUtils.Escape(s[i], charEscapeOptionsNone3));
-                                    }
-                                    else
-                                    {
-                                        sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
-                                    }
-                                }
-                                else // FSharp/PowerShell
+                                else
                                 {
                                     sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
                                 }
@@ -112,6 +272,31 @@ namespace Net.Laceous.Utilities
                         default:
                             throw new ArgumentException(string.Format("{0} is not a valid {1}.", stringEscapeOptions.EscapeKind, nameof(stringEscapeOptions.EscapeKind)), nameof(stringEscapeOptions));
                     }
+                }
+            }
+
+            if (stringEscapeOptions.AddQuotes)
+            {
+                switch (stringEscapeOptions.QuoteKind)
+                {
+                    case StringQuoteKind.DoubleQuote:
+                        sb.Insert(0, '\"');
+                        sb.Append('\"');
+                        break;
+                    case StringQuoteKind.SingleQuote:
+                        sb.Insert(0, '\'');
+                        sb.Append('\'');
+                        break;
+                    case StringQuoteKind.TripleDoubleQuote:
+                        sb.Insert(0, "\"\"\"");
+                        sb.Append("\"\"\"");
+                        break;
+                    case StringQuoteKind.TripleSingleQuote:
+                        sb.Insert(0, "\'\'\'");
+                        sb.Append("\'\'\'");
+                        break;
+                    default:
+                        throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", stringEscapeOptions.QuoteKind, nameof(stringEscapeOptions.QuoteKind), charEscapeOptions.EscapeLanguage), nameof(stringEscapeOptions));
                 }
             }
             return sb.ToString();
@@ -168,9 +353,23 @@ namespace Net.Laceous.Utilities
         /// <exception cref="ArgumentException"></exception>
         private static string UnescapeCSharp(string s, StringUnescapeOptions stringUnescapeOptions, CharUnescapeOptions charUnescapeOptions)
         {
-            if (stringUnescapeOptions.QuoteKind != StringQuoteKind.DoubleQuote)
+            if (stringUnescapeOptions.RemoveQuotes)
             {
-                throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", stringUnescapeOptions.QuoteKind, nameof(stringUnescapeOptions.QuoteKind), charUnescapeOptions.EscapeLanguage), nameof(stringUnescapeOptions));
+                switch (stringUnescapeOptions.QuoteKind)
+                {
+                    case StringQuoteKind.DoubleQuote:
+                        if (s.Length >= 2 && s.StartsWith("\"", StringComparison.Ordinal) && s.EndsWith("\"", StringComparison.Ordinal))
+                        {
+                            s = s.Substring(1, s.Length - 2);
+                        }
+                        else
+                        {
+                            throw new ArgumentException("String was not double-quoted.", nameof(s));
+                        }
+                        break;
+                    default:
+                        throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", stringUnescapeOptions.QuoteKind, nameof(stringUnescapeOptions.QuoteKind), charUnescapeOptions.EscapeLanguage), nameof(stringUnescapeOptions));
+                }
             }
 
             // using indexOf('\\') and and substring() instead of iterating over each char can be faster if there's relatively few \\ in the string
@@ -341,14 +540,21 @@ namespace Net.Laceous.Utilities
                     }
                     else if (s[i].IsDoubleQuote())
                     {
-                        // can't have an unescaped " within ""
-                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                        switch (stringUnescapeOptions.QuoteKind)
                         {
-                            sb.Append(s[i]);
-                        }
-                        else
-                        {
-                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                            case StringQuoteKind.DoubleQuote:
+                                // can't have an unescaped " within ""
+                                if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                {
+                                    sb.Append(s[i]);
+                                }
+                                else
+                                {
+                                    throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                                }
+                                break;
+                            default:
+                                throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", stringUnescapeOptions.QuoteKind, nameof(stringUnescapeOptions.QuoteKind), charUnescapeOptions.EscapeLanguage), nameof(stringUnescapeOptions));
                         }
                     }
                     else
@@ -371,9 +577,23 @@ namespace Net.Laceous.Utilities
         /// <exception cref="ArgumentException"></exception>
         private static string UnescapeFSharp(string s, StringUnescapeOptions stringUnescapeOptions, CharUnescapeOptions charUnescapeOptions)
         {
-            if (stringUnescapeOptions.QuoteKind != StringQuoteKind.DoubleQuote)
+            if (stringUnescapeOptions.RemoveQuotes)
             {
-                throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", stringUnescapeOptions.QuoteKind, nameof(stringUnescapeOptions.QuoteKind), charUnescapeOptions.EscapeLanguage), nameof(stringUnescapeOptions));
+                switch (stringUnescapeOptions.QuoteKind)
+                {
+                    case StringQuoteKind.DoubleQuote:
+                        if (s.Length >= 2 && s.StartsWith("\"", StringComparison.Ordinal) && s.EndsWith("\"", StringComparison.Ordinal))
+                        {
+                            s = s.Substring(1, s.Length - 2);
+                        }
+                        else
+                        {
+                            throw new ArgumentException("String was not double-quoted.", nameof(s));
+                        }
+                        break;
+                    default:
+                        throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", stringUnescapeOptions.QuoteKind, nameof(stringUnescapeOptions.QuoteKind), charUnescapeOptions.EscapeLanguage), nameof(stringUnescapeOptions));
+                }
             }
 
             if (s.IndexOfAny(new char[] { '\\', '\"' }) == -1)
@@ -509,14 +729,21 @@ namespace Net.Laceous.Utilities
                     }
                     else if (s[i].IsDoubleQuote())
                     {
-                        // can't have an unescaped " within ""
-                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                        switch (stringUnescapeOptions.QuoteKind)
                         {
-                            sb.Append(s[i]);
-                        }
-                        else
-                        {
-                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                            case StringQuoteKind.DoubleQuote:
+                                // can't have an unescaped " within ""
+                                if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                {
+                                    sb.Append(s[i]);
+                                }
+                                else
+                                {
+                                    throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                                }
+                                break;
+                            default:
+                                throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", stringUnescapeOptions.QuoteKind, nameof(stringUnescapeOptions.QuoteKind), charUnescapeOptions.EscapeLanguage), nameof(stringUnescapeOptions));
                         }
                     }
                     else
@@ -539,9 +766,23 @@ namespace Net.Laceous.Utilities
         /// <exception cref="ArgumentException"></exception>
         private static string UnescapePowerShell(string s, StringUnescapeOptions stringUnescapeOptions, CharUnescapeOptions charUnescapeOptions)
         {
-            if (stringUnescapeOptions.QuoteKind != StringQuoteKind.DoubleQuote)
+            if (stringUnescapeOptions.RemoveQuotes)
             {
-                throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", stringUnescapeOptions.QuoteKind, nameof(stringUnescapeOptions.QuoteKind), charUnescapeOptions.EscapeLanguage), nameof(stringUnescapeOptions));
+                switch (stringUnescapeOptions.QuoteKind)
+                {
+                    case StringQuoteKind.DoubleQuote:
+                        if (s.Length >= 2 && s.StartsWith("\"", StringComparison.Ordinal) && s.EndsWith("\"", StringComparison.Ordinal))
+                        {
+                            s = s.Substring(1, s.Length - 2);
+                        }
+                        else
+                        {
+                            throw new ArgumentException("String was not double-quoted.", nameof(s));
+                        }
+                        break;
+                    default:
+                        throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", stringUnescapeOptions.QuoteKind, nameof(stringUnescapeOptions.QuoteKind), charUnescapeOptions.EscapeLanguage), nameof(stringUnescapeOptions));
+                }
             }
 
             if (s.IndexOfAny(new char[] { '`', '\"' }) == -1)
@@ -701,22 +942,29 @@ namespace Net.Laceous.Utilities
                     }
                     else if (s[i].IsDoubleQuote())
                     {
-                        if (i + 1 < s.Length && s[i + 1].IsDoubleQuote())
+                        switch (stringUnescapeOptions.QuoteKind)
                         {
-                            // powershell allows "" in addition to `" to represent a " inside ""
-                            sb.Append(s[++i]);
-                        }
-                        else
-                        {
-                            // can't have a single unescaped " within ""
-                            if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                            {
-                                sb.Append(s[i]);
-                            }
-                            else
-                            {
-                                throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                            }
+                            case StringQuoteKind.DoubleQuote:
+                                if (i + 1 < s.Length && s[i + 1].IsDoubleQuote())
+                                {
+                                    // powershell allows "" in addition to `" to represent a " inside ""
+                                    sb.Append(s[++i]);
+                                }
+                                else
+                                {
+                                    // can't have a single unescaped " within ""
+                                    if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                    {
+                                        sb.Append(s[i]);
+                                    }
+                                    else
+                                    {
+                                        throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                                    }
+                                }
+                                break;
+                            default:
+                                throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", stringUnescapeOptions.QuoteKind, nameof(stringUnescapeOptions.QuoteKind), charUnescapeOptions.EscapeLanguage), nameof(stringUnescapeOptions));
                         }
                     }
                     else
@@ -730,10 +978,53 @@ namespace Net.Laceous.Utilities
 
         private static string UnescapePython(string s, StringUnescapeOptions stringUnescapeOptions, CharUnescapeOptions charUnescapeOptions)
         {
-            if (stringUnescapeOptions.QuoteKind != StringQuoteKind.DoubleQuote && stringUnescapeOptions.QuoteKind != StringQuoteKind.SingleQuote &&
-                stringUnescapeOptions.QuoteKind != StringQuoteKind.TripleDoubleQuote && stringUnescapeOptions.QuoteKind != StringQuoteKind.TripleSingleQuote)
+            if (stringUnescapeOptions.RemoveQuotes)
             {
-                throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", stringUnescapeOptions.QuoteKind, nameof(stringUnescapeOptions.QuoteKind), charUnescapeOptions.EscapeLanguage), nameof(stringUnescapeOptions));
+                switch (stringUnescapeOptions.QuoteKind)
+                {
+                    case StringQuoteKind.DoubleQuote:
+                        if (s.Length >= 2 && s.StartsWith("\"", StringComparison.Ordinal) && s.EndsWith("\"", StringComparison.Ordinal))
+                        {
+                            s = s.Substring(1, s.Length - 2);
+                        }
+                        else
+                        {
+                            throw new ArgumentException("String was not double-quoted.", nameof(s));
+                        }
+                        break;
+                    case StringQuoteKind.SingleQuote:
+                        if (s.Length >= 2 && s.StartsWith("\'", StringComparison.Ordinal) && s.EndsWith("\'", StringComparison.Ordinal))
+                        {
+                            s = s.Substring(1, s.Length - 2);
+                        }
+                        else
+                        {
+                            throw new ArgumentException("String was not single-quoted.", nameof(s));
+                        }
+                        break;
+                    case StringQuoteKind.TripleDoubleQuote:
+                        if (s.Length >= 6 && s.StartsWith("\"\"\"", StringComparison.Ordinal) && s.EndsWith("\"\"\"", StringComparison.Ordinal))
+                        {
+                            s = s.Substring(3, s.Length - 6);
+                        }
+                        else
+                        {
+                            throw new ArgumentException("String was not triple-double-quoted.", nameof(s));
+                        }
+                        break;
+                    case StringQuoteKind.TripleSingleQuote:
+                        if (s.Length >= 6 && s.StartsWith("\'\'\'", StringComparison.Ordinal) && s.EndsWith("\'\'\'", StringComparison.Ordinal))
+                        {
+                            s = s.Substring(3, s.Length - 6);
+                        }
+                        else
+                        {
+                            throw new ArgumentException("String was not triple-single-quoted.", nameof(s));
+                        }
+                        break;
+                    default:
+                        throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", stringUnescapeOptions.QuoteKind, nameof(stringUnescapeOptions.QuoteKind), charUnescapeOptions.EscapeLanguage), nameof(stringUnescapeOptions));
+                }
             }
 
             if (s.IndexOfAny(new char[] { '\\', '\"', '\'' }) == -1)
@@ -910,76 +1201,86 @@ namespace Net.Laceous.Utilities
                             }
                         }
                     }
-                    else if (stringUnescapeOptions.QuoteKind == StringQuoteKind.DoubleQuote && s[i].IsDoubleQuote()) // "string"
+                    else if (s[i].IsDoubleQuote())
                     {
-                        // " within ""
-                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                        switch (stringUnescapeOptions.QuoteKind)
                         {
-                            sb.Append(s[i]);
-                        }
-                        else
-                        {
-                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                            case StringQuoteKind.DoubleQuote:
+                                // " within ""
+                                if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                {
+                                    sb.Append(s[i]);
+                                }
+                                else
+                                {
+                                    throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                                }
+                                break;
+                            case StringQuoteKind.TripleDoubleQuote:
+                                if (i + 2 < s.Length && s[i + 1].IsDoubleQuote() && s[i + 2].IsDoubleQuote())
+                                {
+                                    // can't have unescaped triple quotes within triple quotes
+                                    if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                    {
+                                        sb.Append(s[i]);
+                                    }
+                                    else
+                                    {
+                                        throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                                    }
+                                }
+                                else
+                                {
+                                    sb.Append(s[i]);
+                                }
+                                break;
+                            case StringQuoteKind.SingleQuote:
+                            case StringQuoteKind.TripleSingleQuote:
+                                sb.Append(s[i]);
+                                break;
+                            default:
+                                throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", stringUnescapeOptions.QuoteKind, nameof(stringUnescapeOptions.QuoteKind), charUnescapeOptions.EscapeLanguage), nameof(stringUnescapeOptions));
                         }
                     }
-                    else if (stringUnescapeOptions.QuoteKind == StringQuoteKind.SingleQuote && s[i].IsSingleQuote()) // 'string'
+                    else if (s[i].IsSingleQuote())
                     {
-                        /// ' within ''
-                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                        switch (stringUnescapeOptions.QuoteKind)
                         {
-                            sb.Append(s[i]);
-                        }
-                        else
-                        {
-                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                        }
-                    }
-                    else if (stringUnescapeOptions.QuoteKind == StringQuoteKind.TripleDoubleQuote && i + 2 < s.Length && s[i].IsDoubleQuote() && s[i + 1].IsDoubleQuote() && s[i + 2].IsDoubleQuote()) // """string"""
-                    {
-                        // can't have unescaped triple quotes within triple quotes
-                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                        {
-                            sb.Append(s[i]);
-                        }
-                        else
-                        {
-                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                        }
-                    }
-                    else if (stringUnescapeOptions.QuoteKind == StringQuoteKind.TripleDoubleQuote && i + 1 == s.Length && s[i].IsDoubleQuote())
-                    {
-                        // can't have unescaped quote in last position in string
-                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                        {
-                            sb.Append(s[i]);
-                        }
-                        else
-                        {
-                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                        }
-                    }
-                    else if (stringUnescapeOptions.QuoteKind == StringQuoteKind.TripleSingleQuote && i + 2 < s.Length && s[i].IsSingleQuote() && s[i + 1].IsSingleQuote() && s[i + 2].IsSingleQuote()) // '''string'''
-                    {
-                        // can't have unescaped triple quotes within triple quotes
-                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                        {
-                            sb.Append(s[i]);
-                        }
-                        else
-                        {
-                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                        }
-                    }
-                    else if (stringUnescapeOptions.QuoteKind == StringQuoteKind.TripleSingleQuote && i + 1 == s.Length && s[i].IsSingleQuote())
-                    {
-                        // can't have unescaped quote in last position in string
-                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                        {
-                            sb.Append(s[i]);
-                        }
-                        else
-                        {
-                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                            case StringQuoteKind.SingleQuote:
+                                // ' within ''
+                                if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                {
+                                    sb.Append(s[i]);
+                                }
+                                else
+                                {
+                                    throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                                }
+                                break;
+                            case StringQuoteKind.TripleSingleQuote:
+                                if (i + 2 < s.Length && s[i + 1].IsSingleQuote() && s[i + 2].IsSingleQuote())
+                                {
+                                    // can't have unescaped triple quotes within triple quotes
+                                    if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
+                                    {
+                                        sb.Append(s[i]);
+                                    }
+                                    else
+                                    {
+                                        throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                                    }
+                                }
+                                else
+                                {
+                                    sb.Append(s[i]);
+                                }
+                                break;
+                            case StringQuoteKind.DoubleQuote:
+                            case StringQuoteKind.TripleDoubleQuote:
+                                sb.Append(s[i]);
+                                break;
+                            default:
+                                throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", stringUnescapeOptions.QuoteKind, nameof(stringUnescapeOptions.QuoteKind), charUnescapeOptions.EscapeLanguage), nameof(stringUnescapeOptions));
                         }
                     }
                     else

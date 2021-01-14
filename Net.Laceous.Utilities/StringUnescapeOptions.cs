@@ -11,6 +11,11 @@
         public bool IsUnrecognizedEscapeVerbatim { get; set; }
 
         /// <summary>
+        /// Remove quotes before parsing
+        /// </summary>
+        public bool RemoveQuotes { get; set; }
+
+        /// <summary>
         /// What type of quotes were encasing s: "s", 's', """s""", '''s'''
         /// Helps find illegal sequences
         /// </summary>
@@ -20,10 +25,12 @@
         /// Initialize new instance of StringUnescapeOptions with selected options
         /// </summary>
         /// <param name="isUnrecognizedEscapeVerbatim">Treat unrecognized escape sequences as verbatim if it would otherwise throw an exception</param>
-        /// <param name="quoteType">What type of quotes were encasing the string</param>
-        public StringUnescapeOptions(bool isUnrecognizedEscapeVerbatim = false, StringQuoteKind quoteKind = StringQuoteKind.DoubleQuote)
+        /// <param name="removeQuotes">Remove quotes before parsing</param>
+        /// <param name="quoteKind">What type of quotes were encasing the string</param>
+        public StringUnescapeOptions(bool isUnrecognizedEscapeVerbatim = false, bool removeQuotes = false, StringQuoteKind quoteKind = StringQuoteKind.DoubleQuote)
         {
             IsUnrecognizedEscapeVerbatim = isUnrecognizedEscapeVerbatim;
+            RemoveQuotes = removeQuotes;
             QuoteKind = quoteKind;
         }
     }

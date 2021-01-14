@@ -104,35 +104,12 @@ namespace Net.Laceous.Utilities.Extensions
 
         /// <summary>
         /// Checks if the char is an ascii print char (including space)
-        /// Exclude escape char + string quote chars
         /// </summary>
         /// <param name="c">Char to check</param>
-        /// <param name="escapeLanguage">Escape language</param>
-        /// <returns>True if in the range of 32 to 126 (and not escape or string quote chars), otherwise false</returns>
-        /// <exception cref="ArgumentException"></exception>
-        internal static bool IsQuotableAscii(this char c, CharEscapeLanguage escapeLanguage)
+        /// <returns>True if in the range of 32 to 126, otherwise false</returns>
+        internal static bool IsPrintAscii(this char c)
         {
-            // make sure to always escape: escape chars and quotes in a way that will work for all normal string types
-            // e.g. \" works in all these python string types: "\"", '\"', """\"""", '''\"'''
-            // and is required in some, go simple for now and always escape them
-            char[] chars;
-            switch (escapeLanguage)
-            {
-                case CharEscapeLanguage.CSharp:
-                case CharEscapeLanguage.FSharp:
-                    chars = new char[] { '\\', '\"' }; // this is meant for strings (not chars) so we can leave off \'
-                    break;
-                case CharEscapeLanguage.PowerShell:
-                    chars = new char[] { '`', '\"' }; // \' are verbatim strings in PowerShell
-                    break;
-                case CharEscapeLanguage.Python:
-                    chars = new char[] { '\\', '\"', '\'' }; // maybe look at StringQuoteKind at some point?
-                    break;
-                default:
-                    throw new ArgumentException(string.Format("{0} is not a valid {1}.", escapeLanguage, nameof(escapeLanguage)), nameof(escapeLanguage));
-            }
-
-            return Array.IndexOf(chars, c) == -1 && c >= 32 && c <= 126; // space - tilde (~)
+            return c >= 32 && c <= 126; // space - tilde (~)
         }
     }
 }
