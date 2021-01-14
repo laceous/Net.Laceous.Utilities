@@ -419,15 +419,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                        {
-                                            sb.Append('\\');
-                                            sb.Append(s[i]);
-                                        }
-                                        else
-                                        {
-                                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                        }
+                                        UnrecognizedEscapeOrAppend(sb, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim, nameof(s), new char[] { '\\', s[i] });
                                     }
                                     break;
                                 case 'x':
@@ -449,15 +441,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                        {
-                                            sb.Append('\\');
-                                            sb.Append(s[i]);
-                                        }
-                                        else
-                                        {
-                                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                        }
+                                        UnrecognizedEscapeOrAppend(sb, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim, nameof(s), new char[] { '\\', s[i] });
                                     }
                                     break;
                                 case 'U':
@@ -491,40 +475,17 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                        {
-                                            sb.Append('\\');
-                                            sb.Append(s[i]);
-                                        }
-                                        else
-                                        {
-                                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                        }
+                                        UnrecognizedEscapeOrAppend(sb, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim, nameof(s), new char[] { '\\', s[i] });
                                     }
                                     break;
                                 default:
-                                    if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                    {
-                                        sb.Append('\\');
-                                        sb.Append(s[i]);
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                    }
+                                    UnrecognizedEscapeOrAppend(sb, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim, nameof(s), new char[] { '\\', s[i] });
                                     break;
                             }
                         }
                         else
                         {
-                            if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                            {
-                                sb.Append(s[i]);
-                            }
-                            else
-                            {
-                                throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                            }
+                            UnrecognizedEscapeOrAppend(sb, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim, nameof(s), new char[] { s[i] });
                         }
                     }
                     else if (s[i].IsDoubleQuote())
@@ -533,14 +494,7 @@ namespace Net.Laceous.Utilities
                         {
                             case StringQuoteKind.DoubleQuote:
                                 // can't have an unescaped " within ""
-                                if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                {
-                                    sb.Append(s[i]);
-                                }
-                                else
-                                {
-                                    throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                }
+                                UnrecognizedEscapeOrAppend(sb, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim, nameof(s), new char[] { s[i] });
                                 break;
                             default:
                                 throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", stringUnescapeOptions.QuoteKind, nameof(stringUnescapeOptions.QuoteKind), charUnescapeOptions.EscapeLanguage), nameof(stringUnescapeOptions));
@@ -706,14 +660,7 @@ namespace Net.Laceous.Utilities
                         else
                         {
                             // F# doesn't allow \ as the last char in the string, that ends up being \" which is a double-quote
-                            if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                            {
-                                sb.Append(s[i]);
-                            }
-                            else
-                            {
-                                throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                            }
+                            UnrecognizedEscapeOrAppend(sb, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim, nameof(s), new char[] { s[i] });
                         }
                     }
                     else if (s[i].IsDoubleQuote())
@@ -722,14 +669,7 @@ namespace Net.Laceous.Utilities
                         {
                             case StringQuoteKind.DoubleQuote:
                                 // can't have an unescaped " within ""
-                                if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                {
-                                    sb.Append(s[i]);
-                                }
-                                else
-                                {
-                                    throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                }
+                                UnrecognizedEscapeOrAppend(sb, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim, nameof(s), new char[] { s[i] });
                                 break;
                             default:
                                 throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", stringUnescapeOptions.QuoteKind, nameof(stringUnescapeOptions.QuoteKind), charUnescapeOptions.EscapeLanguage), nameof(stringUnescapeOptions));
@@ -897,15 +837,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                        {
-                                            sb.Append('`');
-                                            sb.Append(s[i]);
-                                        }
-                                        else
-                                        {
-                                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                        }
+                                        UnrecognizedEscapeOrAppend(sb, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim, nameof(s), new char[] { '`', s[i] });
                                         break;
                                     }
                                     break;
@@ -919,14 +851,7 @@ namespace Net.Laceous.Utilities
                         else
                         {
                             // powershell doesn't allow ` as the last char in the string, that ends up being `" which is a double-quote
-                            if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                            {
-                                sb.Append(s[i]);
-                            }
-                            else
-                            {
-                                throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                            }
+                            UnrecognizedEscapeOrAppend(sb, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim, nameof(s), new char[] { s[i] });
                         }
                     }
                     else if (s[i].IsDoubleQuote())
@@ -942,14 +867,7 @@ namespace Net.Laceous.Utilities
                                 else
                                 {
                                     // can't have a single unescaped " within ""
-                                    if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                    {
-                                        sb.Append(s[i]);
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                    }
+                                    UnrecognizedEscapeOrAppend(sb, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim, nameof(s), new char[] { s[i] });
                                 }
                                 break;
                             default:
@@ -1071,15 +989,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                        {
-                                            sb.Append('\\');
-                                            sb.Append(s[i]);
-                                        }
-                                        else
-                                        {
-                                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                        }
+                                        UnrecognizedEscapeOrAppend(sb, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim, nameof(s), new char[] { '\\', s[i] });
                                     }
                                     break;
                                 case 'x':
@@ -1089,15 +999,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                        {
-                                            sb.Append('\\');
-                                            sb.Append(s[i]);
-                                        }
-                                        else
-                                        {
-                                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                        }
+                                        UnrecognizedEscapeOrAppend(sb, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim, nameof(s), new char[] { '\\', s[i] });
                                     }
                                     break;
                                 case 'U':
@@ -1125,15 +1027,7 @@ namespace Net.Laceous.Utilities
                                     }
                                     else
                                     {
-                                        if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                        {
-                                            sb.Append('\\');
-                                            sb.Append(s[i]);
-                                        }
-                                        else
-                                        {
-                                            throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                        }
+                                        UnrecognizedEscapeOrAppend(sb, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim, nameof(s), new char[] { '\\', s[i] });
                                     }
                                     break;
                                 case 'N':
@@ -1142,15 +1036,7 @@ namespace Net.Laceous.Utilities
                                         string temp = FindStringFromBracedName(s, ref i, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim);
                                         if (temp == null)
                                         {
-                                            if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                            {
-                                                sb.Append('\\');
-                                                sb.Append(s[i]);
-                                            }
-                                            else
-                                            {
-                                                throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                            }
+                                            UnrecognizedEscapeOrAppend(sb, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim, nameof(s), new char[] { '\\', s[i] });
                                         }
                                         else
                                         {
@@ -1183,14 +1069,7 @@ namespace Net.Laceous.Utilities
                         }
                         else
                         {
-                            if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                            {
-                                sb.Append(s[i]);
-                            }
-                            else
-                            {
-                                throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                            }
+                            UnrecognizedEscapeOrAppend(sb, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim, nameof(s), new char[] { s[i] });
                         }
                     }
                     else if (s[i].IsDoubleQuote())
@@ -1199,27 +1078,13 @@ namespace Net.Laceous.Utilities
                         {
                             case StringQuoteKind.DoubleQuote:
                                 // " within ""
-                                if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                {
-                                    sb.Append(s[i]);
-                                }
-                                else
-                                {
-                                    throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                }
+                                UnrecognizedEscapeOrAppend(sb, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim, nameof(s), new char[] { s[i] });
                                 break;
                             case StringQuoteKind.TripleDoubleQuote:
                                 if (i + 2 < s.Length && s[i + 1].IsDoubleQuote() && s[i + 2].IsDoubleQuote())
                                 {
                                     // can't have unescaped triple quotes within triple quotes
-                                    if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                    {
-                                        sb.Append(s[i]);
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                    }
+                                    UnrecognizedEscapeOrAppend(sb, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim, nameof(s), new char[] { s[i] });
                                 }
                                 else
                                 {
@@ -1240,27 +1105,13 @@ namespace Net.Laceous.Utilities
                         {
                             case StringQuoteKind.SingleQuote:
                                 // ' within ''
-                                if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                {
-                                    sb.Append(s[i]);
-                                }
-                                else
-                                {
-                                    throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                }
+                                UnrecognizedEscapeOrAppend(sb, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim, nameof(s), new char[] { s[i] });
                                 break;
                             case StringQuoteKind.TripleSingleQuote:
                                 if (i + 2 < s.Length && s[i + 1].IsSingleQuote() && s[i + 2].IsSingleQuote())
                                 {
                                     // can't have unescaped triple quotes within triple quotes
-                                    if (stringUnescapeOptions.IsUnrecognizedEscapeVerbatim)
-                                    {
-                                        sb.Append(s[i]);
-                                    }
-                                    else
-                                    {
-                                        throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
-                                    }
+                                    UnrecognizedEscapeOrAppend(sb, stringUnescapeOptions.IsUnrecognizedEscapeVerbatim, nameof(s), new char[] { s[i] });
                                 }
                                 else
                                 {
@@ -1281,6 +1132,29 @@ namespace Net.Laceous.Utilities
                     }
                 }
                 return sb.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Re-usable code
+        /// </summary>
+        /// <param name="sb"></param>
+        /// <param name="isUnrecognizedEscapeVerbatim"></param>
+        /// <param name="paramName"></param>
+        /// <param name="chars"></param>
+        /// <exception cref="ArgumentException"></exception>
+        private static void UnrecognizedEscapeOrAppend(StringBuilder sb, bool isUnrecognizedEscapeVerbatim, string paramName, char[] chars)
+        {
+            if (isUnrecognizedEscapeVerbatim)
+            {
+                foreach (char c in chars)
+                {
+                    sb.Append(c);
+                }
+            }
+            else
+            {
+                throw new ArgumentException("Unrecognized escape sequence.", paramName);
             }
         }
 
