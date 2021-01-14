@@ -601,7 +601,7 @@ namespace Net.Laceous.Utilities
                 case CharEscapeLanguage.PowerShell:
                     // escaped char will have more than 1 char
                     // longest escaped string: `u{HHHHHH}
-                    if ((s.Length > 1 && s.Length <= 10 && s.StartsWith("`", StringComparison.Ordinal)) || s == "\"\"") // "" is a special case inside "" that escapes a single "
+                    if (s.Length > 1 && s.Length <= 10 && s.StartsWith("`", StringComparison.Ordinal))
                     {
                         unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
                     }
