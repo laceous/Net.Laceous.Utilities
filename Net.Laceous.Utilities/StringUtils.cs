@@ -1,6 +1,7 @@
 ﻿using Net.Laceous.Utilities.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
 using System.Unicode;
@@ -1185,7 +1186,7 @@ namespace Net.Laceous.Utilities
         /// <summary>
         /// Lookup for name -> codePoint because UnicodeInfo only has codePoint -> name
         /// </summary>
-        private static Lazy<Dictionary<string, int>> LazyNameToCodePointDictionary = new Lazy<Dictionary<string, int>>(() =>
+        private static readonly Lazy<ReadOnlyDictionary<string, int>> LazyNameToCodePointDictionary = new Lazy<ReadOnlyDictionary<string, int>>(() =>
         {
             Dictionary<string, int> nameToCodePointDictionary = new Dictionary<string, int>();
             // for (int codePoint = 0; codePoint <= 0x10FFFF; codePoint++)
@@ -1207,7 +1208,7 @@ namespace Net.Laceous.Utilities
                     }
                 }
             }
-            return nameToCodePointDictionary;
+            return new ReadOnlyDictionary<string, int>(nameToCodePointDictionary);
         });
 
         /// <summary>
