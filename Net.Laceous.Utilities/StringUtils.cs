@@ -1208,7 +1208,7 @@ namespace Net.Laceous.Utilities
                     }
                 }
             }
-            return new ReadOnlyDictionary<string, int>(nameToCodePointDictionary);
+            return new ReadOnlyDictionary<string, int>(nameToCodePointDictionary); // count = 283843 with UnicodeInformation 2.5.0
         });
 
         /// <summary>
