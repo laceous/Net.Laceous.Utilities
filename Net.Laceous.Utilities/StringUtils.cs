@@ -1185,37 +1185,30 @@ namespace Net.Laceous.Utilities
         /// <summary>
         /// Lookup for name -> codePoint because UnicodeInfo only has codePoint -> name
         /// </summary>
-        private static Dictionary<string, int> NameToCodePointDictionary = null;
-
-        /// <summary>
-        /// Lazy initialize NameToCodePointDictionary
-        /// </summary>
-        private static void InitializeNameToCodePointDictionary()
+        private static Lazy<Dictionary<string, int>> LazyNameToCodePointDictionary = new Lazy<Dictionary<string, int>>(() =>
         {
-            if (NameToCodePointDictionary == null)
+            Dictionary<string, int> nameToCodePointDictionary = new Dictionary<string, int>();
+            // for (int codePoint = 0; codePoint <= 0x10FFFF; codePoint++)
+            foreach (UnicodeBlock block in UnicodeInfo.GetBlocks())
             {
-                NameToCodePointDictionary = new Dictionary<string, int>();
-                // for (int codePoint = 0; codePoint <= 0x10FFFF; codePoint++)
-                foreach (UnicodeBlock block in UnicodeInfo.GetBlocks())
+                foreach (int codePoint in block.CodePointRange)
                 {
-                    foreach (int codePoint in block.CodePointRange)
+                    UnicodeCharInfo charInfo = UnicodeInfo.GetCharInfo(codePoint);
+                    if (!string.IsNullOrEmpty(charInfo.Name))
                     {
-                        UnicodeCharInfo charInfo = UnicodeInfo.GetCharInfo(codePoint);
-                        if (!string.IsNullOrEmpty(charInfo.Name))
+                        nameToCodePointDictionary[charInfo.Name.ToUpperInvariant()] = codePoint;
+                    }
+                    foreach (UnicodeNameAlias alias in charInfo.NameAliases)
+                    {
+                        if (!string.IsNullOrEmpty(alias.Name))
                         {
-                            NameToCodePointDictionary[charInfo.Name.ToUpperInvariant()] = codePoint;
-                        }
-                        foreach (UnicodeNameAlias alias in charInfo.NameAliases)
-                        {
-                            if (!string.IsNullOrEmpty(alias.Name))
-                            {
-                                NameToCodePointDictionary[alias.Name.ToUpperInvariant()] = codePoint;
-                            }
+                            nameToCodePointDictionary[alias.Name.ToUpperInvariant()] = codePoint;
                         }
                     }
                 }
             }
-        }
+            return nameToCodePointDictionary;
+        });
 
         /// <summary>
         /// Pull out name from {name}, convert it to a codePoint, convert it to a string
@@ -1245,8 +1238,7 @@ namespace Net.Laceous.Utilities
                 {
                     if (j >= 3) // {x}
                     {
-                        InitializeNameToCodePointDictionary();
-                        if (NameToCodePointDictionary.TryGetValue(sb.ToString().ToUpperInvariant(), out int codePoint))
+                        if (LazyNameToCodePointDictionary.Value.TryGetValue(sb.ToString().ToUpperInvariant(), out int codePoint))
                         {
                             if (codePoint >= char.MinValue && codePoint <= char.MaxValue)
                             {
