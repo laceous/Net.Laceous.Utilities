@@ -6,17 +6,7 @@
     public enum CharEscapeLetter
     {
         /// <summary>
-        /// Python: \\O
-        /// </summary>
-        None1,
-
-        /// <summary>
-        /// Python: \\OO
-        /// </summary>
-        None2,
-
-        /// <summary>
-        /// FSharp: \\DDD, Python: \\OOO
+        /// FSharp: \\DDD
         /// </summary>
         None3,
 
@@ -36,7 +26,7 @@
         LowerCaseU3,
 
         /// <summary>
-        /// CSharp/FSharp/Python: \\uHHHH; PowerShell: `u{HHHH}
+        /// CSharp/FSharp: \\uHHHH; PowerShell: `u{HHHH}
         /// </summary>
         LowerCaseU4,
 
@@ -56,7 +46,7 @@
         LowerCaseX1,
 
         /// <summary>
-        /// CSharp/FSharp/Python: \\xHH
+        /// CSharp/FSharp: \\xHH
         /// </summary>
         LowerCaseX2,
 
@@ -71,12 +61,7 @@
         LowerCaseX4,
 
         /// <summary>
-        /// Python: \N{name}
-        /// </summary>
-        UpperCaseN1,
-
-        /// <summary>
-        /// CSharp/FSharp/Python: \\UHHHHHHHH
+        /// CSharp/FSharp: \\UHHHHHHHH
         /// </summary>
         UpperCaseU8
     }

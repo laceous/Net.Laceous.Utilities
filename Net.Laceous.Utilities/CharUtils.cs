@@ -1,6 +1,5 @@
-﻿using System;
-using System.Globalization;
-using System.Unicode;
+﻿using Net.Laceous.Utilities.Extensions;
+using System;
 
 namespace Net.Laceous.Utilities
 {
@@ -31,8 +30,6 @@ namespace Net.Laceous.Utilities
                     return EscapeFSharp(c, escapeOptions);
                 case CharEscapeLanguage.PowerShell:
                     return EscapePowerShell(c, escapeOptions);
-                case CharEscapeLanguage.Python:
-                    return EscapePython(c, escapeOptions);
                 default:
                     throw new ArgumentException(string.Format("{0} is not a valid {1}.", escapeOptions.EscapeLanguage, nameof(escapeOptions.EscapeLanguage)), nameof(escapeOptions));
             }
@@ -236,6 +233,8 @@ namespace Net.Laceous.Utilities
                         return "``";
                     case '\"':
                         return "`\""; // technically you can use either `" or "" within double-quoted strings
+                    case '$':
+                        return "`$";  // dollar sign interpolates variables, somethine we can't support, so escape it
                 }
             }
 
@@ -268,117 +267,6 @@ namespace Net.Laceous.Utilities
         }
 
         /// <summary>
-        /// Escape char with backslash sequence (e.g. \n -> \\n)
-        /// </summary>
-        /// <param name="c">Char to escape</param>
-        /// <param name="escapeOptions">Escape options</param>
-        /// <returns>String with escape sequence for char</returns>
-        /// <exception cref="ArgumentException"></exception>
-        private static string EscapePython(char c, CharEscapeOptions escapeOptions)
-        {
-            if (escapeOptions.UseShortEscape)
-            {
-                switch (c)
-                {
-                    case '\\':
-                        return "\\\\";
-                    case '\'':
-                        return "\\\'";
-                    case '\"':
-                        return "\\\"";
-                    case '\a':
-                        return "\\a";
-                    case '\b':
-                        return "\\b";
-                    case '\f':
-                        return "\\f";
-                    case '\n':
-                        return "\\n";
-                    case '\r':
-                        return "\\r";
-                    case '\t':
-                        return "\\t";
-                    case '\v':
-                        return "\\v";
-                    case '\0':
-                        return "\\0"; // this is an octal escape in Python, add it here for parity with other languages
-                }
-            }
-
-            string xu = null;
-            string suffix = null;
-            switch (escapeOptions.EscapeLetter)
-            {
-                case CharEscapeLetter.None1:
-                    if (c <= 0x1FF) // 777 (max 3 char octal), 511 (decimal)
-                    {
-                        xu = "";
-                        suffix = Convert.ToString((int)c, 8); // convert to octal
-                    }
-                    break;
-                case CharEscapeLetter.None2:
-                    if (c <= 0x1FF)
-                    {
-                        xu = "";
-                        suffix = Convert.ToString((int)c, 8).PadLeft(2, '0');
-                    }
-                    break;
-                case CharEscapeLetter.None3:
-                    if (c <= 0x1FF)
-                    {
-                        xu = "";
-                        suffix = Convert.ToString((int)c, 8).PadLeft(3, '0');
-                    }
-                    break;
-                case CharEscapeLetter.LowerCaseX2:
-                    if (c <= 0xFF) // 255 (decimal)
-                    {
-                        xu = "x";
-                        suffix = ((int)c).ToString(escapeOptions.UseLowerCaseHex ? "x2" : "X2");
-                    }
-                    break;
-                case CharEscapeLetter.LowerCaseU4:
-                    xu = "u";
-                    suffix = ((int)c).ToString(escapeOptions.UseLowerCaseHex ? "x4" : "X4");
-                    break;
-                case CharEscapeLetter.UpperCaseU8:
-                    xu = "U";
-                    suffix = ((int)c).ToString(escapeOptions.UseLowerCaseHex ? "x8" : "X8");
-                    break;
-                case CharEscapeLetter.UpperCaseN1:
-                    UnicodeCharInfo charInfo = UnicodeInfo.GetCharInfo((int)c); // python 3.3 added support for aliases, fall back to that if there's no name
-                    string name = !string.IsNullOrEmpty(charInfo.Name) ? charInfo.Name : charInfo.NameAliases.Count > 0 ? charInfo.NameAliases[0].Name : null;
-                    if (!string.IsNullOrEmpty(name) && !name.Contains("}")) // StringComparison.Ordinal
-                    {
-                        xu = "N";
-                        suffix = "{" + CultureInfo.InvariantCulture.TextInfo.ToTitleCase(name.ToLowerInvariant()) + "}";
-                    }
-                    break;
-                default:
-                    throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", escapeOptions.EscapeLetter, nameof(escapeOptions.EscapeLetter), escapeOptions.EscapeLanguage), nameof(escapeOptions));
-            }
-
-            if (xu == null || suffix == null)
-            {
-                switch (escapeOptions.EscapeLetterFallback)
-                {
-                    case CharEscapeLetter.LowerCaseU4:
-                        xu = "u";
-                        suffix = ((int)c).ToString(escapeOptions.UseLowerCaseHex ? "x4" : "X4");
-                        break;
-                    case CharEscapeLetter.UpperCaseU8:
-                        xu = "U";
-                        suffix = ((int)c).ToString(escapeOptions.UseLowerCaseHex ? "x8" : "X8");
-                        break;
-                    default:
-                        throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", escapeOptions.EscapeLetterFallback, nameof(escapeOptions.EscapeLetterFallback), escapeOptions.EscapeLanguage), nameof(escapeOptions));
-                }
-            }
-
-            return "\\" + xu + suffix;
-        }
-
-        /// <summary>
         /// Escape surrogate pair with \\UHHHHHHHH or `u{HHHHH}
         /// </summary>
         /// <param name="highSurrogate">High surrogate</param>
@@ -402,8 +290,6 @@ namespace Net.Laceous.Utilities
                     return EscapeSurrogatePairFSharp(highSurrogate, lowSurrogate, escapeOptions);
                 case CharEscapeLanguage.PowerShell:
                     return EscapeSurrogatePairPowerShell(highSurrogate, lowSurrogate, escapeOptions);
-                case CharEscapeLanguage.Python:
-                    return EscapeSurrogatePairPython(highSurrogate, lowSurrogate, escapeOptions);
                 default:
                     throw new ArgumentException(string.Format("{0} is not a valid {1}.", escapeOptions.EscapeLanguage, nameof(escapeOptions.EscapeLanguage)), nameof(escapeOptions));
             }
@@ -496,56 +382,6 @@ namespace Net.Laceous.Utilities
         }
 
         /// <summary>
-        /// Escape surrogate pair with \\UHHHHHHHH
-        /// </summary>
-        /// <param name="highSurrogate">High surrogate</param>
-        /// <param name="lowSurrogate">Low surrogate</param>
-        /// <param name="escapeOptions">Char escape options</param>
-        /// <returns>String with escape sequence for surrogate pair</returns>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        /// <exception cref="ArgumentException"></exception>
-        private static string EscapeSurrogatePairPython(char highSurrogate, char lowSurrogate, CharEscapeOptions escapeOptions)
-        {
-            int codePoint = char.ConvertToUtf32(highSurrogate, lowSurrogate);
-
-            string xu = null;
-            string suffix = null;
-            switch (escapeOptions.SurrogatePairEscapeLetter)
-            {
-                case CharEscapeLetter.UpperCaseU8:
-                    xu = "U";
-                    suffix = codePoint.ToString(escapeOptions.UseLowerCaseHex ? "x8" : "X8");
-                    break;
-                case CharEscapeLetter.UpperCaseN1:
-                    UnicodeCharInfo charInfo = UnicodeInfo.GetCharInfo(codePoint);
-                    string name = !string.IsNullOrEmpty(charInfo.Name) ? charInfo.Name : charInfo.NameAliases.Count > 0 ? charInfo.NameAliases[0].Name : null;
-                    if (!string.IsNullOrEmpty(name) && !name.Contains("}"))
-                    {
-                        xu = "N";
-                        suffix = "{" + CultureInfo.InvariantCulture.TextInfo.ToTitleCase(name.ToLowerInvariant()) + "}";
-                    }
-                    break;
-                default:
-                    throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", escapeOptions.SurrogatePairEscapeLetter, nameof(escapeOptions.SurrogatePairEscapeLetter), escapeOptions.EscapeLanguage), nameof(escapeOptions));
-            }
-
-            if (xu == null || suffix == null)
-            {
-                switch (escapeOptions.SurrogatePairEscapeLetterFallback)
-                {
-                    case CharEscapeLetter.UpperCaseU8:
-                        xu = "U";
-                        suffix = codePoint.ToString(escapeOptions.UseLowerCaseHex ? "x8" : "X8");
-                        break;
-                    default:
-                        throw new ArgumentException(string.Format("{0} is not a valid {1} for {2}.", escapeOptions.SurrogatePairEscapeLetterFallback, nameof(escapeOptions.SurrogatePairEscapeLetterFallback), escapeOptions.EscapeLanguage), nameof(escapeOptions));
-                }
-            }
-
-            return "\\" + xu + suffix;
-        }
-
-        /// <summary>
         /// Escape surrogate pair with \\UHHHHHHHH or `u{HHHHH}
         /// </summary>
         /// <param name="s">String containing the surrogate pair</param>
@@ -574,6 +410,7 @@ namespace Net.Laceous.Utilities
         /// <param name="unescapeOptions">Unescape options</param>
         /// <returns>Char that's been unescaped</returns>
         /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <exception cref="ArgumentException"></exception>
         public static char Unescape(string s, CharUnescapeOptions unescapeOptions = null)
         {
@@ -590,29 +427,51 @@ namespace Net.Laceous.Utilities
             switch (unescapeOptions.EscapeLanguage)
             {
                 case CharEscapeLanguage.CSharp:
-                case CharEscapeLanguage.FSharp:
+                    // chars in C# are surrounded by single-quotes
+                    if (s.Length == 1)
+                    {
+                        if (s[0].IsSingleQuote() || s[0].IsCarriageReturn() || s[0].IsLineFeed() || s[0].IsNextLine() || s[0].IsLineSeparator() || s[0].IsParagraphSeparator())
+                        {
+                            if (!unescapeOptions.IsUnrecognizedEscapeVerbatim)
+                            {
+                                throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                            }
+                        }
+                        unescaped = s;
+                    }
                     // escaped char will have more than 1 char
                     // longest escaped string: \UHHHHHHHH
-                    if (s.Length > 1 && s.Length <= 10 && s.StartsWith("\\", StringComparison.Ordinal))
+                    else if (s.Length > 1 && s.Length <= 10 && s.StartsWith("\\", StringComparison.Ordinal))
                     {
-                        unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
+                        unescaped = StringUtils.Unescape(s, unescapeOptions);
+                    }
+                    break;
+                case CharEscapeLanguage.FSharp:
+                    // chars in F# are surrounded by single-quotes
+                    if (s.Length == 1)
+                    {
+                        if (s[0].IsSingleQuote() || s[0].IsCarriageReturn() || s[0].IsLineFeed())
+                        {
+                            if (!unescapeOptions.IsUnrecognizedEscapeVerbatim)
+                            {
+                                throw new ArgumentException("Unrecognized escape sequence.", nameof(s));
+                            }
+                        }
+                        unescaped = s;
+                    }
+                    else if (s.Length > 1 && s.Length <= 10 && s.StartsWith("\\", StringComparison.Ordinal))
+                    {
+                        unescaped = StringUtils.Unescape(s, unescapeOptions);
                     }
                     break;
                 case CharEscapeLanguage.PowerShell:
+                    // chars live within strings in PowerShell ("")
+                    // "" is special-case within strings, it's another way to escape a double-quote inside double-quotes
                     // escaped char will have more than 1 char
                     // longest escaped string: `u{HHHHHH}
-                    if (s.Length > 1 && s.Length <= 10 && s.StartsWith("`", StringComparison.Ordinal))
+                    if (s.Length == 1 || (s.Length == 2 && s[0].IsPowerShellDoubleQuote() && s[1].IsPowerShellDoubleQuote()) || (s.Length > 1 && s.Length <= 10 && s.StartsWith("`", StringComparison.Ordinal)))
                     {
-                        unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
-                    }
-                    break;
-                case CharEscapeLanguage.Python:
-                    // escaped char will have more than 1 char
-                    // right now the max length of name in \N{name} is 88; min overall is 5: \N{x}
-                    // non-N max is: \UHHHHHHHH
-                    if ((s.Length > 1 && s.Length <= 10 && s.StartsWith("\\", StringComparison.Ordinal)) || (s.Length >= 5 && s.StartsWith("\\N{", StringComparison.Ordinal) && s.IndexOf('}') == s.Length - 1))
-                    {
-                        unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
+                        unescaped = StringUtils.Unescape(s, unescapeOptions);
                     }
                     break;
                 default:
@@ -623,7 +482,7 @@ namespace Net.Laceous.Utilities
             {
                 return unescaped[0];
             }
-            throw new ArgumentException("String did not contain exactly one escaped char.", nameof(s));
+            throw new ArgumentException("String did not contain exactly one char (escaped or unescaped).", nameof(s));
         }
 
         /// <summary>
@@ -634,6 +493,7 @@ namespace Net.Laceous.Utilities
         /// <param name="lowSurrogate">Return low surrogate</param>
         /// <param name="unescapeOptions">Char unescape options</param>
         /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <exception cref="ArgumentException"></exception>
         public static void UnescapeSurrogatePair(string s, out char highSurrogate, out char lowSurrogate, CharUnescapeOptions unescapeOptions = null)
         {
@@ -651,26 +511,17 @@ namespace Net.Laceous.Utilities
             {
                 case CharEscapeLanguage.CSharp:
                 case CharEscapeLanguage.FSharp:
-                    // escaped surrogate pairs look like this: \UHHHHHHHH
-                    // you could techincally have an escaped surrogate pair look like this: \uHHHH\uHHHH
-                    // however, this method is for reversing CharUtils.EscapeSurrogatePair which always uses \U
-                    if (s.Length == 10 && s.StartsWith("\\U", StringComparison.Ordinal))
+                    // longest escaped surrogate pair: \UHHHHHHHH\UHHHHHHHH
+                    if (s.Length == 2 || (s.Length > 2 && s.Length <= 20 && s.Contains("\\"))) // StringComparison.Ordinal
                     {
-                        unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
+                        unescaped = StringUtils.Unescape(s, unescapeOptions);
                     }
                     break;
                 case CharEscapeLanguage.PowerShell:
-                    // escaped surrogate pairs look like this: `u{HHHHH}, `u{HHHHHH}
-                    if (s.Length >= 9 && s.Length <= 10 && s.StartsWith("`u{", StringComparison.Ordinal))
+                    // longest escaped surrogate pair: `u{HHHHHH}`u{HHHHHH}
+                    if (s.Length == 2 || (s.Length > 2 && s.Length <= 20 && s.Contains("`"))) // StringComparison.Ordinal
                     {
-                        unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
-                    }
-                    break;
-                case CharEscapeLanguage.Python:
-                    // escaped surrogate pairs look like this: \UHHHHHHHH, \N{name}
-                    if ((s.Length == 10 && s.StartsWith("\\U", StringComparison.Ordinal)) || (s.Length >= 5 && s.StartsWith("\\N{", StringComparison.Ordinal) && s.IndexOf('}') == s.Length - 1))
-                    {
-                        unescaped = StringUtils.Unescape(s, new StringUnescapeOptions(isUnrecognizedEscapeVerbatim: true), unescapeOptions);
+                        unescaped = StringUtils.Unescape(s, unescapeOptions);
                     }
                     break;
                 default:
@@ -683,7 +534,7 @@ namespace Net.Laceous.Utilities
                 lowSurrogate = unescaped[1];
                 return;
             }
-            throw new ArgumentException("String did not contain exactly one escaped surrogate pair.", nameof(s));
+            throw new ArgumentException("String did not contain exactly one surrogate pair (escaped or unescaped).", nameof(s));
         }
 
         /// <summary>
@@ -693,6 +544,7 @@ namespace Net.Laceous.Utilities
         /// <param name="unescapeOptions">Char unescape options</param>
         /// <returns>String containing the high surrogate + low surrogate</returns>
         /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <exception cref="ArgumentException"></exception>
         public static string UnescapeSurrogatePair(string s, CharUnescapeOptions unescapeOptions = null)
         {

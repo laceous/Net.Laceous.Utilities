@@ -6,7 +6,7 @@
     public class CharEscapeOptions
     {
         /// <summary>
-        /// C# / F# / PowerShell / Python
+        /// C# / F# / PowerShell
         /// </summary>
         public CharEscapeLanguage EscapeLanguage { get; set; }
 
@@ -43,7 +43,7 @@
         /// <summary>
         /// Initialize new instance of CharEscapeOptions with selected options
         /// </summary>
-        /// <param name="escapeLanguage">C# / F# / PowerShell / Python</param>
+        /// <param name="escapeLanguage">C# / F# / PowerShell</param>
         /// <param name="escapeLetter">Choose which unicode escape letter to use</param>
         /// <param name="escapeLetterFallback">Choose which fallback unicode escape letter to use</param>
         /// <param name="surrogatePairEscapeLetter">Choose which surrogate pair escape letter to use</param>

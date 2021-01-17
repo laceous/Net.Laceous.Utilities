@@ -28,16 +28,6 @@ namespace Net.Laceous.Utilities.Extensions
         }
 
         /// <summary>
-        /// Checks if the char is an octal digit (0-7)
-        /// </summary>
-        /// <param name="c">Char to check</param>
-        /// <returns>True if octal digit, otherwise false</returns>
-        internal static bool IsOctal(this char c)
-        {
-            return c >= '0' && c <= '7';
-        }
-
-        /// <summary>
         /// Checks if the char is zero
         /// </summary>
         /// <param name="c">Char to check</param>
@@ -105,6 +95,121 @@ namespace Net.Laceous.Utilities.Extensions
         internal static bool IsBacktick(this char c)
         {
             return c == '`';
+        }
+
+        /// <summary>
+        /// Checks if the char is \r
+        /// </summary>
+        /// <param name="c">Char to check</param>
+        /// <returns>True if \r, otherwise false</returns>
+        internal static bool IsCarriageReturn(this char c)
+        {
+            return c == '\r';
+        }
+
+        /// <summary>
+        /// Checks if the char is \n
+        /// </summary>
+        /// <param name="c">Char to check</param>
+        /// <returns>True if \n, otherwise false</returns>
+        internal static bool IsLineFeed(this char c)
+        {
+            return c == '\n';
+        }
+
+        /// <summary>
+        /// Checks if the char is NEL
+        /// </summary>
+        /// <param name="c">Char to check</param>
+        /// <returns>True if NEL, otherwise false</returns>
+        internal static bool IsNextLine(this char c)
+        {
+            return c == '\x85';
+        }
+
+        /// <summary>
+        /// Checks if the char is LS
+        /// </summary>
+        /// <param name="c">Char to check</param>
+        /// <returns>True if LS, otherwise false</returns>
+        internal static bool IsLineSeparator(this char c)
+        {
+            return c == '\u2028';
+        }
+
+        /// <summary>
+        /// Checks if the char is PS
+        /// </summary>
+        /// <param name="c">Char to check</param>
+        /// <returns>True if PS, otherwise false</returns>
+        internal static bool IsParagraphSeparator(this char c)
+        {
+            return c == '\u2029';
+        }
+
+        /// <summary>
+        /// Checks if the char is $
+        /// </summary>
+        /// <param name="c">Char to check</param>
+        /// <returns>True if $, otherwise false</returns>
+        internal static bool IsDollarSign(this char c)
+        {
+            return c == '$';
+        }
+
+        /// <summary>
+        /// Checks if the char is _
+        /// </summary>
+        /// <param name="c">Char to check</param>
+        /// <returns>True if _, otherwise false</returns>
+        internal static bool IsUnderscore(this char c)
+        {
+            return c == '_';
+        }
+
+        /// <summary>
+        /// Checks if the char is ?
+        /// </summary>
+        /// <param name="c">Char to check</param>
+        /// <returns>True if ?, otherwise false</returns>
+        internal static bool IsQuestionMark(this char c)
+        {
+            return c == '?';
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="c">Char to check</param>
+        /// <returns></returns>
+        internal static bool IsCaret(this char c)
+        {
+            return c == '^';
+        }
+
+        /// <summary>
+        /// Checks if the char is (
+        /// </summary>
+        /// <param name="c">Char to check</param>
+        /// <returns>True if (, otherwise false</returns>
+        internal static bool IsLeftParenthesis(this char c)
+        {
+            return c == '(';
+        }
+
+        /// <summary>
+        /// Checks if the char is 1 of 4 double-quote types that PowerShell allows
+        /// </summary>
+        /// <param name="c">Char to check</param>
+        /// <returns>True if 1 of 4 double-quote types, otherwise false</returns>
+        internal static bool IsPowerShellDoubleQuote(this char c)
+        {
+            // found by testing...
+            // U+0022 Quotation Mark
+            // U+201E Double Low-9 Quotation Mark
+            // U+201C Left Double Quotation Mark
+            // U+201D Right Double Quotation Mark
+            return c == '\"' || c == '\u201E' || c == '\u201C' || c == '\u201D';
         }
 
         /// <summary>

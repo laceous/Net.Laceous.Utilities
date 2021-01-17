@@ -1,7 +1,7 @@
 ﻿namespace Net.Laceous.Utilities
 {
     /// <summary>
-    /// C# / F# / PowerShell / Python
+    /// C# / F# / PowerShell
     /// </summary>
     public enum CharEscapeLanguage
     {
@@ -18,11 +18,6 @@
         /// <summary>
         /// PowerShell
         /// </summary>
-        PowerShell,
-
-        /// <summary>
-        /// Python
-        /// </summary>
-        Python
+        PowerShell
     }
 }
