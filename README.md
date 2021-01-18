@@ -121,7 +121,7 @@ $eUnescaped = [Net.Laceous.Utilities.CharUtils]::UnescapeSurrogatePair($eEscaped
 Write-Host $eEscaped   # "`u{1F601}"
 Write-Host $eUnescaped # 😁
 
-$sOriginal = 'abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓'
+$sOriginal = "abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓"
 $sEscaped = [Net.Laceous.Utilities.StringUtils]::Escape($sOriginal, $seOptions, $ceOptions, $true)
 $sUnescaped = [Net.Laceous.Utilities.StringUtils]::Unescape($sEscaped, $uOptions, $true)
 Write-Host $sEscaped   # "abc ABC 123 `u{00C4}`u{00D6}`u{00DC} `u{3131}`u{3134}`u{3137} `u{1F601}`u{1F603}`u{1F613}"
