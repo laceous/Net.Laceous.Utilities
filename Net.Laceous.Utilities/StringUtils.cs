@@ -16,10 +16,11 @@ namespace Net.Laceous.Utilities
         /// <param name="s">String to escape</param>
         /// <param name="stringEscapeOptions">String escape options</param>
         /// <param name="charEscapeOptions">Char escape options</param>
+        /// <param name="addQuotes">Add quotes after escaping</param>
         /// <returns>String with escape sequences for string</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public static string Escape(string s, StringEscapeOptions stringEscapeOptions = null, CharEscapeOptions charEscapeOptions = null)
+        public static string Escape(string s, StringEscapeOptions stringEscapeOptions = null, CharEscapeOptions charEscapeOptions = null, bool addQuotes = false)
         {
             if (s == null)
             {
@@ -37,11 +38,11 @@ namespace Net.Laceous.Utilities
             switch (charEscapeOptions.EscapeLanguage)
             {
                 case CharEscapeLanguage.CSharp:
-                    return EscapeCSharp(s, stringEscapeOptions, charEscapeOptions);
+                    return EscapeCSharp(s, stringEscapeOptions, charEscapeOptions, addQuotes);
                 case CharEscapeLanguage.FSharp:
-                    return EscapeFSharp(s, stringEscapeOptions, charEscapeOptions);
+                    return EscapeFSharp(s, stringEscapeOptions, charEscapeOptions, addQuotes);
                 case CharEscapeLanguage.PowerShell:
-                    return EscapePowerShell(s, stringEscapeOptions, charEscapeOptions);
+                    return EscapePowerShell(s, stringEscapeOptions, charEscapeOptions, addQuotes);
                 default:
                     throw new ArgumentException(string.Format("{0} is not a valid {1}.", charEscapeOptions.EscapeLanguage, nameof(charEscapeOptions.EscapeLanguage)), nameof(charEscapeOptions));
             }
@@ -53,9 +54,10 @@ namespace Net.Laceous.Utilities
         /// <param name="s">String to escape</param>
         /// <param name="stringEscapeOptions">String escape options</param>
         /// <param name="charEscapeOptions"></param>
+        /// <param name="addQuotes">Add quotes after escaping</param>
         /// <returns>String with escape sequences for string</returns>
         /// <exception cref="ArgumentException"></exception>
-        private static string EscapeCSharp(string s, StringEscapeOptions stringEscapeOptions, CharEscapeOptions charEscapeOptions)
+        private static string EscapeCSharp(string s, StringEscapeOptions stringEscapeOptions, CharEscapeOptions charEscapeOptions, bool addQuotes)
         {
             CharEscapeOptions charEscapeOptionsLowerCaseX4 = new CharEscapeOptions(
                 escapeLanguage: charEscapeOptions.EscapeLanguage,
@@ -106,6 +108,12 @@ namespace Net.Laceous.Utilities
                     }
                 }
             }
+
+            if (addQuotes)
+            {
+                sb.Insert(0, '\"');
+                sb.Append('\"');
+            }
             return sb.ToString();
         }
 
@@ -115,9 +123,10 @@ namespace Net.Laceous.Utilities
         /// <param name="s">String to escape</param>
         /// <param name="stringEscapeOptions">String escape options</param>
         /// <param name="charEscapeOptions">Char escape options</param>
+        /// <param name="addQuotes">Add quotes after escaping</param>
         /// <returns>String with escape sequences for string</returns>
         /// <exception cref="ArgumentException"></exception>
-        private static string EscapeFSharp(string s, StringEscapeOptions stringEscapeOptions, CharEscapeOptions charEscapeOptions)
+        private static string EscapeFSharp(string s, StringEscapeOptions stringEscapeOptions, CharEscapeOptions charEscapeOptions, bool addQuotes)
         {
             StringBuilder sb = new StringBuilder(s.Length);
             for (int i = 0; i < s.Length; i++)
@@ -148,6 +157,12 @@ namespace Net.Laceous.Utilities
                     }
                 }
             }
+
+            if (addQuotes)
+            {
+                sb.Insert(0, '\"');
+                sb.Append('\"');
+            }
             return sb.ToString();
         }
 
@@ -157,9 +172,10 @@ namespace Net.Laceous.Utilities
         /// <param name="s">String to escape</param>
         /// <param name="stringEscapeOptions">String escape options</param>
         /// <param name="charEscapeOptions">Char escape options</param>
+        /// <param name="addQuotes">Add quotes after escaping</param>
         /// <returns>String with escape sequences for string</returns>
         /// <exception cref="ArgumentException"></exception>
-        private static string EscapePowerShell(string s, StringEscapeOptions stringEscapeOptions, CharEscapeOptions charEscapeOptions)
+        private static string EscapePowerShell(string s, StringEscapeOptions stringEscapeOptions, CharEscapeOptions charEscapeOptions, bool addQuotes)
         {
             StringBuilder sb = new StringBuilder(s.Length);
             for (int i = 0; i < s.Length; i++)
@@ -190,6 +206,12 @@ namespace Net.Laceous.Utilities
                     }
                 }
             }
+
+            if (addQuotes)
+            {
+                sb.Insert(0, '\"');
+                sb.Append('\"');
+            }
             return sb.ToString();
         }
 
@@ -198,11 +220,12 @@ namespace Net.Laceous.Utilities
         /// </summary>
         /// <param name="s">String to unescape (e.g. s from "s" with the quotes removed)</param>
         /// <param name="unescapeOptions">Char unescape options</param>
+        /// <param name="removeQuotes">Remove quotes before parsing</param>
         /// <returns>String that's been unescaped</returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public static string Unescape(string s, CharUnescapeOptions unescapeOptions = null)
+        public static string Unescape(string s, CharUnescapeOptions unescapeOptions = null, bool removeQuotes = false)
         {
             if (s == null)
             {
@@ -216,11 +239,11 @@ namespace Net.Laceous.Utilities
             switch (unescapeOptions.EscapeLanguage)
             {
                 case CharEscapeLanguage.CSharp:
-                    return UnescapeCSharp(s, unescapeOptions);
+                    return UnescapeCSharp(s, unescapeOptions, removeQuotes);
                 case CharEscapeLanguage.FSharp:
-                    return UnescapeFSharp(s, unescapeOptions);
+                    return UnescapeFSharp(s, unescapeOptions, removeQuotes);
                 case CharEscapeLanguage.PowerShell:
-                    return UnescapePowerShell(s, unescapeOptions);
+                    return UnescapePowerShell(s, unescapeOptions, removeQuotes);
                 default:
                     throw new ArgumentException(string.Format("{0} is not a valid {1}.", unescapeOptions.EscapeLanguage, nameof(unescapeOptions.EscapeLanguage)), nameof(unescapeOptions));
             }
@@ -231,11 +254,24 @@ namespace Net.Laceous.Utilities
         /// </summary>
         /// <param name="s">String to unescape</param>
         /// <param name="unescapeOptions">Char unescape options</param>
+        /// <param name="removeQuotes">Remove quotes before parsing</param>
         /// <returns>String that's been unescaped</returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        private static string UnescapeCSharp(string s, CharUnescapeOptions unescapeOptions)
+        private static string UnescapeCSharp(string s, CharUnescapeOptions unescapeOptions, bool removeQuotes)
         {
+            if (removeQuotes)
+            {
+                if (s.Length >= 2 && s[0].IsDoubleQuote() && s[s.Length - 1].IsDoubleQuote())
+                {
+                    s = s.Substring(1, s.Length - 2);
+                }
+                else
+                {
+                    throw new ArgumentException("String was not double quoted.", nameof(s));
+                }
+            }
+
             if (s.IndexOfAny(new char[] { '\\', '\"', '\r', '\n', '\x85', '\u2028', '\u2029' }) == -1)
             {
                 return s;
@@ -387,11 +423,24 @@ namespace Net.Laceous.Utilities
         /// </summary>
         /// <param name="s">String to unescape</param>
         /// <param name="unescapeOptions">Char unescape options</param>
+        /// <param name="removeQuotes">Remove quotes before parsing</param>
         /// <returns>String that's been unescaped</returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        private static string UnescapeFSharp(string s, CharUnescapeOptions unescapeOptions)
+        private static string UnescapeFSharp(string s, CharUnescapeOptions unescapeOptions, bool removeQuotes)
         {
+            if (removeQuotes)
+            {
+                if (s.Length >= 2 && s[0].IsDoubleQuote() && s[s.Length - 1].IsDoubleQuote())
+                {
+                    s = s.Substring(1, s.Length - 2);
+                }
+                else
+                {
+                    throw new ArgumentException("String was not double quoted.", nameof(s));
+                }
+            }
+
             if (s.IndexOfAny(new char[] { '\\', '\"' }) == -1)
             {
                 return s;
@@ -547,11 +596,24 @@ namespace Net.Laceous.Utilities
         /// </summary>
         /// <param name="s">String to unescape</param>
         /// <param name="unescapeOptions">Char unescape options</param>
+        /// <param name="removeQuotes">Remove quotes before parsing</param>
         /// <returns>String that's been unescaped</returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        private static string UnescapePowerShell(string s, CharUnescapeOptions unescapeOptions)
+        private static string UnescapePowerShell(string s, CharUnescapeOptions unescapeOptions, bool removeQuotes)
         {
+            if (removeQuotes)
+            {
+                if (s.Length >= 2 && s[0].IsPowerShellDoubleQuote() && s[s.Length - 1].IsPowerShellDoubleQuote())
+                {
+                    s = s.Substring(1, s.Length - 2);
+                }
+                else
+                {
+                    throw new ArgumentException("String was not double quoted.", nameof(s));
+                }
+            }
+
             if (s.IndexOfAny(new char[] { '`', '\"', '\u201E', '\u201C', '\u201D', '$' }) == -1)
             {
                 return s;
@@ -696,7 +758,7 @@ namespace Net.Laceous.Utilities
                     }
                     else if (s[i].IsPowerShellDoubleQuote())
                     {
-                        // this is supporting "string", not @"here-string"@ which also support escape sequences and allow unescaped quotes
+                        // this is supporting "string"; not @"here-string"@ which also support escape sequences and allow unescaped quotes
                         if (i + 1 < s.Length && s[i + 1].IsPowerShellDoubleQuote())
                         {
                             // powershell allows "" in addition to `" to represent a " inside ""
