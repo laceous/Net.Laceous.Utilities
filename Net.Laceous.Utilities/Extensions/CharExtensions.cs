@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Net.Laceous.Utilities.Extensions
+﻿namespace Net.Laceous.Utilities.Extensions
 {
     /// <summary>
     /// Adds extension methods to chars

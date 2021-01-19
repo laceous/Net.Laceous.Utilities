@@ -257,7 +257,7 @@ namespace Net.Laceous.Utilities
         /// <returns>String that's been unescaped</returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        private static string UnescapeCSharp(string s, CharUnescapeOptions unescapeOptions, bool removeQuotes)
+        internal static string UnescapeCSharp(string s, CharUnescapeOptions unescapeOptions, bool removeQuotes = false)
         {
             if (removeQuotes)
             {
@@ -426,7 +426,7 @@ namespace Net.Laceous.Utilities
         /// <returns>String that's been unescaped</returns>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        private static string UnescapeFSharp(string s, CharUnescapeOptions unescapeOptions, bool removeQuotes)
+        internal static string UnescapeFSharp(string s, CharUnescapeOptions unescapeOptions, bool removeQuotes = false)
         {
             if (removeQuotes)
             {

@@ -439,7 +439,7 @@ namespace Net.Laceous.Utilities
             {
                 // escaped char will have more than 1 char
                 // longest escaped string: \UHHHHHHHH
-                unescaped = StringUtils.Unescape(s, unescapeOptions);
+                unescaped = StringUtils.UnescapeCSharp(s, unescapeOptions);
             }
 
             if (unescaped != null && unescaped.Length == 1)
@@ -487,7 +487,7 @@ namespace Net.Laceous.Utilities
             }
             else if (s.Length > 1 && s.Length <= 10 && s.StartsWith("\\", StringComparison.Ordinal))
             {
-                unescaped = StringUtils.Unescape(s, unescapeOptions);
+                unescaped = StringUtils.UnescapeFSharp(s, unescapeOptions);
             }
 
             if (unescaped != null && unescaped.Length == 1)
