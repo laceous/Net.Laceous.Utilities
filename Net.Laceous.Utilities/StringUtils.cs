@@ -64,7 +64,6 @@ namespace Net.Laceous.Utilities
                 escapeLetter: CharEscapeLetter.LowerCaseX4,
                 escapeLetterFallback: charEscapeOptions.EscapeLetterFallback,
                 surrogatePairEscapeLetter: charEscapeOptions.SurrogatePairEscapeLetter,
-                surrogatePairEscapeLetterFallback: charEscapeOptions.SurrogatePairEscapeLetterFallback,
                 useLowerCaseHex: charEscapeOptions.UseLowerCaseHex,
                 useShortEscape: charEscapeOptions.UseShortEscape
             );
@@ -406,7 +405,7 @@ namespace Net.Laceous.Utilities
                     }
                     else if (s[i].IsCarriageReturn() || s[i].IsLineFeed() || s[i].IsNextLine() || s[i].IsLineSeparator() || s[i].IsParagraphSeparator())
                     {
-                        // can't have all these newline types unescaped in a string
+                        // can't have all these unescaped newline types unescaped in a string
                         UnrecognizedEscapeOrAppend(sb, unescapeOptions.IsUnrecognizedEscapeVerbatim, nameof(s), new char[] { s[i] });
                     }
                     else
@@ -489,7 +488,11 @@ namespace Net.Laceous.Utilities
                                 case '\r':
                                     // \(newline) is allowed but consumed
                                     // newline can be: \r\n, \n
-                                    if (!(i + 1 < s.Length && s[i + 1].IsLineFeed()))
+                                    if (i + 1 < s.Length && s[i + 1].IsLineFeed())
+                                    {
+                                        ++i;
+                                    }
+                                    else
                                     {
                                         // \\ + \r w/o \n is verbatim
                                         sb.Append('\\');

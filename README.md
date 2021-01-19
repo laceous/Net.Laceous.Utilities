@@ -9,7 +9,7 @@ This currently contains char and string utilities targeting [.NET Standard 2.0](
 ```csharp
 Console.OutputEncoding = Encoding.UTF8; // use a terminal that supports emojis
 
-CharEscapeOptions ceOptions = new CharEscapeOptions(escapeLanguage: CharEscapeLanguage.CSharp, escapeLetter: CharEscapeLetter.LowerCaseU4, escapeLetterFallback: CharEscapeLetter.LowerCaseU4, surrogatePairEscapeLetter: CharEscapeLetter.UpperCaseU8, surrogatePairEscapeLetterFallback: CharEscapeLetter.UpperCaseU8, useLowerCaseHex: false, useShortEscape: true);
+CharEscapeOptions ceOptions = new CharEscapeOptions(escapeLanguage: CharEscapeLanguage.CSharp, escapeLetter: CharEscapeLetter.LowerCaseU4, escapeLetterFallback: CharEscapeLetter.LowerCaseU4, surrogatePairEscapeLetter: CharEscapeLetter.UpperCaseU8, useLowerCaseHex: false, useShortEscape: true);
 StringEscapeOptions seOptions = new StringEscapeOptions(escapeKind: StringEscapeKind.EscapeNonAscii, escapeSurrogatePairs: true);
 CharUnescapeOptions uOptions = new CharUnescapeOptions(escapeLanguage: CharEscapeLanguage.CSharp, isUnrecognizedEscapeVerbatim: true);
 
@@ -57,7 +57,7 @@ Supported quote types:
 ```fsharp
 Console.OutputEncoding <- Encoding.UTF8 // use a terminal that supports emojis
 
-let ceOptions = new CharEscapeOptions(escapeLanguage = CharEscapeLanguage.FSharp, escapeLetter = CharEscapeLetter.LowerCaseU4, escapeLetterFallback = CharEscapeLetter.LowerCaseU4, surrogatePairEscapeLetter = CharEscapeLetter.UpperCaseU8, surrogatePairEscapeLetterFallback = CharEscapeLetter.UpperCaseU8, useLowerCaseHex = false, useShortEscape = true)
+let ceOptions = new CharEscapeOptions(escapeLanguage = CharEscapeLanguage.FSharp, escapeLetter = CharEscapeLetter.LowerCaseU4, escapeLetterFallback = CharEscapeLetter.LowerCaseU4, surrogatePairEscapeLetter = CharEscapeLetter.UpperCaseU8, useLowerCaseHex = false, useShortEscape = true)
 let seOptions = new StringEscapeOptions(escapeKind = StringEscapeKind.EscapeNonAscii, escapeSurrogatePairs = true)
 let uOptions = new CharUnescapeOptions(escapeLanguage = CharEscapeLanguage.FSharp, isUnrecognizedEscapeVerbatim = true)
 
@@ -105,7 +105,7 @@ Supported quote types:
 ```powershell
 Add-Type -Path '/path/to/Net.Laceous.Utilities.dll'
 
-$ceOptions = [Net.Laceous.Utilities.CharEscapeOptions]::New('PowerShell', 'LowerCaseU4', 'LowerCaseU4', 'LowerCaseU5', 'LowerCaseU5', $false, $true)
+$ceOptions = [Net.Laceous.Utilities.CharEscapeOptions]::New('PowerShell', 'LowerCaseU4', 'LowerCaseU4', 'LowerCaseU5', $false, $true)
 $seOptions = [Net.Laceous.Utilities.StringEscapeOptions]::New('EscapeNonAscii', $true)
 $uOptions = [Net.Laceous.Utilities.CharUnescapeOptions]::New('PowerShell', $true)
 
