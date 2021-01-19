@@ -73,14 +73,14 @@ namespace Net.Laceous.Utilities
             {
                 if (stringEscapeOptions.EscapeSurrogatePairs && i + 1 < s.Length && char.IsSurrogatePair(s[i], s[i + 1]))
                 {
-                    sb.Append(CharUtils.EscapeSurrogatePair(s[i], s[++i], charEscapeOptions));
+                    sb.Append(CharUtils.EscapeSurrogatePairCSharp(s[i], s[++i], charEscapeOptions));
                 }
                 else
                 {
                     switch (stringEscapeOptions.EscapeKind)
                     {
                         case StringEscapeKind.EscapeAll:
-                            sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
+                            sb.Append(CharUtils.EscapeCSharp(s[i], charEscapeOptions));
                             break;
                         case StringEscapeKind.EscapeNonAscii:
                             if (s[i].IsPrintAscii() && !s[i].IsBackslash() && !s[i].IsDoubleQuote())
@@ -94,11 +94,11 @@ namespace Net.Laceous.Utilities
                                 // instead we have to output the full fixed length \xHHHH so the next char doesn't become part of this \x sequence
                                 if ((charEscapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX1 || charEscapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX2 || charEscapeOptions.EscapeLetter == CharEscapeLetter.LowerCaseX3) && i + 1 < s.Length && s[i + 1].IsHex())
                                 {
-                                    sb.Append(CharUtils.Escape(s[i], charEscapeOptionsLowerCaseX4));
+                                    sb.Append(CharUtils.EscapeCSharp(s[i], charEscapeOptionsLowerCaseX4));
                                 }
                                 else
                                 {
-                                    sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
+                                    sb.Append(CharUtils.EscapeCSharp(s[i], charEscapeOptions));
                                 }
                             }
                             break;
@@ -132,14 +132,14 @@ namespace Net.Laceous.Utilities
             {
                 if (stringEscapeOptions.EscapeSurrogatePairs && i + 1 < s.Length && char.IsSurrogatePair(s[i], s[i + 1]))
                 {
-                    sb.Append(CharUtils.EscapeSurrogatePair(s[i], s[++i], charEscapeOptions));
+                    sb.Append(CharUtils.EscapeSurrogatePairFSharp(s[i], s[++i], charEscapeOptions));
                 }
                 else
                 {
                     switch (stringEscapeOptions.EscapeKind)
                     {
                         case StringEscapeKind.EscapeAll:
-                            sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
+                            sb.Append(CharUtils.EscapeFSharp(s[i], charEscapeOptions));
                             break;
                         case StringEscapeKind.EscapeNonAscii:
                             if (s[i].IsPrintAscii() && !s[i].IsBackslash() && !s[i].IsDoubleQuote())
@@ -148,7 +148,7 @@ namespace Net.Laceous.Utilities
                             }
                             else
                             {
-                                sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
+                                sb.Append(CharUtils.EscapeFSharp(s[i], charEscapeOptions));
                             }
                             break;
                         default:
@@ -181,14 +181,14 @@ namespace Net.Laceous.Utilities
             {
                 if (stringEscapeOptions.EscapeSurrogatePairs && i + 1 < s.Length && char.IsSurrogatePair(s[i], s[i + 1]))
                 {
-                    sb.Append(CharUtils.EscapeSurrogatePair(s[i], s[++i], charEscapeOptions));
+                    sb.Append(CharUtils.EscapeSurrogatePairPowerShell(s[i], s[++i], charEscapeOptions));
                 }
                 else
                 {
                     switch (stringEscapeOptions.EscapeKind)
                     {
                         case StringEscapeKind.EscapeAll:
-                            sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
+                            sb.Append(CharUtils.EscapePowerShell(s[i], charEscapeOptions));
                             break;
                         case StringEscapeKind.EscapeNonAscii:
                             if (s[i].IsPrintAscii() && !s[i].IsBacktick() && !s[i].IsDoubleQuote() && !s[i].IsDollarSign())
@@ -197,7 +197,7 @@ namespace Net.Laceous.Utilities
                             }
                             else
                             {
-                                sb.Append(CharUtils.Escape(s[i], charEscapeOptions));
+                                sb.Append(CharUtils.EscapePowerShell(s[i], charEscapeOptions));
                             }
                             break;
                         default:

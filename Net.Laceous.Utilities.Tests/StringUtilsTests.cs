@@ -245,6 +245,48 @@ namespace Net.Laceous.Utilities.Tests
         }
 
         [Fact]
+        public void EscapeTest_CSharp_AddQuotes()
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.CSharp
+            };
+
+            string original = "ABC";
+            string escaped = StringUtils.Escape(original, charEscapeOptions: options, addQuotes: true);
+
+            Assert.Equal("\"\\u0041\\u0042\\u0043\"", escaped);
+        }
+
+        [Fact]
+        public void EscapeTest_FSharp_AddQuotes()
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.FSharp
+            };
+
+            string original = "ABC";
+            string escaped = StringUtils.Escape(original, charEscapeOptions: options, addQuotes: true);
+
+            Assert.Equal("\"\\u0041\\u0042\\u0043\"", escaped);
+        }
+
+        [Fact]
+        public void EscapeTest_PowerShell_AddQuotes()
+        {
+            CharEscapeOptions options = new CharEscapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.PowerShell
+            };
+
+            string original = "ABC";
+            string escaped = StringUtils.Escape(original, charEscapeOptions: options, addQuotes: true);
+
+            Assert.Equal("\"`u{0041}`u{0042}`u{0043}\"", escaped);
+        }
+
+        [Fact]
         public void UnescapeTest_CSharp()
         {
             CharUnescapeOptions options = new CharUnescapeOptions()
@@ -338,6 +380,48 @@ namespace Net.Laceous.Utilities.Tests
             string unescaped = StringUtils.Unescape(escaped, unescapeOptions: options);
 
             Assert.Equal("`u{0000BAD}", unescaped);
+        }
+
+        [Fact]
+        public void UnescapeTest_CSharp_RemoveQuotes()
+        {
+            CharUnescapeOptions options = new CharUnescapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.CSharp
+            };
+
+            string escaped = "\"\\u0041\\u0042\\u0043\"";
+            string unescaped = StringUtils.Unescape(escaped, options, true);
+
+            Assert.Equal("ABC", unescaped);
+        }
+
+        [Fact]
+        public void UnescapeTest_FSharp_RemoveQuotes()
+        {
+            CharUnescapeOptions options = new CharUnescapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.FSharp
+            };
+
+            string escaped = "\"\\u0041\\u0042\\u0043\"";
+            string unescaped = StringUtils.Unescape(escaped, options, true);
+
+            Assert.Equal("ABC", unescaped);
+        }
+
+        [Fact]
+        public void UnescapeTest_PowerShell_RemoveQuotes()
+        {
+            CharUnescapeOptions options = new CharUnescapeOptions()
+            {
+                EscapeLanguage = CharEscapeLanguage.PowerShell
+            };
+
+            string escaped = "\"`u{0041}`u{0042}`u{0043}\"";
+            string unescaped = StringUtils.Unescape(escaped, options, true);
+
+            Assert.Equal("ABC", unescaped);
         }
 
         [Fact]

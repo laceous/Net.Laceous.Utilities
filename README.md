@@ -19,12 +19,6 @@ char cUnescaped = CharUtils.Unescape(cEscaped, unescapeOptions: uOptions, remove
 Console.WriteLine(cEscaped);   // '\u00C4'
 Console.WriteLine(cUnescaped); // Ä
 
-string eOriginal = "😁"; // 2 char emoji
-string eEscaped = CharUtils.EscapeSurrogatePair(eOriginal, escapeOptions: ceOptions, addQuotes: true);
-string eUnescaped = CharUtils.UnescapeSurrogatePair(eEscaped, unescapeOptions: uOptions, removeQuotes: true);
-Console.WriteLine(eEscaped);   // "\U0001F601"
-Console.WriteLine(eUnescaped); // 😁
-
 string sOriginal = "abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓";
 string sEscaped = StringUtils.Escape(sOriginal, stringEscapeOptions: seOptions, charEscapeOptions: ceOptions, addQuotes: true);
 string sUnescaped = StringUtils.Unescape(sEscaped, unescapeOptions: uOptions, removeQuotes: true);
@@ -67,12 +61,6 @@ let cUnescaped = CharUtils.Unescape(cEscaped, unescapeOptions = uOptions, remove
 printfn "%s" cEscaped   // '\u00C4'
 printfn "%c" cUnescaped // Ä
 
-let eOriginal = "😁"; // 2 char emoji
-let eEscaped = CharUtils.EscapeSurrogatePair(eOriginal, escapeOptions = ceOptions, addQuotes = true)
-let eUnescaped = CharUtils.UnescapeSurrogatePair(eEscaped, unescapeOptions = uOptions, removeQuotes = true)
-printfn "%s" eEscaped   // "\U0001F601"
-printfn "%s" eUnescaped // 😁
-
 let sOriginal = "abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓"
 let sEscaped = StringUtils.Escape(sOriginal, stringEscapeOptions = seOptions, charEscapeOptions = ceOptions, addQuotes = true)
 let sUnescaped = StringUtils.Unescape(sEscaped, unescapeOptions = uOptions, removeQuotes = true)
@@ -108,18 +96,6 @@ Add-Type -Path '/path/to/Net.Laceous.Utilities.dll'
 $ceOptions = [Net.Laceous.Utilities.CharEscapeOptions]::New('PowerShell', 'LowerCaseU4', 'LowerCaseU4', 'LowerCaseU5', $false, $true)
 $seOptions = [Net.Laceous.Utilities.StringEscapeOptions]::New('EscapeNonAscii', $true)
 $uOptions = [Net.Laceous.Utilities.CharUnescapeOptions]::New('PowerShell', $true)
-
-$cOriginal = "Ä"
-$cEscaped = [Net.Laceous.Utilities.CharUtils]::Escape($cOriginal, $ceOptions, $true)
-$cUnescaped = [Net.Laceous.Utilities.CharUtils]::Unescape($cEscaped, $uOptions, $true)
-Write-Host $cEscaped   # "`u{00C4}"
-Write-Host $cUnescaped # Ä
-
-$eOriginal = "😁" # 2 char emoji
-$eEscaped = [Net.Laceous.Utilities.CharUtils]::EscapeSurrogatePair($eOriginal, $ceOptions, $true)
-$eUnescaped = [Net.Laceous.Utilities.CharUtils]::UnescapeSurrogatePair($eEscaped, $uOptions, $true)
-Write-Host $eEscaped   # "`u{1F601}"
-Write-Host $eUnescaped # 😁
 
 $sOriginal = "abc ABC 123 ÄÖÜ ㄱㄴㄷ 😁😃😓"
 $sEscaped = [Net.Laceous.Utilities.StringUtils]::Escape($sOriginal, $seOptions, $ceOptions, $true)
