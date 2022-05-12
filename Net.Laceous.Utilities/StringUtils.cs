@@ -277,7 +277,7 @@ namespace Net.Laceous.Utilities
             }
             else
             {
-                // using indexOf('\\') and and substring() instead of iterating over each char can be faster if there's relatively few \\ in the string
+                // using indexOf('\\') and substring() instead of iterating over each char can be faster if there's relatively few \\ in the string
                 // however, if there's relatively more \\ in the string then iterating over each char can be faster
                 // since this is an unescape function, let's assume there will be more \\ than less
                 StringBuilder sb = new StringBuilder(s.Length);
